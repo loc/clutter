@@ -8,17 +8,17 @@ void fileEventHandler(Event e, file f) {
   if (e & created) {
     cout << "created";
   }
-  else if (e & accessed) {
-    cout << "accessed";
+  else if (e & renamed) {
+    cout << "renamed from " << f.previousName;
   }
   else if (e & modified) {
     cout << "modified";
   }
+  else if (e & accessed) {
+    cout << "accessed";
+  }
   else if (e & deleted) {
     cout << "deleted";
-  }
-  else if (e & renamed) {
-    cout << "renamed";
   }
 
   cout << " " << (unsigned int) e << endl;

@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <iostream>
 
+
 using namespace std;
 
 enum Event {
@@ -19,17 +20,27 @@ enum Event {
 
 typedef struct file {
   string fileName;
+  string previousName;
   string path;
+  unsigned int inode;
   time_t last_access;
+  time_t last_modification;
+  time_t created;
+
+  bool _checked;
 } file;
+
+typedef function<void(Event, file)> WatcherCallback;
 
 class Watcher {
   string path;
   unordered_map<unsigned long, file*> m;
-  function<void(Event, file)> callback;
+  unordered_map<string, file*> names;
+
+  WatcherCallback callback;
 
   public:
-  Watcher(string p, function<void(Event, file)> cb);
+  Watcher(string p, WatcherCallback cb);
   
   void loop(void );
   void directoryChanged(void);
