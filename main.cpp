@@ -25,7 +25,7 @@ void fileEventHandler(Event e, file f) {
 }
 
 int main(int argc, char* argv[]) {
-  Watcher * watcher = new Watcher("/Users/Andy/Downloads/test/", fileEventHandler);
+  Watcher * watcher = new Watcher("/Users/Andy/Downloads/", fileEventHandler);
 
   watcher->loop();
   return 0;

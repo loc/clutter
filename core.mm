@@ -1,6 +1,5 @@
 #include "core.h"
 #include <sys/stat.h>
-#include <vector>
 #include <cstring>
 
 void osxHandler(
@@ -12,7 +11,7 @@ void osxHandler(
     const FSEventStreamEventId eventIds[]) {
 
   Watcher * watcher = static_cast<Watcher*>(clientCallBackInfo);
-  watcher->directoryChanged();
+  watcher->directoryChanged(false);
 }
 
 Watcher::Watcher(string p, WatcherCallback cb) {
@@ -25,32 +24,12 @@ Watcher::Watcher(string p, WatcherCallback cb) {
   cout << path << endl;
 
   callback = cb;
-
-  numEntries = scandir(path.c_str(), &nameList, NULL, NULL);
-
-  for (i = 0; i < numEntries; i++) {
-
-    // hide hidden files/directories
-    if (!strncmp(nameList[i]->d_name, ".", 1)) {
-      continue;
-    }
-
-    f = new file();
-    stat((path + nameList[i]->d_name).c_str(), &info);
-
-    f->inode = nameList[i]->d_ino;
-    f->fileName = nameList[i]->d_name;
-    f->path = path;
-    f->last_access = info.st_atimespec.tv_sec;
-    f->last_modification = info.st_mtimespec.tv_sec;
-    f->_checked = false;
-
-    names[nameList[i]->d_name] = f;
-    m[info.st_ino] = f;
-  }
+  loadWatcher(this, path + ARCHIVE_NAME);
+  this->directoryChanged(true);
 }
 
-void Watcher::loop() {
+void Watcher::setupFileWatcher() {
+
   CFStringRef mypath = CFStringCreateWithCString(NULL, path.c_str(), kCFStringEncodingUTF8);
   CFArrayRef pathsToWatch = CFArrayCreate(NULL, (const void **)&mypath, 1, NULL);
   FSEventStreamRef stream;
@@ -68,18 +47,52 @@ void Watcher::loop() {
 
   FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
   FSEventStreamStart(stream);
+}
+
+void Watcher::setupTimer() {
+  return;
+}
+
+
+void Watcher::loop() {
+  this->setupFileWatcher();
+  this->setupTimer();
   CFRunLoopRun();
 }
 
-void Watcher::directoryChanged(void) {
+vector<file>* Watcher::listFiles() {
+  vector<file> * files = new vector<file>;
+  for (auto it = m.begin(); it != m.end(); it++) {
+    files->push_back(*it->second);
+  }
+  return files;
+}
+
+unsigned long Watcher::count() {
+    return m.size();
+}
+
+long Watcher::getNextExpiration(void) {
+  long min = std::numeric_limits<long>::max();
+
+  for (auto it = m.begin(); it != m.end(); it++) {
+    if (it->second->expiring < min) {
+      min = it->second->expiring;
+    }
+  }
+  return min;
+}
+
+void Watcher::directoryChanged(bool suppress) {
   struct stat info;
   struct dirent **nameList;
   int numEntries, i;
   file* f;
   unsigned long inode;
-  bool isNew, changed;
   unsigned int event;
   file * oldFile;
+  bool shouldSave = false;
+
 
   numEntries = scandir(path.c_str(), &nameList, NULL, NULL);
 
@@ -111,7 +124,7 @@ void Watcher::directoryChanged(void) {
 
     event |= -(f->last_modification != info.st_mtimespec.tv_sec) & modified;
     event |= -(f->fileName != nameList[i]->d_name) & renamed;
-    event |= -(f->last_access != info.st_atimespec.tv_sec) & accessed;
+    //event |= -(f->last_access != info.st_atimespec.tv_sec) & accessed;
 
     f->previousName = f->fileName;
     f->fileName = nameList[i]->d_name;
@@ -134,8 +147,11 @@ void Watcher::directoryChanged(void) {
       names[nameList[i]->d_name] = f;
     }
 
-    if (event != 0) { 
-      callback(static_cast<Event>(event), *f);
+    if (event != 0) {
+      if (!suppress) {
+        callback(static_cast<Event>(event), *f);
+      }
+      shouldSave = true;
     }
   }
 
@@ -146,10 +162,37 @@ void Watcher::directoryChanged(void) {
       callback(deleted, *(it->second));
       names.erase(it->second->fileName);
       m.erase(it++);
+      shouldSave = true;
     }
     else {
       it->second->_checked = false;
       it++;
     }
   }
+
+  // if any one thing happened, update the file
+  if (shouldSave) {
+    saveWatcher(this, path + ARCHIVE_NAME);
+    cout << "watcher saved" << endl;
+  }
 }
+
+void loadWatcher(Watcher * watcher, string path) {
+  int start = watcher->count();
+  ifstream ifs(path);
+  if (ifs.good()) {
+    boost::archive::text_iarchive ar(ifs);
+    ar & *watcher;
+    if (start != watcher->count()) {
+      cout << watcher->count() - start << "files loaded" << endl;
+    }
+  }
+}
+
+void saveWatcher(Watcher * watcher, string path) {
+  ofstream ofs(path);
+  boost::archive::text_oarchive ar(ofs);
+  ar & *watcher;
+}
+
+
