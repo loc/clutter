@@ -43,6 +43,7 @@ typedef struct file {
     ar & created;
     ar & expiring;
     ar & _checked;
+    ar & _expired;
   }
 
   string fileName;
@@ -55,6 +56,7 @@ typedef struct file {
   time_t expiring;
 
   bool _checked;
+  bool _expried;
 } file;
 
 typedef function<void(Event, file)> WatcherCallback;
@@ -69,6 +71,8 @@ class Watcher {
   string path;
   unordered_map<unsigned long, file*> m;
   unordered_map<string, file*> names;
+  double nextExpiration;
+  CFRunLoopTimerRef timer;
 
   WatcherCallback callback;
 
@@ -79,13 +83,15 @@ class Watcher {
   Watcher(string p, WatcherCallback cb);
 
   void loop(void);
-  vector<file>* listFiles(void);
+  vector<file*>* listFiles(void);
+  vector<file*>* expireFiles(void);
   unsigned long count(void);
   void directoryChanged(bool supressEvents);
-  long getNextExpiration(void);
 
 };
 
+
+/* Run loop handlers */
 void osxHandler(
     ConstFSEventStreamRef streamRef, 
     void *clientCallBackInfo, 
@@ -94,7 +100,9 @@ void osxHandler(
     const FSEventStreamEventFlags eventFlags[], 
     const FSEventStreamEventId eventIds[]);
 
+void osxTimerHandler(CFRunLoopTimerRef timer, void *info);
 
+/* I/O */
 void loadWatcher(Watcher * watcher, string path); 
 
 void saveWatcher(Watcher * watcher, string path);

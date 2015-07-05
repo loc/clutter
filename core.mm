@@ -14,6 +14,11 @@ void osxHandler(
   watcher->directoryChanged(false);
 }
 
+void osxTimerHandler(CFRunLoopTimerRef timer, void *info) {
+  Watcher * watcher = static_cast<Watcher*>(info);
+  watcher->timerFired();
+}
+
 Watcher::Watcher(string p, WatcherCallback cb) {
   struct stat info;
   struct dirent **nameList;
@@ -49,10 +54,34 @@ void Watcher::setupFileWatcher() {
   FSEventStreamStart(stream);
 }
 
-void Watcher::setupTimer() {
-  return;
+void Watcher::timerFired() {
+  vector<file*>* expired = this->expireFiles();
+
+  cout << expired->size() << " files expired";
 }
 
+void Watcher::setupTimer() {
+  double expiration = this->getNextExpiration();
+  double max = std::numeric_limits<double>::max();
+  CFRunLoopTimerContext context = {0, this, NULL, NULL, NULL};
+  
+  timer = CFRunLoopTimerCreate(
+    NULL, // allocator
+    max, // set actual fire date later, this is just setup
+    max, // interval keeps the timer around until we know what to do with it next
+    0, // flags, ignored
+    0, // priority, ignored
+    osxTimerHandler, // callback
+    context
+  );
+  CFRunLoopAddTimer(timer);
+}
+
+void Watcher::updateTimer(double expiry) {
+  this->nextExpiration = expiry;
+
+  CFRunLoopTimerSetNextFireDate(timer, expiry);
+}
 
 void Watcher::loop() {
   this->setupFileWatcher();
@@ -60,10 +89,10 @@ void Watcher::loop() {
   CFRunLoopRun();
 }
 
-vector<file>* Watcher::listFiles() {
-  vector<file> * files = new vector<file>;
+vector<file*>* Watcher::listFiles() {
+  vector<file*> * files = new vector<file*>;
   for (auto it = m.begin(); it != m.end(); it++) {
-    files->push_back(*it->second);
+    files->push_back(it->second);
   }
   return files;
 }
@@ -72,11 +101,43 @@ unsigned long Watcher::count() {
     return m.size();
 }
 
-long Watcher::getNextExpiration(void) {
-  long min = std::numeric_limits<long>::max();
+void Watcher::expireFiles() {
+  // should set the next expiring time
+  // expire old files
+  // return all expired files
+
+  double min = std::numeric_limits<double>::max();
+  double now = CFAbsoluteTimeGetCurrent();
+  double fiveMinsFromNow = now + durationFromUnit(5, "min");
+  vector<file*>* expired = new vector<file*>;
 
   for (auto it = m.begin(); it != m.end(); it++) {
-    if (it->second->expiring < min) {
+    if (it->second->expring <= fiveMinsFromNow) {
+      expired.push_back(it->second);
+      it->second->_expired = true;
+    }
+    else {
+      if (it->second->_expired = true) {
+        it->second->_expired = false;
+      }
+      if (it->second->expiring < min) {
+        min = it->second->expiring;
+      }
+    }
+  }
+
+  if (min != this->nextExpiration) {
+    this->updateTimer(min);
+  }
+
+  return expired;
+}
+
+double Watcher::getNextExpiration(void) {
+  double min = std::numeric_limits<double>::max();
+
+  for (auto it = m.begin(); it != m.end(); it++) {
+    if (it->second->expiring < min && it->second->expiring > 0) {
       min = it->second->expiring;
     }
   }
