@@ -1,5 +1,5 @@
 CFLAGS = -O0 -g -Wall
-SRC = main.cpp core.mm
+SRC = main.cpp core.mm cltime.cpp
 FRAMEWORKS = -framework CoreFoundation -framework CoreServices -lboost_serialization
 NAME = clutter_core
 CC = g++

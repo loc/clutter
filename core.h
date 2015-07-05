@@ -7,6 +7,7 @@ extern "C" {
 #define CORE_H
 
 #include <CoreServices/CoreServices.h>
+#include <CoreFoundation/CoreFoundation.h>
 #include <dirent.h>
 #include <string>
 #include <unordered_map>
@@ -17,6 +18,7 @@ extern "C" {
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/serialization/unordered_map.hpp>
+#include "cltime.h"
 
 #define ARCHIVE_NAME ".clutter.dat"
 
@@ -56,7 +58,7 @@ typedef struct file {
   time_t expiring;
 
   bool _checked;
-  bool _expried;
+  bool _expired;
 } file;
 
 typedef function<void(Event, file)> WatcherCallback;
@@ -87,6 +89,8 @@ class Watcher {
   vector<file*>* expireFiles(void);
   unsigned long count(void);
   void directoryChanged(bool supressEvents);
+  void timerFired(void);
+  void updateTimer(double expiry);
 
 };
 

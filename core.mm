@@ -57,11 +57,10 @@ void Watcher::setupFileWatcher() {
 void Watcher::timerFired() {
   vector<file*>* expired = this->expireFiles();
 
-  cout << expired->size() << " files expired";
+  cout << expired->size() << " files expired" << endl;
 }
 
 void Watcher::setupTimer() {
-  double expiration = this->getNextExpiration();
   double max = std::numeric_limits<double>::max();
   CFRunLoopTimerContext context = {0, this, NULL, NULL, NULL};
   
@@ -72,13 +71,15 @@ void Watcher::setupTimer() {
     0, // flags, ignored
     0, // priority, ignored
     osxTimerHandler, // callback
-    context
+    &context // okay that this memory will go out of scope. CFRLTC copies it
   );
-  CFRunLoopAddTimer(timer);
+  CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, kCFRunLoopCommonModes);
+  this->expireFiles();
 }
 
 void Watcher::updateTimer(double expiry) {
   this->nextExpiration = expiry;
+  cout << "timer updated to " << expiry << endl;
 
   CFRunLoopTimerSetNextFireDate(timer, expiry);
 }
@@ -101,7 +102,7 @@ unsigned long Watcher::count() {
     return m.size();
 }
 
-void Watcher::expireFiles() {
+vector<file*>* Watcher::expireFiles() {
   // should set the next expiring time
   // expire old files
   // return all expired files
@@ -112,12 +113,15 @@ void Watcher::expireFiles() {
   vector<file*>* expired = new vector<file*>;
 
   for (auto it = m.begin(); it != m.end(); it++) {
-    if (it->second->expring <= fiveMinsFromNow) {
-      expired.push_back(it->second);
+    // skip if expiring is unset
+    if (it->second->expiring < 0) continue;
+
+    if (it->second->expiring <= fiveMinsFromNow) {
+      expired->push_back(it->second);
       it->second->_expired = true;
     }
     else {
-      if (it->second->_expired = true) {
+      if (it->second->_expired == true) {
         it->second->_expired = false;
       }
       if (it->second->expiring < min) {
@@ -126,22 +130,12 @@ void Watcher::expireFiles() {
     }
   }
 
+  cout << min << " <--min" << endl;
   if (min != this->nextExpiration) {
     this->updateTimer(min);
   }
 
   return expired;
-}
-
-double Watcher::getNextExpiration(void) {
-  double min = std::numeric_limits<double>::max();
-
-  for (auto it = m.begin(); it != m.end(); it++) {
-    if (it->second->expiring < min && it->second->expiring > 0) {
-      min = it->second->expiring;
-    }
-  }
-  return min;
 }
 
 void Watcher::directoryChanged(bool suppress) {
@@ -153,7 +147,6 @@ void Watcher::directoryChanged(bool suppress) {
   unsigned int event;
   file * oldFile;
   bool shouldSave = false;
-
 
   numEntries = scandir(path.c_str(), &nameList, NULL, NULL);
 
@@ -175,6 +168,7 @@ void Watcher::directoryChanged(bool suppress) {
       f = m[inode] = new file();
       f->inode = nameList[i]->d_ino;
       f->path = path;
+      f->expiring = -1;
       event |= created;
     }
 
@@ -192,6 +186,10 @@ void Watcher::directoryChanged(bool suppress) {
     f->last_access = info.st_atimespec.tv_sec;
     f->last_modification = info.st_mtimespec.tv_sec;
     f->created = info.st_mtimespec.tv_sec;
+
+    if (f->fileName == "hello.txt" && (event & created)) {
+      f->expiring = CFAbsoluteTimeGetCurrent() + durationFromUnit(1, "min");
+    }
 
     if (event & created) {
       // for vim and Emacs like editors that create a new file on every save
@@ -255,5 +253,3 @@ void saveWatcher(Watcher * watcher, string path) {
   boost::archive::text_oarchive ar(ofs);
   ar & *watcher;
 }
-
-
