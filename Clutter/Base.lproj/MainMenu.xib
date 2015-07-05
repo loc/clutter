@@ -818,6 +818,16 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
+                    <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TzE-PX-1bJ">
+                        <rect key="frame" x="18" y="46" width="71" height="24"/>
+                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="4PN-1q-w99">
+                            <font key="font" metaFont="system"/>
+                            <segments>
+                                <segment label="1d" width="32"/>
+                                <segment label="∞" width="32" selected="YES" tag="1"/>
+                            </segments>
+                        </segmentedCell>
+                    </segmentedControl>
                 </subviews>
                 <constraints>
                     <constraint firstItem="9LE-sJ-ag3" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="9ki-fv-198"/>

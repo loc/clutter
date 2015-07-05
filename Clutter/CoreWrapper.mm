@@ -35,11 +35,11 @@
 }
 
 -(NSArray*) listFiles {
-    std::vector<file>* list = _watcher->listFiles();
+    std::vector<file*>* list = _watcher->listFiles();
     NSMutableArray* convertedList = [[NSMutableArray alloc] init];
     
     for (auto it = list->begin(); it != list->end(); it++) {
-        NSString* name = [NSString stringWithUTF8String:it->fileName.c_str()];
+        NSString* name = [NSString stringWithUTF8String:(*it)->fileName.c_str()];
         NSArray* fields = [NSArray arrayWithObjects: name, nil];
         [convertedList addObject:fields];
     }

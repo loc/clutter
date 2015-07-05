@@ -20,11 +20,7 @@ void osxTimerHandler(CFRunLoopTimerRef timer, void *info) {
 }
 
 Watcher::Watcher(string p, WatcherCallback cb) {
-  struct stat info;
-  struct dirent **nameList;
-  int numEntries, i;
   path = p;
-  file *f;
 
   cout << path << endl;
 

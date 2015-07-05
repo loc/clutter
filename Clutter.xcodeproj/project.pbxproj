@@ -10,6 +10,8 @@
 		A1308DA01B4668B700897F28 /* CLTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1308D9F1B4668B700897F28 /* CLTableRowView.m */; };
 		A1308DA21B47055E00897F28 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = A1308DA11B47055E00897F28 /* check.png */; };
 		A1308DA51B470BA900897F28 /* CLResizeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1308DA41B470BA900897F28 /* CLResizeView.m */; };
+		A15161A31B49CE6900E103B1 /* cltime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A15161A11B49CE6900E103B1 /* cltime.cpp */; };
+		A15161A51B49CF7300E103B1 /* libboost_serialization.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A15161A41B49CF7300E103B1 /* libboost_serialization.dylib */; };
 		A1C770771B40C42C002077A3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C770761B40C42C002077A3 /* Cocoa.framework */; };
 		A1C770811B40C42C002077A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A1C7707F1B40C42C002077A3 /* InfoPlist.strings */; };
 		A1C770831B40C42C002077A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C770821B40C42C002077A3 /* main.m */; };
@@ -24,7 +26,7 @@
 		A1C770AB1B40C448002077A3 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C770AA1B40C448002077A3 /* CoreServices.framework */; };
 		A1C770AD1B40C469002077A3 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C770AC1B40C469002077A3 /* CoreFoundation.framework */; };
 		A1C770B91B424874002077A3 /* CoreWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1C770B81B424874002077A3 /* CoreWrapper.mm */; };
-		A1C770C11B438752002077A3 /* core.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1C770BF1B438752002077A3 /* core.mm */; };
+		A1C770C11B438752002077A3 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1C770BF1B438752002077A3 /* core.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +46,9 @@
 		A1308DA31B470BA900897F28 /* CLResizeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLResizeView.h; sourceTree = "<group>"; };
 		A1308DA41B470BA900897F28 /* CLResizeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLResizeView.m; sourceTree = "<group>"; };
 		A1308DA61B47189F00897F28 /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
+		A15161A11B49CE6900E103B1 /* cltime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cltime.cpp; sourceTree = SOURCE_ROOT; };
+		A15161A21B49CE6900E103B1 /* cltime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cltime.h; sourceTree = SOURCE_ROOT; };
+		A15161A41B49CF7300E103B1 /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = ../../../../usr/local/Cellar/boost/1.57.0/lib/libboost_serialization.dylib; sourceTree = "<group>"; };
 		A1C770731B40C42C002077A3 /* Clutter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1C770761B40C42C002077A3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A1C770791B40C42C002077A3 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -67,7 +72,7 @@
 		A1C770AC1B40C469002077A3 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		A1C770B71B424874002077A3 /* CoreWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreWrapper.h; sourceTree = "<group>"; };
 		A1C770B81B424874002077A3 /* CoreWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CoreWrapper.mm; sourceTree = "<group>"; };
-		A1C770BF1B438752002077A3 /* core.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = core.mm; sourceTree = SOURCE_ROOT; };
+		A1C770BF1B438752002077A3 /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core.cpp; sourceTree = SOURCE_ROOT; };
 		A1C770C01B438752002077A3 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -76,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A15161A51B49CF7300E103B1 /* libboost_serialization.dylib in Frameworks */,
 				A1C770AD1B40C469002077A3 /* CoreFoundation.framework in Frameworks */,
 				A1C770AB1B40C448002077A3 /* CoreServices.framework in Frameworks */,
 				A1C770771B40C42C002077A3 /* Cocoa.framework in Frameworks */,
@@ -116,6 +122,7 @@
 		A1C770751B40C42C002077A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A15161A41B49CF7300E103B1 /* libboost_serialization.dylib */,
 				A1C770AC1B40C469002077A3 /* CoreFoundation.framework */,
 				A1C770AA1B40C448002077A3 /* CoreServices.framework */,
 				A1C770761B40C42C002077A3 /* Cocoa.framework */,
@@ -138,9 +145,11 @@
 		A1C7707C1B40C42C002077A3 /* Clutter */ = {
 			isa = PBXGroup;
 			children = (
+				A15161A11B49CE6900E103B1 /* cltime.cpp */,
+				A15161A21B49CE6900E103B1 /* cltime.h */,
 				A1308DA61B47189F00897F28 /* constants.h */,
 				A1C770C01B438752002077A3 /* core.h */,
-				A1C770BF1B438752002077A3 /* core.mm */,
+				A1C770BF1B438752002077A3 /* core.cpp */,
 				A1C770B71B424874002077A3 /* CoreWrapper.h */,
 				A1C770B81B424874002077A3 /* CoreWrapper.mm */,
 				A1C770881B40C42C002077A3 /* AppDelegate.h */,
@@ -286,11 +295,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1C770C11B438752002077A3 /* core.mm in Sources */,
+				A1C770C11B438752002077A3 /* core.cpp in Sources */,
 				A1308DA01B4668B700897F28 /* CLTableRowView.m in Sources */,
 				A1C770B91B424874002077A3 /* CoreWrapper.mm in Sources */,
 				A1308DA51B470BA900897F28 /* CLResizeView.m in Sources */,
 				A1C7708A1B40C42C002077A3 /* AppDelegate.m in Sources */,
+				A15161A31B49CE6900E103B1 /* cltime.cpp in Sources */,
 				A1C770831B40C42C002077A3 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -426,7 +436,22 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutter/Clutter-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include/,
+				);
 				INFOPLIST_FILE = "Clutter/Clutter-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/boost/1.57.0/lib,
+				);
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-lboost_serialization",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -439,7 +464,22 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutter/Clutter-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/include/,
+				);
 				INFOPLIST_FILE = "Clutter/Clutter-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/boost/1.57.0/lib,
+				);
+				OTHER_CFLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-lboost_serialization",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

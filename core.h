@@ -45,7 +45,8 @@ typedef struct file {
     ar & created;
     ar & expiring;
     ar & _checked;
-    ar & _expired;
+    if (version > 1)
+        ar & _expired;
   }
 
   string fileName;
@@ -111,7 +112,7 @@ void loadWatcher(Watcher * watcher, string path);
 
 void saveWatcher(Watcher * watcher, string path);
 
-BOOST_CLASS_VERSION(Watcher, 1)
+BOOST_CLASS_VERSION(Watcher, 2)
 
 #endif
 
