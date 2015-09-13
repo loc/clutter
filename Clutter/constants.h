@@ -14,15 +14,17 @@
 
 // global colors
 #define clBackground clRGB(31, 35, 41)
-#define clBackgroundAccentMedium clRGB(40, 45, 50)
+#define clBackgroundAccentMedium clRGB(39, 44, 50)
 #define clBackgroundAccentLight clRGB(51, 55, 60)
 #define clBackgroundAccentLighter clRGB(61, 65, 70)
 
 #define clBackgroundAccentDark clRGB(27, 30, 36)
+#define clBackgroundAccentDarker clRGB(10, 15, 21)
 #define clTextGray clRGB(153, 154, 157)
 #define clTextWhite clRGB(235, 236, 239)
 
 
-#define clBlue clRGB(24, 52, 102)
+//#define clBlue clRGB(24, 52, 102)
+#define clBlue clRGB(26, 66, 127)
 
 #endif

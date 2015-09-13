@@ -47,12 +47,15 @@ typedef struct file {
     ar & _checked;
     if (version > 1)
         ar & _expired;
+    if (version > 2)
+        ar & fileSize;
   }
 
   string fileName;
   string previousName;
   string path;
   unsigned long long inode;
+  unsigned long long fileSize;
   time_t last_access;
   time_t last_modification;
   time_t created;
@@ -112,7 +115,7 @@ void loadWatcher(Watcher * watcher, string path);
 
 void saveWatcher(Watcher * watcher, string path);
 
-BOOST_CLASS_VERSION(Watcher, 2)
+BOOST_CLASS_VERSION(Watcher, 3)
 
 #endif
 

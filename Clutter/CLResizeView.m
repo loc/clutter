@@ -49,13 +49,6 @@
 - (void) cursorUpdate:(NSEvent *)event {
     [[NSCursor resizeUpDownCursor] set];
 }
-//
-//- (void) mouseEntered:(NSEvent *)theEvent {
-//    
-//}
-//- (void) mouseExited:(NSEvent *)theEvent {
-//    
-//}
 
 - (void) mouseDown:(NSEvent *)theEvent {
     self.isPressed = YES;
@@ -74,6 +67,10 @@
 - (void) mouseDragged:(NSEvent*) event {
     NSRect windowFrame = [[self window] frame];
     long diff = (self->startY - [NSEvent mouseLocation].y);
+    
+    if (self->startHeight + diff < 150) {
+        diff = 150 - self->startHeight;
+    }
     
     windowFrame.size.height = self->startHeight + diff;
     windowFrame.origin.y = self->startBottom - diff;

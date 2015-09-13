@@ -17,13 +17,35 @@
 
 @implementation CoreWrapper
 
--(id)initWithCallback: (void(^)(void))callback {
++ (CoreWrapper*)sharedInstance
+{
+    static CoreWrapper * _sharedInstance;
+    @synchronized(self)
+    {
+        if (!_sharedInstance) {
+            _sharedInstance = [[self alloc] init];
+        }
+        return _sharedInstance;
+    }
+}
+
+-(id)init {
     self = [super init];
-    _watcher = new Watcher("/Users/Andy/Downloads/", ^(Event e, file f){
+    callbacks = [[NSMutableArray alloc] init];
+    NSArray * urls = [[NSFileManager defaultManager] URLsForDirectory:NSDownloadsDirectory inDomains:NSUserDomainMask];
+    NSLog(@"%@", urls);
+    [self setUrl: [urls firstObject]];
+    _watcher = new Watcher([[[self url] path] cStringUsingEncoding:NSUTF8StringEncoding], ^(Event e, file f){
+        for (changeCallback callback in callbacks) {
             callback();
-        });
+        }
+    });
     
     return self;
+}
+
+-(void) runBlockOnChange: (changeCallback) callback {
+    [callbacks addObject:callback];
 }
 
 -(NSInteger) count {
@@ -40,7 +62,8 @@
     
     for (auto it = list->begin(); it != list->end(); it++) {
         NSString* name = [NSString stringWithUTF8String:(*it)->fileName.c_str()];
-        NSArray* fields = [NSArray arrayWithObjects: name, nil];
+        NSNumber * fileSize = [NSNumber numberWithUnsignedLongLong:(*it)->fileSize];
+        NSArray* fields = [NSArray arrayWithObjects: name, fileSize, nil];
         [convertedList addObject:fields];
     }
     

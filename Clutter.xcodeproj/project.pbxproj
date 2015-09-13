@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A11C7C151BA499F4008E6E91 /* CLPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11C7C131BA499F4008E6E91 /* CLPreviewController.m */; };
+		A11C7C161BA499F4008E6E91 /* Preview.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11C7C141BA499F4008E6E91 /* Preview.xib */; };
 		A1308DA01B4668B700897F28 /* CLTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1308D9F1B4668B700897F28 /* CLTableRowView.m */; };
 		A1308DA21B47055E00897F28 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = A1308DA11B47055E00897F28 /* check.png */; };
 		A1308DA51B470BA900897F28 /* CLResizeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1308DA41B470BA900897F28 /* CLResizeView.m */; };
 		A15161A31B49CE6900E103B1 /* cltime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A15161A11B49CE6900E103B1 /* cltime.cpp */; };
 		A15161A51B49CF7300E103B1 /* libboost_serialization.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A15161A41B49CF7300E103B1 /* libboost_serialization.dylib */; };
+		A15161A81B4A3EC300E103B1 /* CLSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */; };
+		A15161AB1B4A4B4000E103B1 /* CLSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = A15161AA1B4A4B4000E103B1 /* CLSegmentedControl.m */; };
 		A1C770771B40C42C002077A3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C770761B40C42C002077A3 /* Cocoa.framework */; };
 		A1C770811B40C42C002077A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A1C7707F1B40C42C002077A3 /* InfoPlist.strings */; };
 		A1C770831B40C42C002077A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C770821B40C42C002077A3 /* main.m */; };
@@ -27,6 +31,8 @@
 		A1C770AD1B40C469002077A3 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C770AC1B40C469002077A3 /* CoreFoundation.framework */; };
 		A1C770B91B424874002077A3 /* CoreWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1C770B81B424874002077A3 /* CoreWrapper.mm */; };
 		A1C770C11B438752002077A3 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1C770BF1B438752002077A3 /* core.cpp */; };
+		A1D048301B98F7DF001AFDBB /* Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1D0482F1B98F7DF001AFDBB /* Window.xib */; };
+		A1D048341B99455C001AFDBB /* CLMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1D048321B99455C001AFDBB /* CLMainController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +46,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A11C7C121BA499F4008E6E91 /* CLPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLPreviewController.h; sourceTree = "<group>"; };
+		A11C7C131BA499F4008E6E91 /* CLPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLPreviewController.m; sourceTree = "<group>"; };
+		A11C7C141BA499F4008E6E91 /* Preview.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preview.xib; sourceTree = "<group>"; };
 		A1308D9E1B4668B700897F28 /* CLTableRowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLTableRowView.h; sourceTree = "<group>"; };
 		A1308D9F1B4668B700897F28 /* CLTableRowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTableRowView.m; sourceTree = "<group>"; };
 		A1308DA11B47055E00897F28 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = check.png; path = Images.xcassets/check.png; sourceTree = "<group>"; };
@@ -49,6 +58,10 @@
 		A15161A11B49CE6900E103B1 /* cltime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cltime.cpp; sourceTree = SOURCE_ROOT; };
 		A15161A21B49CE6900E103B1 /* cltime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cltime.h; sourceTree = SOURCE_ROOT; };
 		A15161A41B49CF7300E103B1 /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = ../../../../usr/local/Cellar/boost/1.57.0/lib/libboost_serialization.dylib; sourceTree = "<group>"; };
+		A15161A61B4A3EC300E103B1 /* CLSegmentedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLSegmentedCell.h; sourceTree = "<group>"; };
+		A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLSegmentedCell.m; sourceTree = "<group>"; };
+		A15161A91B4A4B4000E103B1 /* CLSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLSegmentedControl.h; path = ../CLSegmentedControl.h; sourceTree = "<group>"; };
+		A15161AA1B4A4B4000E103B1 /* CLSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLSegmentedControl.m; path = ../CLSegmentedControl.m; sourceTree = "<group>"; };
 		A1C770731B40C42C002077A3 /* Clutter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1C770761B40C42C002077A3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A1C770791B40C42C002077A3 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -74,6 +87,10 @@
 		A1C770B81B424874002077A3 /* CoreWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CoreWrapper.mm; sourceTree = "<group>"; };
 		A1C770BF1B438752002077A3 /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core.cpp; sourceTree = SOURCE_ROOT; };
 		A1C770C01B438752002077A3 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = SOURCE_ROOT; };
+		A1D0482F1B98F7DF001AFDBB /* Window.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Window.xib; sourceTree = "<group>"; };
+		A1D048311B99455C001AFDBB /* CLMainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLMainController.h; sourceTree = "<group>"; };
+		A1D048321B99455C001AFDBB /* CLMainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLMainController.m; sourceTree = "<group>"; };
+		A1D048361BA12402001AFDBB /* Clutter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Clutter.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +162,7 @@
 		A1C7707C1B40C42C002077A3 /* Clutter */ = {
 			isa = PBXGroup;
 			children = (
+				A1D048361BA12402001AFDBB /* Clutter.entitlements */,
 				A15161A11B49CE6900E103B1 /* cltime.cpp */,
 				A15161A21B49CE6900E103B1 /* cltime.h */,
 				A1308DA61B47189F00897F28 /* constants.h */,
@@ -158,7 +176,17 @@
 				A1308D9F1B4668B700897F28 /* CLTableRowView.m */,
 				A1308DA31B470BA900897F28 /* CLResizeView.h */,
 				A1308DA41B470BA900897F28 /* CLResizeView.m */,
+				A15161A91B4A4B4000E103B1 /* CLSegmentedControl.h */,
+				A15161AA1B4A4B4000E103B1 /* CLSegmentedControl.m */,
+				A15161A61B4A3EC300E103B1 /* CLSegmentedCell.h */,
+				A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */,
 				A1C7708B1B40C42C002077A3 /* MainMenu.xib */,
+				A1D0482F1B98F7DF001AFDBB /* Window.xib */,
+				A11C7C141BA499F4008E6E91 /* Preview.xib */,
+				A1D048311B99455C001AFDBB /* CLMainController.h */,
+				A1D048321B99455C001AFDBB /* CLMainController.m */,
+				A11C7C121BA499F4008E6E91 /* CLPreviewController.h */,
+				A11C7C131BA499F4008E6E91 /* CLPreviewController.m */,
 				A1C7708E1B40C42C002077A3 /* Images.xcassets */,
 				A1308DA11B47055E00897F28 /* check.png */,
 				A1C7707D1B40C42C002077A3 /* Supporting Files */,
@@ -243,6 +271,13 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Bubble Tea Apps";
 				TargetAttributes = {
+					A1C770721B40C42C002077A3 = {
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
 					A1C770931B40C42C002077A3 = {
 						TestTargetID = A1C770721B40C42C002077A3;
 					};
@@ -272,11 +307,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A11C7C161BA499F4008E6E91 /* Preview.xib in Resources */,
 				A1C770811B40C42C002077A3 /* InfoPlist.strings in Resources */,
 				A1308DA21B47055E00897F28 /* check.png in Resources */,
 				A1C7708F1B40C42C002077A3 /* Images.xcassets in Resources */,
 				A1C770871B40C42C002077A3 /* Credits.rtf in Resources */,
 				A1C7708D1B40C42C002077A3 /* MainMenu.xib in Resources */,
+				A1D048301B98F7DF001AFDBB /* Window.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,12 +333,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1C770C11B438752002077A3 /* core.cpp in Sources */,
+				A11C7C151BA499F4008E6E91 /* CLPreviewController.m in Sources */,
+				A1D048341B99455C001AFDBB /* CLMainController.m in Sources */,
 				A1308DA01B4668B700897F28 /* CLTableRowView.m in Sources */,
 				A1C770B91B424874002077A3 /* CoreWrapper.mm in Sources */,
 				A1308DA51B470BA900897F28 /* CLResizeView.m in Sources */,
 				A1C7708A1B40C42C002077A3 /* AppDelegate.m in Sources */,
 				A15161A31B49CE6900E103B1 /* cltime.cpp in Sources */,
 				A1C770831B40C42C002077A3 /* main.m in Sources */,
+				A15161A81B4A3EC300E103B1 /* CLSegmentedCell.m in Sources */,
+				A15161AB1B4A4B4000E103B1 /* CLSegmentedControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,6 +474,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutter/Clutter-Prefix.pch";
@@ -461,6 +503,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutter/Clutter-Prefix.pch";

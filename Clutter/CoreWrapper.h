@@ -8,9 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CoreWrapper : NSObject
+typedef void(^changeCallback)(void);
 
--(id)initWithCallback: (void(^)(void))callback;
+@interface CoreWrapper : NSObject {
+    NSMutableArray * callbacks;
+}
+
+@property (retain) NSURL* url;
+
++ (CoreWrapper*)sharedInstance;
+-(void) runBlockOnChange: (changeCallback) callback;;
 -(NSArray*) listFiles;
 -(void)loop;
 -(NSInteger) count;

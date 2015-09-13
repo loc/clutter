@@ -8,17 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import "CoreWrapper.h"
-#import "CLTableRowView.h"
-#import "CLResizeView.h"
 #import "constants.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, NSTableViewDataSource, NSTableViewDelegate> {
-    IBOutlet NSTableView * tableView;
+@interface AppDelegate : NSObject <NSApplicationDelegate> {
+    NSWindowController * controller;
 }
-
-@property (assign) IBOutlet NSWindow *window;
-@property (assign) IBOutlet CLResizeView* snaggie;
-@property CoreWrapper * wrapper;
-@property NSArray * list;
 
 @end

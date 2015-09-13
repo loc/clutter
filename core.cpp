@@ -21,7 +21,10 @@ void osxTimerHandler(CFRunLoopTimerRef timer, void *info) {
 
 Watcher::Watcher(string p, WatcherCallback cb) {
   path = p;
-
+  if (p.compare(path.length(), 1, "/")) {
+    path.append("/");
+  }
+  
   cout << path << endl;
 
   callback = cb;
@@ -170,13 +173,16 @@ void Watcher::directoryChanged(bool suppress) {
 
     // mark as checked so we know it's still around (and not to send delete event)
     f->_checked = true;
-
+      
     stat((path + nameList[i]->d_name).c_str(), &info);
 
     event |= -(f->last_modification != info.st_mtimespec.tv_sec) & modified;
     event |= -(f->fileName != nameList[i]->d_name) & renamed;
     //event |= -(f->last_access != info.st_atimespec.tv_sec) & accessed;
 
+    // in bytes
+    f->fileSize = info.st_size;
+    printf("%llu\n", f->fileSize);
     f->previousName = f->fileName;
     f->fileName = nameList[i]->d_name;
     f->last_access = info.st_atimespec.tv_sec;
