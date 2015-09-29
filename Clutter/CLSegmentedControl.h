@@ -7,8 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "CLSegmentedCell.h"
 
 @interface CLSegmentedControl : NSSegmentedControl
-
-- (CLSegmentedControl * ) initWithFrame:(NSRect)frameRect;
+@property (nonatomic, retain) NSArray* labels;
+- (void) setLabels:(NSArray *)labels;
 @end

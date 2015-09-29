@@ -19,34 +19,85 @@
     self = [super initWithWindowNibName:@"Window" owner:self];
 
     [[CoreWrapper sharedInstance] runBlockOnChange:^{
-        NSLog(@"something happened");
         //[listController setList:[wrapper listFiles]];
         [self updateTable:[[CoreWrapper sharedInstance] listFiles]];
     }];
-
-    _preview = [[CLPreviewController alloc] init];
+    
     return self;
 }
 
 - (void)windowDidLoad {
     [super windowDidLoad];
     [[self window] setBackgroundColor:[NSColor clBackground]];
-    NSLog(@"hello world");
     
     [self updateTable:[[CoreWrapper sharedInstance] listFiles]];
     
     [self->tabSwitcher setTarget:self];
     [self->tabSwitcher setAction:@selector(tabSwitched)];
     
-    [[[self window] contentView] addSubview:_preview.view];
-    NSSize windowSize = ([[[self window] contentView] bounds]).size;
-    NSPoint topLeft = CGPointMake(0, 50);
-    [_preview.view setFrameOrigin:topLeft];
-    [_preview.view setFrameSize:CGSizeMake(windowSize.width, 150)];
-    [_preview.view setAutoresizingMask:NSViewMaxYMargin];
+    NSUInteger previewHeight = 150, actionHeight = 75, confirmHeight = 55;
+    CGFloat titleBarHeight = self.window.frame.size.height - ((NSView*)self.window.contentView).frame.size.height;
+    NSRect windowFrame = self.window.frame;
+    windowFrame.size = NSMakeSize(windowFrame.size.width, previewHeight + actionHeight * 2 + confirmHeight + titleBarHeight);
+    NSSize windowSize = windowFrame.size;
+    [self.window setFrame:windowFrame display:YES];
+    
+    _preview = [[CLPreviewController alloc] init];
+    _moveActionView = [[CLFileActionView alloc] initWithFrame:NSMakeRect(0, previewHeight, windowSize.width, actionHeight) andTitle:@"Move:"];
+    [_moveActionView setDelegate:self];
+    [_moveActionView setBackgroundColor:[NSColor clRGB(223,225,228)]];
+    [_moveActionView setHasFolderPicker:YES];
+    
+    _keepActionView = [[CLFileActionView alloc] initWithFrame:NSMakeRect(0, previewHeight + actionHeight, windowSize.width, actionHeight) andTitle:@"Keep:"];
+    [_keepActionView setDelegate:self];
+    [_keepActionView setBackgroundColor:[NSColor clRGB(242,242,243)]];
+    
+    [_moveActionView setLabels:@[@"Documents", @"PDFs", @"Desktop", @"Pictures"]];
+    [_keepActionView setLabels:@[@"1 day", @"2 weeks", @"1 month", @"Forever"]];
+    
+    [_preview.view setFrameSize:CGSizeMake(windowSize.width, previewHeight)];
+    [_preview.view setFrameOrigin:CGPointMake(0, 0)];
+    
+    _confirmActionView = [[CLActionConfirmView alloc] initWithFrame:NSMakeRect(0, previewHeight + actionHeight * 2, windowSize.width, confirmHeight)];
+    
+    [self.window.contentView addSubview:_preview.view];
+    [self.window.contentView addSubview:_moveActionView];
+    [self.window.contentView addSubview:_keepActionView];
+    [self.window.contentView addSubview:_confirmActionView];
+    
+    
+    NSArray * vals = [_filesList objectAtIndex:52];
+    NSDictionary * dict = @{
+                            @"url": [[[CoreWrapper sharedInstance] url] URLByAppendingPathComponent: [vals objectAtIndex:0]],
+                            @"size": [vals objectAtIndex:1]
+                            };
+    [_preview filesSelected: [NSArray arrayWithObject:dict]];
     
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 }
+
+- (void) moveTargetChanged {
+    NSLog(@"move switched outside");
+}
+
+- (void) keepTargetChanged {
+    NSLog(@"keep switched outside");
+}
+
+// file action methods
+- (void)actionChanged:(NSString *)label from:(id)sender {
+    if (!label) return;
+    if (sender == _moveActionView) {
+        [_keepActionView clearSelection];
+    } else {
+        [_moveActionView clearSelection];
+        // _keepActionView
+    }
+}
+- (void) folderPicked:(NSURL *)folder from:(id)sender {
+    
+}
+
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
     return _filesList.count;
@@ -123,3 +174,14 @@
 }
 @end;
 
+
+@implementation CLMainView
+
+- (void) mouseDown:(NSEvent *)theEvent {
+    [[self window] makeFirstResponder:nil];
+}
+- (BOOL)isFlipped {
+    return YES;
+}
+
+@end

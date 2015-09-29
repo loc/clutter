@@ -10,8 +10,10 @@
 #import "CLTableRowView.h"
 #import "CLResizeView.h"
 #import "CLPreviewController.h"
+#import "CLFileActionView.h"
+#import "CLActionConfirmView.h"
 
-@interface CLMainController : NSWindowController <NSTableViewDataSource, NSTableViewDelegate> {
+@interface CLMainController : NSWindowController <NSTableViewDataSource, NSTableViewDelegate, CLFileActionDelegate> {
     IBOutlet NSSegmentedControl * tabSwitcher;
     IBOutlet NSTableView * tableView;
 }
@@ -19,9 +21,15 @@
 @property (assign) IBOutlet CLResizeView* snaggie;
 @property NSArray * filesList;
 @property (nonatomic, retain) IBOutlet CLPreviewController *preview;
+@property (nonatomic, retain) CLFileActionView* moveActionView;
+@property (nonatomic, retain) CLFileActionView* keepActionView;
+@property (nonatomic, retain) CLActionConfirmView* confirmActionView;
+
 
 @end
 
 @interface CLDarkScroller : NSScroller
 @end
 
+@interface CLMainView : NSView
+@end

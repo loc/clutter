@@ -12,6 +12,8 @@ IB_DESIGNABLE
 
 @interface CLSegmentedCell : NSSegmentedCell
 
-@property IBInspectable NSColor * deselectedColor;
+@property NSColor * deselectedColor;
+
++ (NSFont*) cellFont;
 
 @end

@@ -13,18 +13,21 @@
 #define clRGB(r,g,b) clRGBA(r,g,b,1.0)
 
 // global colors
-#define clBackground clRGB(31, 35, 41)
-#define clBackgroundAccentMedium clRGB(39, 44, 50)
-#define clBackgroundAccentLight clRGB(51, 55, 60)
-#define clBackgroundAccentLighter clRGB(61, 65, 70)
+#define clBackground clRGB(206, 209, 214)
+#define clBackgroundAccentMedium clRGBA(50, 50, 50, 0.7)
+#define clBackgroundAccentLight clRGBA(50, 50, 50, 0.7)
+#define clBackgroundAccentLighter clRGBA(100, 100, 100, 0.05)
 
-#define clBackgroundAccentDark clRGB(27, 30, 36)
-#define clBackgroundAccentDarker clRGB(10, 15, 21)
-#define clTextGray clRGB(153, 154, 157)
+#define clBackgroundAccentDark clRGB(223, 225, 228)
+#define clBackgroundAccentDarker clRGBA(70, 70, 75, .7)
+#define clTextGray clRGB(55, 60, 73)
 #define clTextWhite clRGB(235, 236, 239)
 
+#define clMainText clRGB(55, 60, 73)
+#define clHighlightedText clRGB(255, 255, 255)
 
 //#define clBlue clRGB(24, 52, 102)
-#define clBlue clRGB(26, 66, 127)
+#define clBlue clRGB(93, 147, 197)
+#define clColorAccent clRGB(39,51,68)
 
 #endif

@@ -8,11 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface CLPreviewController : NSViewController
+@interface CLPreviewController : NSViewController <NSTextFieldDelegate>
 
 @property IBOutlet NSImageView * thumbnailView;
 @property IBOutlet NSTextField * name;
 
 -(void) filesSelected:(NSArray*) files;
 -(void) renderPreviewFor:(NSURL*) fileUrl;
+@end
+
+@interface CLTextField : NSTextField
 @end
