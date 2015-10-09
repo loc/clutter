@@ -7,11 +7,14 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "CLSimpleCheckbox.h"
+#import "CoreWrapper.h"
 
 @interface CLPreviewController : NSViewController <NSTextFieldDelegate>
 
 @property IBOutlet NSImageView * thumbnailView;
 @property IBOutlet NSTextField * name;
+@property CLSimpleCheckbox* checkbox;
 
 -(void) filesSelected:(NSArray*) files;
 -(void) renderPreviewFor:(NSURL*) fileUrl;

@@ -27,6 +27,11 @@
     [[self thumbnailView] setWantsLayer:YES];
     [_name setFocusRingType:NSFocusRingTypeNone];
     
+    _checkbox = [[CLSimpleCheckbox alloc] initWithFrame:NSMakeRect(22, 65, 280, 25)];
+    [_checkbox setButtonType:NSSwitchButton];
+    [_checkbox setTitle:@"Remember for the next hour"];
+    [self.view addSubview:_checkbox];
+    
     // Do view setup here.
 }
 
@@ -57,7 +62,8 @@
     return NO;
 }
 
-- (NSAttributedString*) styleNameText: (NSString*)name {
+- (NSAttributedString*) styleNameText: (NSString*)fileName {
+    NSString* name = [CoreWrapper getDisplayName: fileName];
     NSUInteger fileExtensionIndex = ([name rangeOfString:@"." options:NSBackwardsSearch]).location;
     NSFont * SeravekExtraLight = [NSFont fontWithName:@"Seravek-ExtraLight" size:24.0];
     NSFont * SeravekRegular = [NSFont fontWithName:@"Seravek" size:24.0];

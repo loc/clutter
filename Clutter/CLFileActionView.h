@@ -30,7 +30,7 @@
 @property (nonatomic, retain) NSArray* values;
 @property BOOL hasFolderPicker;
 
-- (void) setLabels: (NSArray*) labels;
+- (void) setLabels:(NSArray*) labels andValues:(NSArray*) values;
 - (instancetype) initWithFrame:(NSRect)frameRect andTitle: (NSString *) title;
 - (void) clearSelection;
 

@@ -12,5 +12,9 @@
 
 @interface CLActionConfirmView : NSView
 
+@property (assign) id delegate;
 @property (nonatomic, retain) CLSimpleButton* confirmButton;
+
+- (void) enableButton: (BOOL) shouldEnable;
+
 @end

@@ -32,6 +32,7 @@ Watcher::Watcher(string p, WatcherCallback cb) {
   this->directoryChanged(true);
 }
 
+
 void Watcher::setupFileWatcher() {
 
   CFStringRef mypath = CFStringCreateWithCString(NULL, path.c_str(), kCFStringEncodingUTF8);
@@ -182,7 +183,7 @@ void Watcher::directoryChanged(bool suppress) {
 
     // in bytes
     f->fileSize = info.st_size;
-    printf("%llu\n", f->fileSize);
+//    printf("%llu\n", f->fileSize);
     f->previousName = f->fileName;
     f->fileName = nameList[i]->d_name;
     f->last_access = info.st_atimespec.tv_sec;
@@ -236,6 +237,17 @@ void Watcher::directoryChanged(bool suppress) {
     saveWatcher(this, path + ARCHIVE_NAME);
     cout << "watcher saved" << endl;
   }
+}
+
+string getDisplayName(string fileName) {
+    
+    string chromeDownloadExt = ".crdownload";
+    if (fileName.compare(fileName.size() - chromeDownloadExt.size(), chromeDownloadExt.size(), chromeDownloadExt) == 0) {
+        return fileName.substr(0, fileName.size() - chromeDownloadExt.size());
+    }
+    
+    
+    return fileName;
 }
 
 void loadWatcher(Watcher * watcher, string path) {

@@ -19,18 +19,11 @@ extern "C" {
 #include <boost/serialization/version.hpp>
 #include <boost/serialization/unordered_map.hpp>
 #include "cltime.h"
+#include "event.h"
 
 #define ARCHIVE_NAME ".clutter.dat"
 
 using namespace std;
-
-enum Event {
-  modified = 1 << 0,
-  created = 1 << 1,
-  renamed = 1 << 2,
-  deleted = 1 << 3,
-  accessed = 1 << 4
-};
 
 typedef struct file {
   friend class boost::serialization::access;
@@ -80,13 +73,13 @@ class Watcher {
   double nextExpiration;
   CFRunLoopTimerRef timer;
 
-  WatcherCallback callback;
-
   void setupTimer(void);
   void setupFileWatcher(void);
 
   public:
   Watcher(string p, WatcherCallback cb);
+    
+  WatcherCallback callback;
 
   void loop(void);
   vector<file*>* listFiles(void);
@@ -95,7 +88,6 @@ class Watcher {
   void directoryChanged(bool supressEvents);
   void timerFired(void);
   void updateTimer(double expiry);
-
 };
 
 
@@ -114,6 +106,8 @@ void osxTimerHandler(CFRunLoopTimerRef timer, void *info);
 void loadWatcher(Watcher * watcher, string path); 
 
 void saveWatcher(Watcher * watcher, string path);
+    
+string getDisplayName(string fileName);
 
 BOOST_CLASS_VERSION(Watcher, 3)
 

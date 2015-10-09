@@ -15,32 +15,27 @@
 
 @implementation CLMainController
 
-- (id)init {
-    self = [super initWithWindowNibName:@"Window" owner:self];
+- (id)initWithWindow:(CLPanel *)window {
+    self = [super initWithWindow:window];
+    //= [super initWithWindowNibName:@"Window" owner:self];
+    
+    [[CoreWrapper sharedInstance] setDelegate:self];
 
     [[CoreWrapper sharedInstance] runBlockOnChange:^{
         //[listController setList:[wrapper listFiles]];
-        [self updateTable:[[CoreWrapper sharedInstance] listFiles]];
+//        [self updateTable:[[CoreWrapper sharedInstance] listFiles]];
     }];
     
-    return self;
-}
-
-- (void)windowDidLoad {
-    [super windowDidLoad];
-    [[self window] setBackgroundColor:[NSColor clBackground]];
+    NSUInteger previewHeight = 150, actionHeight = 75, confirmHeight = 55;
+    NSRect windowFrame = [self.window frame];
+    NSSize windowSize = {480, previewHeight + actionHeight * 2 + confirmHeight};
+    windowFrame.size = windowSize;
+//    [self.window setFrame:windowFrame display:YES];
     
     [self updateTable:[[CoreWrapper sharedInstance] listFiles]];
     
     [self->tabSwitcher setTarget:self];
     [self->tabSwitcher setAction:@selector(tabSwitched)];
-    
-    NSUInteger previewHeight = 150, actionHeight = 75, confirmHeight = 55;
-    CGFloat titleBarHeight = self.window.frame.size.height - ((NSView*)self.window.contentView).frame.size.height;
-    NSRect windowFrame = self.window.frame;
-    windowFrame.size = NSMakeSize(windowFrame.size.width, previewHeight + actionHeight * 2 + confirmHeight + titleBarHeight);
-    NSSize windowSize = windowFrame.size;
-    [self.window setFrame:windowFrame display:YES];
     
     _preview = [[CLPreviewController alloc] init];
     _moveActionView = [[CLFileActionView alloc] initWithFrame:NSMakeRect(0, previewHeight, windowSize.width, actionHeight) andTitle:@"Move:"];
@@ -52,28 +47,47 @@
     [_keepActionView setDelegate:self];
     [_keepActionView setBackgroundColor:[NSColor clRGB(242,242,243)]];
     
-    [_moveActionView setLabels:@[@"Documents", @"PDFs", @"Desktop", @"Pictures"]];
-    [_keepActionView setLabels:@[@"1 day", @"2 weeks", @"1 month", @"Forever"]];
+    NSArray* folderUrls = [self getDefaultFolders];
+    NSMutableArray* folderNames = [[NSMutableArray alloc] initWithCapacity:[folderUrls count]];
+    [folderUrls enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [folderNames addObject:[(NSURL*) obj lastPathComponent]];
+    }];
+    
+    [_moveActionView setLabels:folderNames andValues:folderUrls];
+    [_keepActionView setLabels:@[@"1 day", @"2 weeks", @"1 month", @"Forever"] andValues:@[@1, @14, @30, [NSNull null]]];
     
     [_preview.view setFrameSize:CGSizeMake(windowSize.width, previewHeight)];
     [_preview.view setFrameOrigin:CGPointMake(0, 0)];
     
     _confirmActionView = [[CLActionConfirmView alloc] initWithFrame:NSMakeRect(0, previewHeight + actionHeight * 2, windowSize.width, confirmHeight)];
     
-    [self.window.contentView addSubview:_preview.view];
-    [self.window.contentView addSubview:_moveActionView];
-    [self.window.contentView addSubview:_keepActionView];
-    [self.window.contentView addSubview:_confirmActionView];
+    [window.panelView addSubview:_preview.view];
+    [window.panelView addSubview:_moveActionView];
+    [window.panelView addSubview:_keepActionView];
+    [window.panelView addSubview:_confirmActionView];
+    
+    NSArray * vals = [_filesList objectAtIndex:50];
     
     
-    NSArray * vals = [_filesList objectAtIndex:52];
-    NSDictionary * dict = @{
-                            @"url": [[[CoreWrapper sharedInstance] url] URLByAppendingPathComponent: [vals objectAtIndex:0]],
-                            @"size": [vals objectAtIndex:1]
-                            };
-    [_preview filesSelected: [NSArray arrayWithObject:dict]];
+    return self;
+}
+
+- (NSArray*) getRelevantFoldersForFile:(NSString*) fileName {
+    return [self getDefaultFolders];
+}
+
+- (NSArray*) getDefaultFolders {
+    NSFileManager* manager = [NSFileManager defaultManager];
+    NSInteger directories[] = {NSDocumentDirectory, NSPicturesDirectory, NSDesktopDirectory, NSMusicDirectory};
+    NSArray * managerUrls;
+    NSMutableArray * folders = [[NSMutableArray alloc] init];
+
+    for (int i=0; i < 4; i++) {
+        managerUrls = [manager URLsForDirectory:directories[i] inDomains:NSUserDomainMask];
+        [folders addObject:[managerUrls firstObject]];
+    }
     
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+    return folders;
 }
 
 - (void) moveTargetChanged {
@@ -86,13 +100,17 @@
 
 // file action methods
 - (void)actionChanged:(NSString *)label from:(id)sender {
-    if (!label) return;
+    if (!label) {
+        [_confirmActionView enableButton:NO];
+        return;
+    }
     if (sender == _moveActionView) {
         [_keepActionView clearSelection];
     } else {
         [_moveActionView clearSelection];
         // _keepActionView
     }
+    [_confirmActionView enableButton:YES];
 }
 - (void) folderPicked:(NSURL *)folder from:(id)sender {
     
@@ -154,6 +172,30 @@
     NSLog(@"switch");
 }
 
+
+// ** ClutterClient methods **
+- (void)newFile:(NSURL *)url {
+    [self updatePanelWithFile:url];
+}
+
+- (void) renamedFile: (NSURL*) oldPath toNewPath: (NSURL*)newPath {
+    BOOL isPanelOpen = [(AppDelegate*)[[NSApplication sharedApplication] delegate] isActive];
+    
+    if (isPanelOpen && [oldPath isEqualTo:[self activeFile]]) {
+        [self updatePanelWithFile:newPath];
+    }
+}
+
+- (void) updatePanelWithFile: (NSURL*) path {
+    NSDictionary * dict = @{
+                            @"url": path,
+                            @"size": @1
+                            };
+    [_preview filesSelected: [NSArray arrayWithObject:dict]];
+    [self setActiveFile:path];
+    [(AppDelegate*)[[NSApplication sharedApplication] delegate] togglePanel:YES];
+}
+
 @end
 
 @implementation CLDarkScroller
@@ -175,13 +217,4 @@
 @end;
 
 
-@implementation CLMainView
 
-- (void) mouseDown:(NSEvent *)theEvent {
-    [[self window] makeFirstResponder:nil];
-}
-- (BOOL)isFlipped {
-    return YES;
-}
-
-@end

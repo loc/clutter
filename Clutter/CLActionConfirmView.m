@@ -27,6 +27,10 @@ float borderHeight = 3;
     return self;
 }
 
+- (void) enableButton: (BOOL) shouldEnable {
+    [_confirmButton setEnabled:shouldEnable];
+}
+
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
     [[NSColor clBlue] setFill];

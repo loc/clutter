@@ -8,7 +8,8 @@
 
 #import "CLSimpleButton.h"
 
-int CL_INACTIVE = 0, CL_HOVER = 1, CL_ACTIVE = 2, CL_DISABLED = 3;
+bool mouseInside = false;
+bool isEnabled = false;
 
 @implementation CLSimpleButton
 
@@ -19,20 +20,25 @@ int CL_INACTIVE = 0, CL_HOVER = 1, CL_ACTIVE = 2, CL_DISABLED = 3;
     
 }
 
+- (void) setEnabled:(BOOL)enabled {
+    [_cell setIsEnabled:enabled];
+    [self setNeedsDisplay];
+}
+
 @end
 
 @implementation CLSimpleButtonCell
-bool mouseInside = false;
+
 - (BOOL)showsBorderOnlyWhileMouseInside {
     return YES;
 }
 
 - (void)mouseEntered:(NSEvent *)event {
-    mouseInside = true;
+    [self setIsMouseInside:true];
     [[self controlView] setNeedsDisplay:YES];
 }
 - (void)mouseExited:(NSEvent *)event {
-    mouseInside = false;
+    [self setIsMouseInside:false];
     [[self controlView] setNeedsDisplay:YES];
 }
 
@@ -57,6 +63,7 @@ bool mouseInside = false;
     } else if (state == CL_DISABLED) {
         borderColor = [NSColor clRGBA(255,255,255,.43)];
         textColor = [NSColor clRGBA(255,255,255,.43)];
+        backgroundColor = [NSColor clearColor];
     }
     
     [path appendBezierPathWithRoundedRect: cellFrame xRadius:5.0 yRadius:5.0];
@@ -86,10 +93,13 @@ bool mouseInside = false;
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    [self drawWithFrame:cellFrame inView:controlView withState: mouseInside ? CL_HOVER : CL_INACTIVE];
+    int state;
+    state = [self isMouseInside] ? CL_HOVER : CL_INACTIVE;
+    if (![self isEnabled]) state = CL_DISABLED;
+    [self drawWithFrame:cellFrame inView:controlView withState: state];
 }
 - (void)highlight:(BOOL)flag withFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    if (flag) {
+    if (flag && [self isEnabled]) {
         [self drawWithFrame:cellFrame inView:controlView withState: CL_ACTIVE];
     }
 }

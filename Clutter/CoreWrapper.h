@@ -7,19 +7,34 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "event.h"
 
-typedef void(^changeCallback)(void);
+@protocol ClutterClient <NSObject>
+- (void) newFile: (NSURL*) path;
+- (void) renamedFile: (NSURL*) oldPath toNewPath: (NSURL*)newPath;
+@optional
+- (void) modifiedFile: (NSURL*) path;
+@end
+
+typedef void(^changeCallback)();
 
 @interface CoreWrapper : NSObject {
     NSMutableArray * callbacks;
 }
 
 @property (retain) NSURL* url;
+@property (nonatomic, strong) id <ClutterClient> delegate;
 
 + (CoreWrapper*)sharedInstance;
--(void) runBlockOnChange: (changeCallback) callback;;
+-(void) runBlockOnChange: (changeCallback) callback;
 -(NSArray*) listFiles;
 -(void)loop;
 -(NSInteger) count;
 
++ (NSString*) getDisplayName: (NSString*) name;
+
 @end
+
+
+
+

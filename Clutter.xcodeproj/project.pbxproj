@@ -13,9 +13,12 @@
 		A12BE5C91BB88E68003115D8 /* CLActionConfirmView.m in Sources */ = {isa = PBXBuildFile; fileRef = A12BE5C81BB88E68003115D8 /* CLActionConfirmView.m */; };
 		A12BE5CF1BB8EC02003115D8 /* CLSimpleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A12BE5CE1BB8EC02003115D8 /* CLSimpleButton.m */; };
 		A12BE5D21BBA27EC003115D8 /* CLSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = A12BE5D01BBA27EC003115D8 /* CLSegmentedControl.m */; };
+		A12BE5D51BBC3EFC003115D8 /* CLSimpleCheckbox.m in Sources */ = {isa = PBXBuildFile; fileRef = A12BE5D41BBC3EFC003115D8 /* CLSimpleCheckbox.m */; };
+		A12BE5D81BBCA4ED003115D8 /* CLStatusBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = A12BE5D71BBCA4ED003115D8 /* CLStatusBarView.m */; };
 		A1308DA01B4668B700897F28 /* CLTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1308D9F1B4668B700897F28 /* CLTableRowView.m */; };
 		A1308DA21B47055E00897F28 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = A1308DA11B47055E00897F28 /* check.png */; };
 		A1308DA51B470BA900897F28 /* CLResizeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1308DA41B470BA900897F28 /* CLResizeView.m */; };
+		A14596861BC1F43D00ABF87F /* CLPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A14596851BC1F43D00ABF87F /* CLPanel.m */; };
 		A15161A31B49CE6900E103B1 /* cltime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A15161A11B49CE6900E103B1 /* cltime.cpp */; };
 		A15161A51B49CF7300E103B1 /* libboost_serialization.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A15161A41B49CF7300E103B1 /* libboost_serialization.dylib */; };
 		A15161A81B4A3EC300E103B1 /* CLSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */; };
@@ -24,7 +27,6 @@
 		A1C770831B40C42C002077A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C770821B40C42C002077A3 /* main.m */; };
 		A1C770871B40C42C002077A3 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = A1C770851B40C42C002077A3 /* Credits.rtf */; };
 		A1C7708A1B40C42C002077A3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C770891B40C42C002077A3 /* AppDelegate.m */; };
-		A1C7708D1B40C42C002077A3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1C7708B1B40C42C002077A3 /* MainMenu.xib */; };
 		A1C7708F1B40C42C002077A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1C7708E1B40C42C002077A3 /* Images.xcassets */; };
 		A1C770961B40C42C002077A3 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C770951B40C42C002077A3 /* XCTest.framework */; };
 		A1C770971B40C42C002077A3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C770761B40C42C002077A3 /* Cocoa.framework */; };
@@ -34,7 +36,6 @@
 		A1C770AD1B40C469002077A3 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C770AC1B40C469002077A3 /* CoreFoundation.framework */; };
 		A1C770B91B424874002077A3 /* CoreWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1C770B81B424874002077A3 /* CoreWrapper.mm */; };
 		A1C770C11B438752002077A3 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1C770BF1B438752002077A3 /* core.cpp */; };
-		A1D048301B98F7DF001AFDBB /* Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1D0482F1B98F7DF001AFDBB /* Window.xib */; };
 		A1D048341B99455C001AFDBB /* CLMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1D048321B99455C001AFDBB /* CLMainController.m */; };
 /* End PBXBuildFile section */
 
@@ -60,17 +61,24 @@
 		A12BE5CE1BB8EC02003115D8 /* CLSimpleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLSimpleButton.m; sourceTree = "<group>"; };
 		A12BE5D01BBA27EC003115D8 /* CLSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLSegmentedControl.m; sourceTree = "<group>"; };
 		A12BE5D11BBA27EC003115D8 /* CLSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLSegmentedControl.h; sourceTree = "<group>"; };
+		A12BE5D31BBC3EFC003115D8 /* CLSimpleCheckbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLSimpleCheckbox.h; sourceTree = "<group>"; };
+		A12BE5D41BBC3EFC003115D8 /* CLSimpleCheckbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLSimpleCheckbox.m; sourceTree = "<group>"; };
+		A12BE5D61BBCA4ED003115D8 /* CLStatusBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLStatusBarView.h; sourceTree = "<group>"; };
+		A12BE5D71BBCA4ED003115D8 /* CLStatusBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLStatusBarView.m; sourceTree = "<group>"; };
 		A1308D9E1B4668B700897F28 /* CLTableRowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLTableRowView.h; sourceTree = "<group>"; };
 		A1308D9F1B4668B700897F28 /* CLTableRowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTableRowView.m; sourceTree = "<group>"; };
 		A1308DA11B47055E00897F28 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = check.png; path = Images.xcassets/check.png; sourceTree = "<group>"; };
 		A1308DA31B470BA900897F28 /* CLResizeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLResizeView.h; sourceTree = "<group>"; };
 		A1308DA41B470BA900897F28 /* CLResizeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLResizeView.m; sourceTree = "<group>"; };
 		A1308DA61B47189F00897F28 /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
+		A14596841BC1F43D00ABF87F /* CLPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLPanel.h; sourceTree = "<group>"; };
+		A14596851BC1F43D00ABF87F /* CLPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLPanel.m; sourceTree = "<group>"; };
 		A15161A11B49CE6900E103B1 /* cltime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cltime.cpp; sourceTree = SOURCE_ROOT; };
 		A15161A21B49CE6900E103B1 /* cltime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cltime.h; sourceTree = SOURCE_ROOT; };
 		A15161A41B49CF7300E103B1 /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = ../../../../usr/local/Cellar/boost/1.57.0/lib/libboost_serialization.dylib; sourceTree = "<group>"; };
 		A15161A61B4A3EC300E103B1 /* CLSegmentedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLSegmentedCell.h; sourceTree = "<group>"; };
 		A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLSegmentedCell.m; sourceTree = "<group>"; };
+		A18A37CE1BC3629A00E2BD8F /* event.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = SOURCE_ROOT; };
 		A1C770731B40C42C002077A3 /* Clutter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clutter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1C770761B40C42C002077A3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A1C770791B40C42C002077A3 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -83,7 +91,6 @@
 		A1C770861B40C42C002077A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		A1C770881B40C42C002077A3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		A1C770891B40C42C002077A3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		A1C7708C1B40C42C002077A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		A1C7708E1B40C42C002077A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A1C770941B40C42C002077A3 /* ClutterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClutterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1C770951B40C42C002077A3 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -96,7 +103,6 @@
 		A1C770B81B424874002077A3 /* CoreWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CoreWrapper.mm; sourceTree = "<group>"; };
 		A1C770BF1B438752002077A3 /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core.cpp; sourceTree = SOURCE_ROOT; };
 		A1C770C01B438752002077A3 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = SOURCE_ROOT; };
-		A1D0482F1B98F7DF001AFDBB /* Window.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Window.xib; sourceTree = "<group>"; };
 		A1D048311B99455C001AFDBB /* CLMainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLMainController.h; sourceTree = "<group>"; };
 		A1D048321B99455C001AFDBB /* CLMainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLMainController.m; sourceTree = "<group>"; };
 		A1D048361BA12402001AFDBB /* Clutter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Clutter.entitlements; sourceTree = "<group>"; };
@@ -175,22 +181,25 @@
 				A15161A11B49CE6900E103B1 /* cltime.cpp */,
 				A15161A21B49CE6900E103B1 /* cltime.h */,
 				A1308DA61B47189F00897F28 /* constants.h */,
+				A18A37CE1BC3629A00E2BD8F /* event.h */,
 				A1C770C01B438752002077A3 /* core.h */,
 				A1C770BF1B438752002077A3 /* core.cpp */,
 				A1C770B71B424874002077A3 /* CoreWrapper.h */,
 				A1C770B81B424874002077A3 /* CoreWrapper.mm */,
 				A1C770881B40C42C002077A3 /* AppDelegate.h */,
 				A1C770891B40C42C002077A3 /* AppDelegate.m */,
+				A14596841BC1F43D00ABF87F /* CLPanel.h */,
+				A14596851BC1F43D00ABF87F /* CLPanel.m */,
+				A12BE5D61BBCA4ED003115D8 /* CLStatusBarView.h */,
+				A12BE5D71BBCA4ED003115D8 /* CLStatusBarView.m */,
 				A1308D9E1B4668B700897F28 /* CLTableRowView.h */,
 				A1308D9F1B4668B700897F28 /* CLTableRowView.m */,
 				A1308DA31B470BA900897F28 /* CLResizeView.h */,
 				A1308DA41B470BA900897F28 /* CLResizeView.m */,
-				A12BE5D01BBA27EC003115D8 /* CLSegmentedControl.m */,
 				A12BE5D11BBA27EC003115D8 /* CLSegmentedControl.h */,
+				A12BE5D01BBA27EC003115D8 /* CLSegmentedControl.m */,
 				A15161A61B4A3EC300E103B1 /* CLSegmentedCell.h */,
 				A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */,
-				A1C7708B1B40C42C002077A3 /* MainMenu.xib */,
-				A1D0482F1B98F7DF001AFDBB /* Window.xib */,
 				A11C7C141BA499F4008E6E91 /* Preview.xib */,
 				A1D048311B99455C001AFDBB /* CLMainController.h */,
 				A1D048321B99455C001AFDBB /* CLMainController.m */,
@@ -198,6 +207,8 @@
 				A11C7C1D1BAB8381008E6E91 /* CLFileActionView.m */,
 				A12BE5C71BB88E68003115D8 /* CLActionConfirmView.h */,
 				A12BE5C81BB88E68003115D8 /* CLActionConfirmView.m */,
+				A12BE5D31BBC3EFC003115D8 /* CLSimpleCheckbox.h */,
+				A12BE5D41BBC3EFC003115D8 /* CLSimpleCheckbox.m */,
 				A12BE5CD1BB8EC02003115D8 /* CLSimpleButton.h */,
 				A12BE5CE1BB8EC02003115D8 /* CLSimpleButton.m */,
 				A11C7C121BA499F4008E6E91 /* CLPreviewController.h */,
@@ -289,7 +300,7 @@
 					A1C770721B40C42C002077A3 = {
 						SystemCapabilities = {
 							com.apple.Sandbox = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
@@ -327,8 +338,6 @@
 				A1308DA21B47055E00897F28 /* check.png in Resources */,
 				A1C7708F1B40C42C002077A3 /* Images.xcassets in Resources */,
 				A1C770871B40C42C002077A3 /* Credits.rtf in Resources */,
-				A1C7708D1B40C42C002077A3 /* MainMenu.xib in Resources */,
-				A1D048301B98F7DF001AFDBB /* Window.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,12 +364,15 @@
 				A1308DA01B4668B700897F28 /* CLTableRowView.m in Sources */,
 				A1C770B91B424874002077A3 /* CoreWrapper.mm in Sources */,
 				A1308DA51B470BA900897F28 /* CLResizeView.m in Sources */,
+				A12BE5D51BBC3EFC003115D8 /* CLSimpleCheckbox.m in Sources */,
 				A1C7708A1B40C42C002077A3 /* AppDelegate.m in Sources */,
+				A14596861BC1F43D00ABF87F /* CLPanel.m in Sources */,
 				A15161A31B49CE6900E103B1 /* cltime.cpp in Sources */,
 				A12BE5CF1BB8EC02003115D8 /* CLSimpleButton.m in Sources */,
 				A12BE5D21BBA27EC003115D8 /* CLSegmentedControl.m in Sources */,
 				A1C770831B40C42C002077A3 /* main.m in Sources */,
 				A15161A81B4A3EC300E103B1 /* CLSegmentedCell.m in Sources */,
+				A12BE5D81BBCA4ED003115D8 /* CLStatusBarView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,14 +409,6 @@
 				A1C770861B40C42C002077A3 /* en */,
 			);
 			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-		A1C7708B1B40C42C002077A3 /* MainMenu.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A1C7708C1B40C42C002077A3 /* Base */,
-			);
-			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 		A1C7709D1B40C42C002077A3 /* InfoPlist.strings */ = {
@@ -492,6 +496,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Clutter/Clutter.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -521,6 +526,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Clutter/Clutter.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

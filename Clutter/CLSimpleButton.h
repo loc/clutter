@@ -11,8 +11,18 @@
 
 @interface CLSimpleButton : NSButton
 
+- (void) setEnabled:(BOOL)enabled;
+
 @end
 
+#define CL_INACTIVE 0
+#define CL_HOVER 1
+#define CL_ACTIVE 2
+#define CL_DISABLED 3
+
 @interface CLSimpleButtonCell : NSButtonCell
+
+@property () BOOL isEnabled;
+@property () BOOL isMouseInside;
 
 @end

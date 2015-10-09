@@ -36,13 +36,24 @@
     NSLog(@"%@", urls);
     [self setUrl: [urls firstObject]];
     _watcher = new Watcher([[[self url] path] cStringUsingEncoding:NSUTF8StringEncoding], ^(Event e, file f){
-        for (changeCallback callback in callbacks) {
-            callback();
+        NSString* fileName = [[self class] cStringToNSString:f.fileName];
+        NSURL* path = [[self url] URLByAppendingPathComponent:fileName];
+        
+        if (e & created) {
+            [_delegate newFile:path];
         }
+        if (e & renamed) {
+            [_delegate renamedFile:[[self url] URLByAppendingPathComponent:[[self class] cStringToNSString:f.previousName]] toNewPath:path];
+        }
+//        for (changeCallback callback in callbacks) {
+//            callback();
+//        }
     });
     
     return self;
 }
+
+
 
 -(void) runBlockOnChange: (changeCallback) callback {
     [callbacks addObject:callback];
@@ -71,5 +82,13 @@
     return convertedList;
 }
 
++ (NSString*) cStringToNSString: (string) str {
+    return [NSString stringWithUTF8String:str.c_str()];
+}
+
++ (NSString*) getDisplayName: (NSString*) name {
+    return [self cStringToNSString:getDisplayName([name UTF8String])];
+}
 
 @end
+

@@ -67,7 +67,14 @@
     [panel setCanChooseDirectories:YES];
     [panel setPrompt:@"Pick a folder"];
     if ([panel runModal] == NSOKButton) {
-        NSLog(@"%@", [panel directoryURL]);
+        NSMutableArray* labels = [NSMutableArray arrayWithArray:[_choiceControl labels]];
+        NSMutableArray* values = [NSMutableArray arrayWithArray:[self values]];
+        [labels replaceObjectAtIndex:[labels count] - 1 withObject:[[panel URL] lastPathComponent]];
+        [values replaceObjectAtIndex:[values count] - 1 withObject:[panel URL]];
+        [self setLabels:labels andValues:values];
+        [_choiceControl setSelectedSegment:[labels count] - 1];
+        // trigger the callback manually
+        [self tabSwitched];
     }
 }
 
@@ -78,8 +85,9 @@
     }
 }
 
-- (void) setLabels: (NSArray*) labels {
+- (void) setLabels:(NSArray*)labels andValues: (NSArray*) values {
     [_choiceControl setLabels:labels];
+    _values = values;
 }
 - (void) tabSwitched {
     if ([_choiceControl selectedSegment] == self->lastSelected) {
