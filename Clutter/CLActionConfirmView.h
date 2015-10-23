@@ -14,6 +14,8 @@
 
 @property (assign) id delegate;
 @property (nonatomic, retain) CLSimpleButton* confirmButton;
+@property (nonatomic, strong) id target;
+@property (assign) SEL action;
 
 - (void) enableButton: (BOOL) shouldEnable;
 

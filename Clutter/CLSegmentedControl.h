@@ -12,4 +12,5 @@
 @interface CLSegmentedControl : NSSegmentedControl
 @property (nonatomic, retain) NSArray* labels;
 - (void) setLabels:(NSArray *)labels;
+
 @end

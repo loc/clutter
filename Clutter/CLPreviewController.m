@@ -38,8 +38,9 @@
 -(void) filesSelected:(NSArray*) files {
     NSLog(@"%@", files);
     NSString * fileName = [[[files firstObject] objectForKey:@"url"] lastPathComponent];
-
-    [_name setAttributedStringValue:[self styleNameText:fileName]];
+    
+    self.fileName = [[CoreWrapper class] getDisplayName:fileName];
+    [_name setAttributedStringValue:[self styleNameText:self.fileName]];
     
     [self renderPreviewFor:[[files firstObject] objectForKey:@"url"]];
 }
@@ -63,7 +64,7 @@
 }
 
 - (NSAttributedString*) styleNameText: (NSString*)fileName {
-    NSString* name = [CoreWrapper getDisplayName: fileName];
+    NSString* name = fileName;
     NSUInteger fileExtensionIndex = ([name rangeOfString:@"." options:NSBackwardsSearch]).location;
     NSFont * SeravekExtraLight = [NSFont fontWithName:@"Seravek-ExtraLight" size:24.0];
     NSFont * SeravekRegular = [NSFont fontWithName:@"Seravek" size:24.0];

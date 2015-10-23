@@ -32,10 +32,10 @@
     NSColor * fontColor = [NSColor clMainText];
     NSFont *font = [CLSegmentedCell cellFont];
     
-    newFrame.origin.x += 1;
+    newFrame.origin.x += 0;
     newFrame.origin.y += 0;
     newFrame.size.height += 0;
-    newFrame.size.width += 2;
+    newFrame.size.width += 1;
 
     NSBezierPath * path = [NSBezierPath bezierPathWithRect:NSInsetRect(newFrame, 0, 0)];
     NSBezierPath * edge = [[NSBezierPath alloc] init];
@@ -45,8 +45,11 @@
     NSPoint bottomRight = NSMakePoint(newFrame.origin.x + newFrame.size.width, newFrame.origin.y);
     NSPoint bottomLeft = NSMakePoint(newFrame.origin.x, newFrame.origin.y);
     
-    [rightEdge moveToPoint:NSMakePoint(floorf(topRight.x) + .5, topRight.y)];
-    [rightEdge lineToPoint:NSMakePoint(floorf(bottomRight.x) + .5, bottomRight.y)];
+    [[NSColor yellowColor] setFill];
+//    [path fill];
+    
+    [rightEdge moveToPoint:NSMakePoint(topRight.x, topRight.y)];
+    [rightEdge lineToPoint:NSMakePoint(bottomRight.x, bottomRight.y)];
     
     if (segment == 0 || segment == self.segmentCount - 1) {
         if (segment == 0) {
@@ -57,8 +60,8 @@
             [edge lineToPoint:topRight];
         }
         else {
-            bottomRight.x -= 1;
-            topRight.x -= 1;
+            bottomRight.x += 1.5;
+            topRight.x += 1.5;
             [edge moveToPoint:bottomLeft];
             [edge lineToPoint:topLeft];
             [edge appendBezierPathWithArcFromPoint:topRight toPoint:bottomRight radius:borderRadius];
@@ -71,7 +74,7 @@
     
     if (segment < self.segmentCount - 1) {
         [[NSColor clRGBA(0,0,0,.2)] setStroke];
-//        [path setClip];
+//       [path setClip];
         [path setLineWidth:1];
         [rightEdge stroke];
     }
@@ -90,8 +93,8 @@
         [path stroke];
     }
     else {
-        //[[NSColor clearColor] setFill];
-        //[path fill];
+//        [[NSColor yellowColor] setFill];
+//        [path fill];
     }
     
     

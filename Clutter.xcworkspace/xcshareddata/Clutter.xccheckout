@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>7181C214-8FC1-4C21-829C-DEE7FA67D832</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Clutter</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>08472630A872ED58485F574E4212A80F3BA29B48</key>
+		<string>github.com:loc/clutter.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Clutter.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>08472630A872ED58485F574E4212A80F3BA29B48</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:loc/clutter.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>08472630A872ED58485F574E4212A80F3BA29B48</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>08472630A872ED58485F574E4212A80F3BA29B48</string>
+			<key>IDESourceControlWCCName</key>
+			<string>clutter</string>
+		</dict>
+	</array>
+</dict>
+</plist>

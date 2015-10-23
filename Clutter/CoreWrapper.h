@@ -30,6 +30,8 @@ typedef void(^changeCallback)();
 -(NSArray*) listFiles;
 -(void)loop;
 -(NSInteger) count;
+-(void) moveFile:(NSURL*) file toFolder: (NSURL*) folder withName: (NSString*) name;
+-(void) keepFile:(NSURL*) file forDays: (int) days withName: (NSString*) name;
 
 + (NSString*) getDisplayName: (NSString*) name;
 

@@ -7,7 +7,7 @@
 //
 
 #import "CLPanel.h"
-
+#import "AppDelegate.h"
 
 @implementation CLPanel
 
@@ -15,6 +15,7 @@
     self = [super initWithContentRect:NSMakeRect(1, 1, 1, 1) styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
     
     _point = point;
+    _size = size;
     
     NSRect windowRect = [self windowRectGivenContentSize:size];
     NSRect contentRect = (NSRect){.size=size};
@@ -35,6 +36,10 @@
     [self.contentView addSubview:self.arrowView];
     
     return self;
+}
+
+- (void)reposition {
+    [self setFrame:[self windowRectGivenContentSize:_size] display:YES];
 }
 
 - (NSRect) windowRectGivenContentSize:(NSSize) contentSize {
@@ -78,6 +83,10 @@
     [[NSColor clBackground] setFill];
     NSRectFill(dirtyRect);
 }
+- (void)mouseDown:(NSEvent *)theEvent {
+    AppDelegate* appDelegate = [NSApp delegate];
+    [appDelegate.window makeFirstResponder:nil];
+}
 
 - (BOOL)isFlipped {
     return true;
@@ -102,8 +111,6 @@
     
     [[NSColor clBackground] setFill];
     [path fill];
-    
-
 }
 
 @end

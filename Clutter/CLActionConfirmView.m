@@ -21,6 +21,8 @@ float borderHeight = 3;
     if (self) {
         _confirmButton = [[CLSimpleButton alloc] initWithFrame:buttonRect];
         [_confirmButton setTitle:@"Confirm"];
+        [_confirmButton setAction:@selector(confirmClicked:)];
+        [_confirmButton setTarget:self];
 //        [[_confirmButton cell] setBackgroundColor:[NSColor clearColor]];
         [self addSubview:_confirmButton];
     }
@@ -41,6 +43,11 @@ float borderHeight = 3;
     
     // Drawing code here.
 }
+
+- (void) confirmClicked: (NSEvent*) event {
+    [[self target] performSelector:_action];
+}
+
 - (BOOL)isFlipped {
     return YES;
 }

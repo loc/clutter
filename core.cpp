@@ -58,6 +58,11 @@ void Watcher::timerFired() {
   vector<file*>* expired = this->expireFiles();
 
   cout << expired->size() << " files expired" << endl;
+  
+  for (auto it = expired->begin(); it != expired->end(); it++) {
+    remove(((*it)->path + (*it)->fileName).c_str());
+  }
+  
 }
 
 void Watcher::setupTimer() {
@@ -74,7 +79,7 @@ void Watcher::setupTimer() {
     &context // okay that this memory will go out of scope. CFRLTC copies it
   );
   CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, kCFRunLoopCommonModes);
-  this->expireFiles();
+  this->timerFired();
 }
 
 void Watcher::updateTimer(double expiry) {
@@ -102,19 +107,41 @@ unsigned long Watcher::count() {
     return m.size();
 }
 
+file* Watcher::fileFromName(string name) {
+    return names[name];
+}
+
+void Watcher::keep(file *f, int days) {
+  f->expiring = CFAbsoluteTimeGetCurrent() + durationFromUnit(days, "d");
+  this->timerFired();
+}
+
+void Watcher::move(file *f, string path) {
+  ::rename((f->path + f->fileName).c_str(), (path + f->fileName).c_str());
+}
+
+void Watcher::rename(file* f, string name) {
+  // maybe do santization here?
+  names.erase(f->fileName);
+  names[name] = f;
+  ::rename((f->path + f->fileName).c_str(), (f->path + name).c_str());
+  f->fileName = name;
+}
+
 vector<file*>* Watcher::expireFiles() {
   // should set the next expiring time
   // expire old files
   // return all expired files
 
-  double min = std::numeric_limits<double>::max();
-  double now = CFAbsoluteTimeGetCurrent();
-  double fiveMinsFromNow = now + durationFromUnit(5, "min");
+  float min = std::numeric_limits<float>::max();
+  float now = CFAbsoluteTimeGetCurrent();
+  float fiveMinsFromNow = now;// + durationFromUnit(5, "min");
   vector<file*>* expired = new vector<file*>;
 
   for (auto it = m.begin(); it != m.end(); it++) {
     // skip if expiring is unset
     if (it->second->expiring < 0) continue;
+    printf("%s %ld %f\n", it->second->fileName.c_str(), it->second->expiring, CFAbsoluteTimeGetCurrent());
 
     if (it->second->expiring <= fiveMinsFromNow) {
       expired->push_back(it->second);
@@ -145,7 +172,7 @@ void Watcher::directoryChanged(bool suppress) {
   file* f;
   unsigned long inode;
   unsigned int event;
-  file * oldFile;
+  file * oldFile = nullptr;
   bool shouldSave = false;
 
   numEntries = scandir(path.c_str(), &nameList, NULL, NULL);
@@ -201,12 +228,26 @@ void Watcher::directoryChanged(bool suppress) {
         // update new file with old file start ts and mark modification date as right now
         f->last_modification = info.st_mtimespec.tv_sec;
         f->created = oldFile->created;
+        f->expiring = oldFile->expiring;
         event = modified;
         m.erase(oldFile->inode);
         names.erase(oldFile->fileName);
       }
-
-      names[nameList[i]->d_name] = f;
+      
+      f->downloadedFrom = getDownloadURL(f);
+      printf("downloaded from: %s\n", f->downloadedFrom.c_str());
+    }
+    if (event & renamed) {
+      names.erase(f->previousName);
+      if (f->downloadedFrom.empty()) {
+        f->downloadedFrom = getDownloadURL(f);
+        printf("rn: downloaded from: %s\n", f->downloadedFrom.c_str());
+      }
+    }
+    
+    // add it to the names index if it's not already there.
+    if (names.count(f->fileName)) {
+      names[f->fileName] = f;
     }
 
     if (event != 0) {
@@ -252,6 +293,7 @@ string getDisplayName(string fileName) {
 
 void loadWatcher(Watcher * watcher, string path) {
   int start = watcher->count();
+  printf("%s", path.c_str());
   ifstream ifs(path);
   if (ifs.good()) {
     boost::archive::text_iarchive ar(ifs);
@@ -260,6 +302,24 @@ void loadWatcher(Watcher * watcher, string path) {
       cout << watcher->count() - start << "files loaded" << endl;
     }
   }
+}
+
+string getDownloadURL(file* f) {
+  CFStringRef pathRef = CFStringCreateWithCString(NULL, (f->path + f->fileName).c_str(), kCFStringEncodingUTF8);
+  CFStringRef attrRef = CFStringCreateWithCString(NULL, "kMDItemWhereFroms", kCFStringEncodingUTF8);
+  MDItemRef itemRef = MDItemCreate(NULL, pathRef);
+  CFTypeRef valueRef = MDItemCopyAttribute(itemRef, attrRef);
+  string value;
+  
+  if (valueRef != NULL) {
+    if (CFGetTypeID(valueRef) == CFArrayGetTypeID()) {
+      valueRef = CFArrayGetValueAtIndex((CFArrayRef) valueRef, 1);
+    }
+    if (CFGetTypeID(valueRef) == CFStringGetTypeID()) {
+      value = CFStringGetCStringPtr((CFStringRef)valueRef, kCFStringEncodingUTF8);
+    }
+  }
+  return value;
 }
 
 void saveWatcher(Watcher * watcher, string path) {

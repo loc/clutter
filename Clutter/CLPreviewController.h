@@ -14,6 +14,7 @@
 
 @property IBOutlet NSImageView * thumbnailView;
 @property IBOutlet NSTextField * name;
+@property IBOutlet NSString * fileName;
 @property CLSimpleCheckbox* checkbox;
 
 -(void) filesSelected:(NSArray*) files;

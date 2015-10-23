@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "CLSegmentedControl.h"
+#import "AppDelegate.h"
 
 @class CLFileActionView;
 
@@ -33,5 +34,7 @@
 - (void) setLabels:(NSArray*) labels andValues:(NSArray*) values;
 - (instancetype) initWithFrame:(NSRect)frameRect andTitle: (NSString *) title;
 - (void) clearSelection;
+- (id) getSelectedValue;
+- (BOOL) isSelected;
 
 @end

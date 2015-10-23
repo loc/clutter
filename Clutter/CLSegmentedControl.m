@@ -20,8 +20,6 @@
 - (instancetype) initWithLabels:(NSArray*) labels {
     self = [super init];
     
-
-    
     return self;
 }
 
@@ -36,7 +34,7 @@
         totalWidth += size.width;
     }];
     
-    padding = (self.frame.size.width - ([labels count] * 2) - totalWidth - 1) / (float)[labels count];
+    padding = (self.frame.size.width - ([labels count] * 2) - totalWidth) / (float)[labels count];
     
     for (int i = 0; i < [labels count]; i++) {
         [self setWidth:[self widthForSegment:i] + padding forSegment:i];
@@ -54,7 +52,6 @@
 
 - (void)setFrameSize:(NSSize)newSize {
     [super setFrameSize:newSize];
-    
 }
 
 
@@ -63,6 +60,14 @@
     
     // Drawing code here.
 }
+
+//- (NSString*) getSelectedValue {
+//    return [self labelForSegment:[self selectedSegment]];
+//}
+
+//- (BOOL) isSelected {
+//    
+//}
 
 + (Class)cellClass {
     return [CLSegmentedCell class];

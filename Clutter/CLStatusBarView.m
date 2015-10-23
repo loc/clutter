@@ -27,7 +27,10 @@
     [self setActive:![self isActive]];
     [self setNeedsDisplay:YES];
     [[self target] performSelector:_action withObject:[NSNumber numberWithBool:self.isActive]];
+}
 
+- (void) rightMouseDown:(NSEvent *)theEvent {
+    
 }
 - (void) mouseUp:(NSEvent *)theEvent {
     [self setMouseDown:NO];

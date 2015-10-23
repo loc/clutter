@@ -30,7 +30,6 @@
     NSRect windowFrame = [self.window frame];
     NSSize windowSize = {480, previewHeight + actionHeight * 2 + confirmHeight};
     windowFrame.size = windowSize;
-//    [self.window setFrame:windowFrame display:YES];
     
     [self updateTable:[[CoreWrapper sharedInstance] listFiles]];
     
@@ -60,16 +59,40 @@
     [_preview.view setFrameOrigin:CGPointMake(0, 0)];
     
     _confirmActionView = [[CLActionConfirmView alloc] initWithFrame:NSMakeRect(0, previewHeight + actionHeight * 2, windowSize.width, confirmHeight)];
+    [_confirmActionView setTarget:self];
+    [_confirmActionView setAction:@selector(confirmed)];
     
     [window.panelView addSubview:_preview.view];
     [window.panelView addSubview:_moveActionView];
     [window.panelView addSubview:_keepActionView];
     [window.panelView addSubview:_confirmActionView];
     
-    NSArray * vals = [_filesList objectAtIndex:50];
-    
+//    NSArray * vals = [_filesList objectAtIndex:50];
     
     return self;
+}
+
+- (void) confirmed {
+    if (self.activeFile == nil) {
+        [_moveActionView clearSelection];
+        [_keepActionView clearSelection];
+    }
+    else {
+        // TODO: better validation?
+        NSString* newName = [_preview.name.stringValue stringByReplacingOccurrencesOfString:@"/" withString:@""];
+        
+        if ([_moveActionView isSelected]) {
+            NSURL* folder = [_moveActionView getSelectedValue];
+            [[CoreWrapper sharedInstance] moveFile:[self activeFile] toFolder:folder withName:newName];
+        } else if ([_keepActionView isSelected]) {
+            NSNumber* days = [_keepActionView getSelectedValue];
+            [[CoreWrapper sharedInstance] keepFile:[self activeFile] forDays:[days unsignedIntegerValue] withName:newName];
+//            NSLog(@"days: %@", days);
+        }
+        [self setActiveFile:nil];
+    }
+    
+    [(AppDelegate*)[NSApp delegate] togglePanel:NO];
 }
 
 - (NSArray*) getRelevantFoldersForFile:(NSString*) fileName {

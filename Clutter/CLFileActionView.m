@@ -58,7 +58,15 @@
 }
 
 - (void) clearSelection {
+    self->lastSelected = -1;
     [_choiceControl setSelectedSegment:-1];
+}
+
+- (id) getSelectedValue {
+     return [_values objectAtIndex:[_choiceControl selectedSegment]];
+}
+- (BOOL) isSelected {
+    return [_choiceControl selectedSegment] > -1;
 }
 
 - (void) triggerDialog {
@@ -66,16 +74,19 @@
     [panel setCanChooseFiles:NO];
     [panel setCanChooseDirectories:YES];
     [panel setPrompt:@"Pick a folder"];
-    if ([panel runModal] == NSOKButton) {
+    [(AppDelegate*)[NSApp delegate] watchForKeyWindowChange:NO];
+    if ([panel runModal] == NSModalResponseOK) {
         NSMutableArray* labels = [NSMutableArray arrayWithArray:[_choiceControl labels]];
         NSMutableArray* values = [NSMutableArray arrayWithArray:[self values]];
+        [self clearSelection];
         [labels replaceObjectAtIndex:[labels count] - 1 withObject:[[panel URL] lastPathComponent]];
         [values replaceObjectAtIndex:[values count] - 1 withObject:[panel URL]];
         [self setLabels:labels andValues:values];
         [_choiceControl setSelectedSegment:[labels count] - 1];
-        // trigger the callback manually
+        // trigger the callback manual  ly
         [self tabSwitched];
     }
+    [(AppDelegate*)[NSApp delegate] watchForKeyWindowChange:YES];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
@@ -83,6 +94,7 @@
     if (inside && _hasFolderPicker) {
         [self triggerDialog];
     }
+    [super mouseDown:theEvent];
 }
 
 - (void) setLabels:(NSArray*)labels andValues: (NSArray*) values {
@@ -102,10 +114,10 @@
 //        //[_target performSelector:_action withObject:nil];
 //    }
     NSString* label;
-    if (lastSelected == -1) {
+    if (self->lastSelected == -1) {
         label = nil;
     } else {
-        label = [_choiceControl labelForSegment:lastSelected];
+        label = [_choiceControl labelForSegment:self->lastSelected];
     }
     [_delegate actionChanged:label from:self];
 }
@@ -132,8 +144,6 @@
         [[NSColor clRGBA(0,0,0,.5)] setFill];
         [triangle fill];
     }
-    
-    
 }
 
 -(BOOL)isFlipped {

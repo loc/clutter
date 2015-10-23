@@ -42,11 +42,14 @@ typedef struct file {
         ar & _expired;
     if (version > 2)
         ar & fileSize;
+    if (version > 3)
+      ar & downloadedFrom;
   }
 
   string fileName;
   string previousName;
   string path;
+  string downloadedFrom;
   unsigned long long inode;
   unsigned long long fileSize;
   time_t last_access;
@@ -88,6 +91,10 @@ class Watcher {
   void directoryChanged(bool supressEvents);
   void timerFired(void);
   void updateTimer(double expiry);
+  file * fileFromName(string name);
+  void keep(file* f, int days);
+  void move(file* f, string path);
+  void rename(file* f, string name);
 };
 
 
@@ -108,8 +115,9 @@ void loadWatcher(Watcher * watcher, string path);
 void saveWatcher(Watcher * watcher, string path);
     
 string getDisplayName(string fileName);
+string getDownloadURL(file* f);
 
-BOOST_CLASS_VERSION(Watcher, 3)
+BOOST_CLASS_VERSION(Watcher, 4)
 
 #endif
 

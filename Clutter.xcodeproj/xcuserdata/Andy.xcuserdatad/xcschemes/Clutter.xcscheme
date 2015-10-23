@@ -92,7 +92,8 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
+      customArchiveName = "Clutter"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

@@ -13,7 +13,7 @@
 #import "CLPreviewController.h"
 #import "CLFileActionView.h"
 #import "CLActionConfirmView.h"
-#import "CLPanel.h"
+//#import "CLPanel.h"
 #import "CoreWrapper.h"
 
 

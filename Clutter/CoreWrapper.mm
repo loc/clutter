@@ -39,12 +39,16 @@
         NSString* fileName = [[self class] cStringToNSString:f.fileName];
         NSURL* path = [[self url] URLByAppendingPathComponent:fileName];
         
-        if (e & created) {
-            [_delegate newFile:path];
-        }
-        if (e & renamed) {
-            [_delegate renamedFile:[[self url] URLByAppendingPathComponent:[[self class] cStringToNSString:f.previousName]] toNewPath:path];
-        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (e & created) {
+                
+                [_delegate newFile:path];
+            }
+            if (e & renamed) {
+                [_delegate renamedFile:[[self url] URLByAppendingPathComponent:[[self class] cStringToNSString:f.previousName]] toNewPath:path];
+            }
+        });
 //        for (changeCallback callback in callbacks) {
 //            callback();
 //        }
@@ -80,6 +84,23 @@
     
     //delete list;
     return convertedList;
+}
+
+-(void) moveFile:(NSURL*) fileURL toFolder: (NSURL*) folder withName: (NSString*) name {
+    struct file* f = _watcher->fileFromName([[fileURL lastPathComponent] UTF8String]);
+    if (getDisplayName(f->fileName) != [name UTF8String]) {
+        _watcher->rename(f, [name UTF8String]);
+    }
+    
+    _watcher->move(f, [[NSString stringWithFormat:@"%@/", [folder path]] UTF8String]);
+}
+
+-(void) keepFile:(NSURL*) fileURL forDays: (int) days withName: (NSString*) name {
+    struct file* f = _watcher->fileFromName([[fileURL lastPathComponent] UTF8String]);
+    if (getDisplayName(f->fileName) != [name UTF8String]) {
+        _watcher->rename(f, [name UTF8String]);
+    }
+    _watcher->keep(f, days);
 }
 
 + (NSString*) cStringToNSString: (string) str {
