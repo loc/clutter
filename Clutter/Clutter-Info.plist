@@ -30,6 +30,8 @@
 	<string>Copyright © 2015 Bubble Tea Apps. All rights reserved.</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
+	<key>SUFeedURL</key>
+	<string>https://loc.github.io/clutter/appcast.xml</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>
