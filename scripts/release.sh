@@ -46,11 +46,11 @@ DSA=`$SCRIPT_DIR/sign_update $BUILD_DIR/$CONFIG/$ZIP_NAME $SCRIPT_DIR/../dsa_pri
 
 mkdir -p release/$TAG/
 cp $BUILD_DIR/$CONFIG/$ZIP_NAME release/$TAG/$ZIP_NAME
-mv $NOTES_FILE release/$TAG/NOTES.html
+cp $NOTES_FILE release/$TAG/NOTES.html
 
 BYTE_LENGTH=$(wc -c < release/$TAG/$ZIP_NAME)
 
-cat << 'EOF' > newitem.xml
+cat << EOF > newitem.xml
 <item>
 	<title>$MSG</title>
 	<sparkle:releaseNotesLink>
@@ -75,5 +75,6 @@ git add release/$TAG/NOTES.html
 git add release/$TAG/$ZIP_NAME
 git add items.xml
 git add appcast.xml
+git add $NOTES_FILE
 
 #git commit -m "releasing $tag"
