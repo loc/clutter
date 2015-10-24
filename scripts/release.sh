@@ -31,7 +31,7 @@ TAG_NO_V=`echo $TAG | awk '{print substr($1, 2);}'`
 xcodebuild -scheme Clutter -workspace Clutter.xcworkspace/ -configuration $CONFIG build
 
 # reset so it doesn't actually mess with the plist in the project file
-/usr/libexec/PlistBuddy -c "Set :CFBundleVersion DEVELOPMENT" $SCRIPT_DIR/../$PRODUCT_NAME/$PRODUCT_NAME-Info.plist-
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion DEVELOPMENT" $SCRIPT_DIR/../$PRODUCT_NAME/$PRODUCT_NAME-Info.plist
 
 BUILD_DIR=`xcodebuild -scheme Clutter -workspace Clutter.xcworkspace/ -configuration $CONFIG -showBuildSettings | grep -e "\sBUILD_DIR\s" | awk -F '=' '{ print $2 }'`
 
@@ -39,12 +39,13 @@ BUILD_DIR=`xcodebuild -scheme Clutter -workspace Clutter.xcworkspace/ -configura
 cd $BUILD_DIR/$CONFIG
 echo $BUILD_DIR/$CONFIG
 zip -r $ZIP_NAME Clutter.app
-DSA=`$SCRIPT_DIR/sign_update $ZIP_NAME $SCRIPT_DIR/../dsa_priv.pem`
 cd $SCRIPT_DIR/..
-
 
 git checkout gh-pages
 git stash pop
+
+DSA=`$SCRIPT_DIR/sign_update $BUILD_DIR/$CONFIG/$ZIP_NAME $SCRIPT_DIR/../dsa_priv.pem`
+
 mkdir -p release/$TAG/
 cp $BUILD_DIR/$CONFIG/$ZIP_NAME release/$TAG/$ZIP_NAME
 mv $NOTES_FILE release/$TAG/NOTES.html
