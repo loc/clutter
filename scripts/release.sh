@@ -20,7 +20,6 @@ MSG="$2"
 
 cd $SCRIPT_DIR/..
 git checkout gh-pages
-git stash
 git checkout master
 TAG=`git describe --tag`
 TAG_NO_V=`echo $TAG | awk '{print substr($1, 2);}'`
@@ -42,7 +41,6 @@ zip -r $ZIP_NAME Clutter.app
 cd $SCRIPT_DIR/..
 
 git checkout gh-pages
-git stash pop
 
 DSA=`$SCRIPT_DIR/sign_update $BUILD_DIR/$CONFIG/$ZIP_NAME $SCRIPT_DIR/../dsa_priv.pem`
 
