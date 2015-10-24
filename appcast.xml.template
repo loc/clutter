@@ -1,0 +1,16 @@
+#!/bin/sh
+APPCAST_ITEMS=$1
+
+cat << EOF
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+	<channel>
+		<title>Clutter Changelog</title>
+		<link>
+			https://loc.github.io.appcast.xml
+		</link>
+		<description>Most recent changes with links to updates.</description>
+		<language>en</language>
+		$APPCAST_ITEMS
+	</channel>
+</rss>
+EOF
