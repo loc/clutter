@@ -25,7 +25,7 @@ TAG=`git describe --tag`
 TAG_NO_V=`echo $TAG | awk '{print substr($1, 2);}'`
 
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $TAG_NO_V" $SCRIPT_DIR/../$PRODUCT_NAME/$PRODUCT_NAME-Info.plist
-/usr/libexec/PlistBuddy -c ":CFBundleShortVersionString $TAG" $SCRIPT_DIR/../$PRODUCT_NAME/$PRODUCT_NAME-Info.plist
+/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $TAG" $SCRIPT_DIR/../$PRODUCT_NAME/$PRODUCT_NAME-Info.plist
 
 # build 
 xcodebuild -scheme Clutter -workspace Clutter.xcworkspace/ -configuration $CONFIG build
