@@ -1,0 +1,3 @@
+*.dsYM
+dsa_priv.pem
+build/*.build
