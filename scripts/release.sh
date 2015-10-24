@@ -75,6 +75,5 @@ git add release/$TAG/NOTES.html
 git add release/$TAG/$ZIP_NAME
 git add items.xml
 git add appcast.xml
-git add $NOTES_FILE
 
 #git commit -m "releasing $tag"
