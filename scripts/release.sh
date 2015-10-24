@@ -24,13 +24,13 @@ git checkout master
 TAG=`git describe --tag`
 TAG_NO_V=`echo $TAG | awk '{print substr($1, 2);}'`
 
-/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $TAG_NO_V" $SCRIPT_DIR/../$PRODUCT_NAME/$PRODUCT_NAME-Info.plist
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $TAG_NO_V :CFBundleShortVersionString $TAG" $SCRIPT_DIR/../$PRODUCT_NAME/$PRODUCT_NAME-Info.plist
 
 # build 
 xcodebuild -scheme Clutter -workspace Clutter.xcworkspace/ -configuration $CONFIG build
 
 # reset so it doesn't actually mess with the plist in the project file
-/usr/libexec/PlistBuddy -c "Set :CFBundleVersion DEVELOPMENT" $SCRIPT_DIR/../$PRODUCT_NAME/$PRODUCT_NAME-Info.plist
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion DEVELOPMENT :CFBundleShortVersionString DEVELOPMENT" $SCRIPT_DIR/../$PRODUCT_NAME/$PRODUCT_NAME-Info.plist
 
 BUILD_DIR=`xcodebuild -scheme Clutter -workspace Clutter.xcworkspace/ -configuration $CONFIG -showBuildSettings | grep -e "\sBUILD_DIR\s" | awk -F '=' '{ print $2 }'`
 
