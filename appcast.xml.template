@@ -6,7 +6,7 @@ cat << EOF
 	<channel>
 		<title>Clutter Changelog</title>
 		<link>
-			https://loc.github.io.appcast.xml
+			https://loc.github.io/appcast.xml
 		</link>
 		<description>Most recent changes with links to updates.</description>
 		<language>en</language>
