@@ -1,0 +1,12 @@
+<item>
+	<title>v0.5.2 with auto-updates</title>
+	<sparkle:releaseNotesLink>
+		https://loc.github.io/clutter/release/v0.5.1/NOTES.html
+	</sparkle:releaseNotesLink>
+	<pubDate>Sat, 24 Oct 2015 14:49:15 -0400</pubDate>
+	<enclosure url="https://loc.github.io/clutter/release/v0.5.1/Clutter.app.zip"
+		sparkle:version="0.5.1"
+		sparkle:dsaSignature="MCwCFQCxtQoaTINtJZ8XBu8iB8I6sXmQWgITBssbKCTbj75IyALaAaYr3oFFEQ=="
+		length=" 3840340"
+		type="application/octet-stream" />
+</item>
