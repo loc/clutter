@@ -202,9 +202,9 @@
 }
 
 - (void) renamedFile: (NSURL*) oldPath toNewPath: (NSURL*)newPath {
-    BOOL isPanelOpen = [(AppDelegate*)[[NSApplication sharedApplication] delegate] isActive];
+//    BOOL isPanelOpen = [(AppDelegate*)[[NSApplication sharedApplication] delegate] isActive];
     
-    if (isPanelOpen && [oldPath isEqualTo:[self activeFile]]) {
+    if ([oldPath isEqualTo:[self activeFile]]) {
         [self updatePanelWithFile:newPath];
     }
 }

@@ -205,7 +205,9 @@ void Watcher::directoryChanged(bool suppress) {
     stat((path + nameList[i]->d_name).c_str(), &info);
 
     event |= -(f->last_modification != info.st_mtimespec.tv_sec) & modified;
-    event |= -(f->fileName != nameList[i]->d_name) & renamed;
+    if (!(event & created)) {
+      event |= -(f->fileName != nameList[i]->d_name) & renamed;
+    }
     //event |= -(f->last_access != info.st_atimespec.tv_sec) & accessed;
 
     // in bytes
@@ -223,31 +225,34 @@ void Watcher::directoryChanged(bool suppress) {
 
     if (event & created) {
       // for vim and Emacs like editors that create a new file on every save
-      oldFile = names[nameList[i]->d_name];
-      if (oldFile && oldFile->inode != f->inode) {
-        // update new file with old file start ts and mark modification date as right now
-        f->last_modification = info.st_mtimespec.tv_sec;
-        f->created = oldFile->created;
-        f->expiring = oldFile->expiring;
-        event = modified;
-        m.erase(oldFile->inode);
-        names.erase(oldFile->fileName);
+      if (names.count(nameList[i]->d_name)) {
+        oldFile = names[nameList[i]->d_name];
+        if (oldFile && oldFile->inode != f->inode) {
+          // update new file with old file start ts and mark modification date as right now
+          f->last_modification = info.st_mtimespec.tv_sec;
+          f->created = oldFile->created;
+          f->expiring = oldFile->expiring;
+          event = modified;
+          m.erase(oldFile->inode);
+          names.erase(oldFile->fileName);
+        }
       }
       
       f->downloadedFrom = getDownloadURL(f);
       printf("downloaded from: %s\n", f->downloadedFrom.c_str());
     }
+    
+    // add it to the names index if it's not already there.
+    if (!names.count(f->fileName)) {
+      names[f->fileName] = f;
+    }
+    
     if (event & renamed) {
       names.erase(f->previousName);
       if (f->downloadedFrom.empty()) {
         f->downloadedFrom = getDownloadURL(f);
         printf("rn: downloaded from: %s\n", f->downloadedFrom.c_str());
       }
-    }
-    
-    // add it to the names index if it's not already there.
-    if (names.count(f->fileName)) {
-      names[f->fileName] = f;
     }
 
     if (event != 0) {
