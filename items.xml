@@ -1,4 +1,16 @@
 <item>
+	<title>v0.6.0 with finder integration and notifications</title>
+	<sparkle:releaseNotesLink>
+		https://loc.github.io/clutter/release/v0.6.0/NOTES.html
+	</sparkle:releaseNotesLink>
+	<pubDate>Wed, 04 Nov 2015 15:29:14 -0500</pubDate>
+	<enclosure url="https://loc.github.io/clutter/release/v0.6.0/Clutter.app.zip"
+		sparkle:version="0.6.0"
+		sparkle:dsaSignature="MCwCFB5LXPyCbq6Rj6OBLWStVsc7JlC7AhQNYaTodW1OBreVfPoZPOqHYSKArg=="
+		length=" 3893910"
+		type="application/octet-stream" />
+</item>
+<item>
 	<title>v0.5.4 yayyy</title>
 	<sparkle:releaseNotesLink>
 		https://loc.github.io/clutter/release/v0.5.4/NOTES.html
