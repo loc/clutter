@@ -133,15 +133,18 @@ CFDataRef messageReceived(CFMessagePortRef port,
             badgeIdentifier = @"Later";
         }
     }
-    
-    [[FIFinderSyncController defaultController] setBadgeIdentifier:badgeIdentifier forURL:url];
+    if ([badgeIdentifier length]) {
+        [[FIFinderSyncController defaultController] setBadgeIdentifier:badgeIdentifier forURL:url];
+    }
 }
 
 - (long) queryExpirationDate:(NSURL*) url {
-    time_t expiration = 0;
+    time_t expiration = -1;
     CFDataRef data = (CFDataRef)CFBridgingRetain([url.lastPathComponent dataUsingEncoding:NSUTF8StringEncoding]);
     CFDataRef returnData = [self _queryApp:data forType:CLRequestExpirationMessageType];
-    memcpy(&expiration, CFDataGetBytePtr(returnData), sizeof(time_t));
+    if (CFDataGetLength(returnData)) {
+        memcpy(&expiration, CFDataGetBytePtr(returnData), sizeof(time_t));
+    }
     
     CFRelease(returnData);
     CFRelease(data);
