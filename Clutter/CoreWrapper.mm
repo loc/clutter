@@ -29,30 +29,65 @@
     }
 }
 
+string handleEvents(Event e, file *f) {
+    CoreWrapper* wrapper = [CoreWrapper sharedInstance];
+    NSString* fileName = [[wrapper class] cStringToNSString:f->fileName];
+    NSURL* fileURL = [[wrapper url] URLByAppendingPathComponent:fileName];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (e & created) {
+            
+            [[wrapper delegate] newFile:fileURL];
+        }
+        if (e & renamed) {
+            [[wrapper delegate] renamedFile:[[wrapper url] URLByAppendingPathComponent:[[wrapper class] cStringToNSString:f->previousName]] toNewPath:fileURL];
+        }
+    });
+    
+    if (e & removeRequestEvent) {
+        // put into application support
+        
+        NSURL* archiveDirectory = [[wrapper supportURL] URLByAppendingPathComponent:@"Archives" isDirectory:YES];
+        [[NSFileManager defaultManager] createDirectoryAtPath:[archiveDirectory path] withIntermediateDirectories:YES attributes:nil error:nil];
+        
+        if ([[NSFileManager defaultManager] isReadableFileAtPath:[fileURL path]]) {
+            NSString* uniqueFileName = [fileName stringByAppendingFormat:@"%llu", f->inode];
+            NSURL* newURL = [archiveDirectory URLByAppendingPathComponent:uniqueFileName];
+            NSError* error;
+            [[NSFileManager defaultManager] moveItemAtURL:fileURL toURL:newURL error:&error];
+            
+            NSString* informativeText = [NSByteCountFormatter stringFromByteCount:f->fileSize countStyle:NSByteCountFormatterCountStyleFile];
+            if (f->downloadedFrom.length()) {
+                informativeText = [informativeText stringByAppendingFormat:@" - %s", f->downloadedFrom.c_str()];
+            }
+            
+            NSUserNotification* notification = [[NSUserNotification alloc] init];
+            [notification setTitle:@"A file has expired"];
+            [notification setSubtitle:fileName];
+            [notification setInformativeText:informativeText];
+            [notification setActionButtonTitle: @"Restore"];
+            [notification setOtherButtonTitle: @"Okay"];
+            [notification setHasActionButton: YES];
+            [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+        }
+    }
+    
+    return "";
+}
+
 -(id)init {
     self = [super init];
     callbacks = [[NSMutableArray alloc] init];
     NSArray * urls = [[NSFileManager defaultManager] URLsForDirectory:NSDownloadsDirectory inDomains:NSUserDomainMask];
     NSLog(@"%@", urls);
-    [self setUrl: [urls firstObject]];
-    _watcher = new Watcher([[[self url] path] cStringUsingEncoding:NSUTF8StringEncoding], ^(Event e, file f){
-        NSString* fileName = [[self class] cStringToNSString:f.fileName];
-        NSURL* path = [[self url] URLByAppendingPathComponent:fileName];
-        
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (e & created) {
-                
-                [_delegate newFile:path];
-            }
-            if (e & renamed) {
-                [_delegate renamedFile:[[self url] URLByAppendingPathComponent:[[self class] cStringToNSString:f.previousName]] toNewPath:path];
-            }
-        });
-//        for (changeCallback callback in callbacks) {
-//            callback();
-//        }
-    });
+    [self setUrl:[urls firstObject]];
+    
+    NSString* supportPath = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) firstObject];
+    NSString* execName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleExecutable"];
+    NSURL* mainSupportDir = [NSURL fileURLWithPath:supportPath isDirectory:YES];
+    _supportURL = [mainSupportDir URLByAppendingPathComponent:execName isDirectory:YES];
+    
+    _watcher = new Watcher([[[self url] path] cStringUsingEncoding:NSUTF8StringEncoding], [[_supportURL path] cStringUsingEncoding:NSUTF8StringEncoding], handleEvents);
     
     return self;
 }

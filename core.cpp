@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 #include <cstring>
 
+
 void osxHandler(
     ConstFSEventStreamRef streamRef, 
     void *clientCallBackInfo, 
@@ -19,16 +20,122 @@ void osxTimerHandler(CFRunLoopTimerRef timer, void *info) {
   watcher->timerFired();
 }
 
-Watcher::Watcher(string p, WatcherCallback cb) {
+static CFDataRef messageCallback(CFMessagePortRef port,
+                          SInt32 messageID,
+                          CFDataRef data,
+                          void *info)
+{
+  Watcher* watcher = (Watcher*)info;
+  
+  //
+  if (messageID & (CLRequestExpirationMessageType | CLExtensionMessageType | CLRequestExpirationInWordsMessageType)) {
+    long stringLen = CFDataGetLength(data);
+    if (messageID == CLExtensionMessageType) {
+      stringLen -= sizeof(long);
+    }
+    
+    // unpack string from data pointer
+    CFStringRef name = CFStringCreateWithBytes(nil, CFDataGetBytePtr(data), stringLen, kCFStringEncodingUTF8, false);
+    char* fileName = new char[255];
+    CFStringGetCString(name, fileName, 255, kCFStringEncodingUTF8);
+    
+    file* f = watcher->fileFromName(fileName);
+    
+    // don't need this anymore, we have the file!
+    delete fileName;
+    CFRelease(name);
+    
+    if (!f) {
+      return nil;
+    }
+    
+    if (messageID == CLExtensionMessageType) {
+      long days = 0;
+      memcpy(&days, CFDataGetBytePtr(data) + stringLen, sizeof(long));
+      printf("extend %s %ld\n", f->fileName.c_str(), days);
+      watcher->extend(f, (int)days);
+      
+      return nil;
+    } else if (messageID == CLRequestExpirationMessageType) {
+      UInt8* returnData = new UInt8[sizeof(time_t)];
+      
+      memcpy(returnData, &f->expiring, sizeof(time_t));
+      CFDataRef returnDataRef = CFDataCreate(nil, returnData, sizeof(time_t));
+      
+      delete returnData;
+      
+      return returnDataRef;
+    } else if (messageID == CLRequestExpirationInWordsMessageType) {
+      CFStringRef wordsRef;
+      string words = timeLeftWords(f->expiring);
+      wordsRef = CFStringCreateWithCString(nil, words.c_str(), kCFStringEncodingUTF8);
+      CFDataRef returnData = CFStringCreateExternalRepresentation(nil, wordsRef, kCFStringEncodingUTF8, 0);
+      CFRelease(wordsRef);
+      return returnData;
+    }
+  } else if (messageID & (CLStoppedListeningAtPortMessageType | CLListeningAtPortMessageType)) {
+    CFStringRef name = CFStringCreateWithBytes(nil, CFDataGetBytePtr(data), CFDataGetLength(data), kCFStringEncodingUTF8, false);
+    if (messageID & CLListeningAtPortMessageType) {
+      watcher->remotePorts.push_back(CFMessagePortCreateRemote(nil, name));
+      
+    } else if (messageID & CLStoppedListeningAtPortMessageType) {
+      CFMessagePortRef port = CFMessagePortCreateRemote(nil, name);
+      CFMessagePortInvalidate(port);
+
+      for (auto it = watcher->remotePorts.begin(); it != watcher->remotePorts.end(); it++) {
+        if (port == *it) {
+          watcher->remotePorts.erase(it);
+          break;
+        }
+      }
+      CFRelease(port);
+    }
+    CFRelease(name);
+  } else if (messageID & CLRequestDirectoryMessageType) {
+    CFStringRef path = CFStringCreateWithCString(nil, watcher->path.c_str(), kCFStringEncodingUTF8);
+    printf("cstring path: %s", watcher->path.c_str());
+    CFDataRef returnData = CFStringCreateExternalRepresentation(nil, path, kCFStringEncodingUTF8, 0);
+    CFRelease(path);
+    return returnData;
+  }
+  return nil;
+}
+
+CFDataRef Watcher::broadcastMessage(MessageType messageType, CFDataRef data) {
+  for (auto it = this->remotePorts.begin(); it != this->remotePorts.end(); it++) {
+    CFMessagePortRef port = *it;
+    if (CFMessagePortIsValid(port)) {
+      CFMessagePortSendRequest(port, messageType, data, 3, 3, nil, nil);
+    }
+  }
+  return nil;
+}
+
+void Watcher::setupMessagePorts() {
+  CFMessagePortContext context = {0, this, NULL, NULL, NULL};
+  localPort = CFMessagePortCreateLocal(nil, CFSTR("com.bubble.tea.Clutter.ToMain"), messageCallback, &context, nil);
+  CFRunLoopSourceRef runLoopSource =
+  CFMessagePortCreateRunLoopSource(nil, localPort, 0);
+  
+  CFRunLoopAddSource(CFRunLoopGetCurrent(),
+                     runLoopSource,
+                     kCFRunLoopCommonModes);
+}
+
+Watcher::Watcher(string p, string support, WatcherCallback cb) {
   path = p;
+  supportPath = support;
   if (p.compare(path.length(), 1, "/")) {
     path.append("/");
+  }
+  if (supportPath.compare(supportPath.length(), 1, "/")) {
+    supportPath.append("/");
   }
   
   cout << path << endl;
 
   callback = cb;
-  loadWatcher(this, path + ARCHIVE_NAME);
+  this->loadWatcher();
   this->directoryChanged(true);
 }
 
@@ -60,7 +167,12 @@ void Watcher::timerFired() {
   cout << expired->size() << " files expired" << endl;
   
   for (auto it = expired->begin(); it != expired->end(); it++) {
-    remove(((*it)->path + (*it)->fileName).c_str());
+    file* f = new file();
+    *f = **it;
+    archived[(*it)->inode] = f;
+    this->callback(removeRequestEvent, f);
+//    remove(((*it)->path + (*it)->fileName).c_str());
+    // 
   }
   
 }
@@ -90,6 +202,7 @@ void Watcher::updateTimer(double expiry) {
 }
 
 void Watcher::loop() {
+  this->setupMessagePorts();
   this->setupFileWatcher();
   this->setupTimer();
   CFRunLoopRun();
@@ -100,6 +213,7 @@ vector<file*>* Watcher::listFiles() {
   for (auto it = m.begin(); it != m.end(); it++) {
     files->push_back(it->second);
   }
+//  kTrashFolderType
   return files;
 }
 
@@ -113,11 +227,36 @@ file* Watcher::fileFromName(string name) {
 
 void Watcher::keep(file *f, int days) {
   f->expiring = CFAbsoluteTimeGetCurrent() + durationFromUnit(days, "d");
+  this->saveWatcher();
   this->timerFired();
 }
 
 void Watcher::move(file *f, string path) {
   ::rename((f->path + f->fileName).c_str(), (path + f->fileName).c_str());
+}
+
+void Watcher::extend(file *f, int days) {
+  if (days < 0) {
+    // keep forever
+    f->expiring = -1;
+    this->saveWatcher();
+    this->timerFired();
+  }
+  else if (f->expiring < 0) {
+    this->keep(f, days);
+  }
+  else {
+    f->expiring += durationFromUnit(days, "d");
+    this->saveWatcher();
+    this->timerFired();
+  }
+  this->sendExtensionMessage(f);
+}
+
+void Watcher::sendExtensionMessage(file *f) {
+  CFStringRef fileNameRef = CFStringCreateWithCString(nil, f->fileName.c_str(), kCFStringEncodingUTF8);
+  CFDataRef data = CFStringCreateExternalRepresentation(nil, fileNameRef, kCFStringEncodingUTF8, 0);
+  this->broadcastMessage(CLRefreshExpirationMessageType, data);
 }
 
 void Watcher::rename(file* f, string name) {
@@ -243,9 +382,7 @@ void Watcher::directoryChanged(bool suppress) {
     }
     
     // add it to the names index if it's not already there.
-    if (!names.count(f->fileName)) {
-      names[f->fileName] = f;
-    }
+    names[f->fileName] = f;
     
     if (event & renamed) {
       names.erase(f->previousName);
@@ -257,7 +394,7 @@ void Watcher::directoryChanged(bool suppress) {
 
     if (event != 0) {
       if (!suppress) {
-        callback(static_cast<Event>(event), *f);
+        callback(static_cast<Event>(event), f);
       }
       shouldSave = true;
     }
@@ -267,9 +404,11 @@ void Watcher::directoryChanged(bool suppress) {
   // check for deleted files
   while (it != m.end()) {
     if (!it->second->_checked) {
-      callback(deleted, *(it->second));
-      names.erase(it->second->fileName);
-      m.erase(it++);
+      file* f = it->second;
+      callback(deleted, f);
+      names.erase(f->fileName);
+      it = m.erase(it);
+      delete f;
       shouldSave = true;
     }
     else {
@@ -280,33 +419,42 @@ void Watcher::directoryChanged(bool suppress) {
 
   // if any one thing happened, update the file
   if (shouldSave) {
-    saveWatcher(this, path + ARCHIVE_NAME);
-    cout << "watcher saved" << endl;
+    this->saveWatcher();
   }
 }
 
 string getDisplayName(string fileName) {
-    
     string chromeDownloadExt = ".crdownload";
-    if (fileName.compare(fileName.size() - chromeDownloadExt.size(), chromeDownloadExt.size(), chromeDownloadExt) == 0) {
+    if (fileName.size() > chromeDownloadExt.size() &&
+        fileName.compare(fileName.size() - chromeDownloadExt.size(), chromeDownloadExt.size(), chromeDownloadExt) == 0)
+    {
         return fileName.substr(0, fileName.size() - chromeDownloadExt.size());
     }
-    
     
     return fileName;
 }
 
-void loadWatcher(Watcher * watcher, string path) {
-  int start = watcher->count();
-  printf("%s", path.c_str());
-  ifstream ifs(path);
-  if (ifs.good()) {
-    boost::archive::text_iarchive ar(ifs);
-    ar & *watcher;
-    if (start != watcher->count()) {
-      cout << watcher->count() - start << "files loaded" << endl;
-    }
+void Watcher::loadWatcher() {
+  ifstream mainIfs(this->path + ".clutter.dat");
+  ifstream supportIfs(this->supportPath + ".archive.dat");
+  
+  if (mainIfs.good()) {
+    boost::archive::text_iarchive mainAr(mainIfs);
+    mainAr & this->m;
   }
+  if (supportIfs.good()) {
+    boost::archive::text_iarchive supportAr(supportIfs);
+    supportAr & this->archived;
+  }
+}
+void Watcher::saveWatcher() {
+  ofstream mainOfs(this->path + ".clutter.dat");
+  ofstream supportOfs(this->supportPath + ".archive.dat");
+  
+  boost::archive::text_oarchive mainAr(mainOfs);
+  mainAr & this->m;
+  boost::archive::text_oarchive supportAr(supportOfs);
+  supportAr & this->archived;
 }
 
 string getDownloadURL(file* f) {
@@ -317,7 +465,7 @@ string getDownloadURL(file* f) {
   string value;
   
   if (valueRef != NULL) {
-    if (CFGetTypeID(valueRef) == CFArrayGetTypeID()) {
+    if (CFGetTypeID(valueRef) == CFArrayGetTypeID() && CFArrayGetCount((CFArrayRef)valueRef) > 1) {
       valueRef = CFArrayGetValueAtIndex((CFArrayRef) valueRef, 1);
     }
     if (CFGetTypeID(valueRef) == CFStringGetTypeID()) {
@@ -327,8 +475,4 @@ string getDownloadURL(file* f) {
   return value;
 }
 
-void saveWatcher(Watcher * watcher, string path) {
-  ofstream ofs(path);
-  boost::archive::text_oarchive ar(ofs);
-  ar & *watcher;
-}
+

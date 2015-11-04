@@ -61,29 +61,35 @@ typedef struct file {
   bool _expired;
 } file;
 
-typedef function<void(Event, file)> WatcherCallback;
+typedef function<string(Event, file*)> WatcherCallback;
 
 class Watcher {
-  friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int version) {
-    ar & m;
-  }
+//  friend class boost::serialization::access;
+//  template<class Archive>
+//  void serialize(Archive & ar, const unsigned int version) {
+//    ar & m;
+//  }
 
-  string path;
+  
   unordered_map<unsigned long, file*> m;
+  unordered_map<unsigned long, file*> archived;
   unordered_map<string, file*> names;
   double nextExpiration;
   CFRunLoopTimerRef timer;
-
+  CFMessagePortRef localPort;
+  
+  void sendExtensionMessage(file *f);
   void setupTimer(void);
   void setupFileWatcher(void);
 
   public:
-  Watcher(string p, WatcherCallback cb);
+  
+  Watcher(string p, string support, WatcherCallback cb);
     
   WatcherCallback callback;
 
+  string path;
+  string supportPath;
   void loop(void);
   vector<file*>* listFiles(void);
   vector<file*>* expireFiles(void);
@@ -94,7 +100,14 @@ class Watcher {
   file * fileFromName(string name);
   void keep(file* f, int days);
   void move(file* f, string path);
+  void extend(file *f, int days);
   void rename(file* f, string name);
+  void save();
+  void setupMessagePorts();
+  CFDataRef broadcastMessage(MessageType messageType, CFDataRef data);
+  vector<CFMessagePortRef> remotePorts;
+  void loadWatcher();
+  void saveWatcher();
 };
 
 
@@ -108,11 +121,6 @@ void osxHandler(
     const FSEventStreamEventId eventIds[]);
 
 void osxTimerHandler(CFRunLoopTimerRef timer, void *info);
-
-/* I/O */
-void loadWatcher(Watcher * watcher, string path); 
-
-void saveWatcher(Watcher * watcher, string path);
     
 string getDisplayName(string fileName);
 string getDownloadURL(file* f);

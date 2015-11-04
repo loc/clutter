@@ -9,15 +9,30 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>FinderExtension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>A188E5F01BDD8ADC0014AEB1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>A1C770721B40C42C002077A3</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>A1C770931B40C42C002077A3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A1E5D0891BDD53D200E0C853</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -20,6 +20,38 @@ double durationFromUnit(double n, string unit) {
   return n;
 }
 
+string timeLeftWords(time_t expiration) {
+    time_t now = CFAbsoluteTimeGetCurrent();
+    // get to minutes
+    double elapsed = (expiration - now) / (double)(60);
+    string word = "";
+    
+    if (elapsed < 0) return "";
+    if (elapsed < 1) return "now";
+    // get to weeks
+    elapsed /= (double)(60 * 24 * 7);
+    if (elapsed > 1) { word = "week"; goto ret; }
+    elapsed *= 7;
+    if (elapsed > 1) { word = "day"; goto ret; }
+    elapsed *= 24;
+    if (elapsed > 1) { word = "hour"; goto ret; }
+    elapsed *= 60;
+    if (elapsed > 1) { word = "minute"; goto ret; }
+
+ret:
+    return stringifyCount(round(elapsed), word);
+}
+
+string stringifyCount(long count, string word) {
+//    string words = "%ld"
+    string words = to_string(count) + " " + word;
+    
+    if (count > 1) {
+        words += "s";
+    }
+    return words;
+}
+
 CFAbsoluteTime unixToAbsolute(time_t unix_ts) {
   return unix_ts + unixConverter;
 }

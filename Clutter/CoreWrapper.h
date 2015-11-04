@@ -23,6 +23,7 @@ typedef void(^changeCallback)();
 }
 
 @property (retain) NSURL* url;
+@property (strong) NSURL* supportURL;
 @property (nonatomic, strong) id <ClutterClient> delegate;
 
 + (CoreWrapper*)sharedInstance;
