@@ -142,7 +142,7 @@ CFDataRef messageReceived(CFMessagePortRef port,
     time_t expiration = -1;
     CFDataRef data = (CFDataRef)CFBridgingRetain([url.lastPathComponent dataUsingEncoding:NSUTF8StringEncoding]);
     CFDataRef returnData = [self _queryApp:data forType:CLRequestExpirationMessageType];
-    if (CFDataGetLength(returnData)) {
+    if (returnData != nil && CFDataGetLength(returnData)) {
         memcpy(&expiration, CFDataGetBytePtr(returnData), sizeof(time_t));
     }
     
