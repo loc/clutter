@@ -1,4 +1,16 @@
 <item>
+	<title>v0.6.2 small patch</title>
+	<sparkle:releaseNotesLink>
+		https://loc.github.io/clutter/release/v0.6.2/NOTES.html
+	</sparkle:releaseNotesLink>
+	<pubDate>Thu, 05 Nov 2015 18:22:01 -0500</pubDate>
+	<enclosure url="https://loc.github.io/clutter/release/v0.6.2/Clutter.app.zip"
+		sparkle:version="0.6.2"
+		sparkle:dsaSignature="MC0CFBNBNJZ69kOmKIBkC0FBSu44umMNAhUAujHRPc8Em7V9AycuTx0r9TBie88="
+		length=" 3894487"
+		type="application/octet-stream" />
+</item>
+<item>
 	<title>v0.6.1 minor bug fixes</title>
 	<sparkle:releaseNotesLink>
 		https://loc.github.io/clutter/release/v0.6.1/NOTES.html
