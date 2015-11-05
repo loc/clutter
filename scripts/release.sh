@@ -41,10 +41,11 @@ cd $BUILD_DIR/$CONFIG
 echo $BUILD_DIR/$CONFIG
 zip -r $ZIP_NAME Clutter.app
 cd $SCRIPT_DIR/..
-mkdir -p release/latest/
-cp $BUILD_DIR/$CONFIG/$ZIP_NAME release/latest/$ZIP_NAME
 
 git checkout gh-pages
+
+mkdir -p release/latest/
+cp $BUILD_DIR/$CONFIG/$ZIP_NAME release/latest/$ZIP_NAME
 
 DSA=`$SCRIPT_DIR/sign_update $BUILD_DIR/$CONFIG/$ZIP_NAME $SCRIPT_DIR/../dsa_priv.pem`
 
