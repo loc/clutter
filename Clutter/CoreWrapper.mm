@@ -86,6 +86,7 @@ string handleEvents(Event e, file *f) {
     NSString* execName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleExecutable"];
     NSURL* mainSupportDir = [NSURL fileURLWithPath:supportPath isDirectory:YES];
     _supportURL = [mainSupportDir URLByAppendingPathComponent:execName isDirectory:YES];
+    [[NSFileManager defaultManager] createDirectoryAtPath:[_supportURL path] withIntermediateDirectories:YES attributes:nil error:nil];
     
     _watcher = new Watcher([[[self url] path] cStringUsingEncoding:NSUTF8StringEncoding], [[_supportURL path] cStringUsingEncoding:NSUTF8StringEncoding], handleEvents);
     

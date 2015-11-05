@@ -156,7 +156,7 @@ CFDataRef messageReceived(CFMessagePortRef port,
     
     CFDataRef data = (CFDataRef)CFBridgingRetain([url.lastPathComponent dataUsingEncoding:NSUTF8StringEncoding]);
     CFDataRef returnData = [self _queryApp:data forType:CLRequestExpirationInWordsMessageType];
-    if (returnData != nil) {
+    if (returnData != nil && CFDataGetLength(returnData)) {
         words = (NSString*)CFBridgingRelease(CFStringCreateWithBytes(nil, CFDataGetBytePtr(returnData), CFDataGetLength(returnData), kCFStringEncodingUTF8, false));
         CFRelease(returnData);
     }
