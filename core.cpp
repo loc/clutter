@@ -405,7 +405,9 @@ void Watcher::directoryChanged(bool suppress) {
   while (it != m.end()) {
     if (!it->second->_checked) {
       file* f = it->second;
-      callback(deleted, f);
+      if (!suppress) {
+        callback(deleted, f);
+      }
       names.erase(f->fileName);
       it = m.erase(it);
       delete f;
