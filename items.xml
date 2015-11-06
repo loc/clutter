@@ -1,4 +1,16 @@
 <item>
+	<title>v0.6.5 better</title>
+	<sparkle:releaseNotesLink>
+		https://loc.github.io/clutter/release/v0.6.5/NOTES.html
+	</sparkle:releaseNotesLink>
+	<pubDate>Thu, 05 Nov 2015 23:41:02 -0500</pubDate>
+	<enclosure url="https://loc.github.io/clutter/release/v0.6.5/Clutter.app.zip"
+		sparkle:version="0.6.5"
+		sparkle:dsaSignature="MC0CFAGPgKXGBOwmPIp92UQVr/93zaUdAhUAme0KYT9yKgb5LdhHGNZEoqwJUrY="
+		length=" 3894586"
+		type="application/octet-stream" />
+</item>
+<item>
 	<title>v0.6.4 ughh</title>
 	<sparkle:releaseNotesLink>
 		https://loc.github.io/clutter/release/v0.6.4/NOTES.html
