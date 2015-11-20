@@ -14,12 +14,13 @@
 - (void) renamedFile: (NSURL*) oldPath toNewPath: (NSURL*)newPath;
 @optional
 - (void) modifiedFile: (NSURL*) path;
+- (void) expirationChangedForFile:(NSURL*)url;
 @end
 
 typedef void(^changeCallback)();
 
 @interface CoreWrapper : NSObject {
-    NSMutableArray * callbacks;
+    NSMutableArray* callbacks;
 }
 
 @property (retain) NSURL* url;
@@ -35,6 +36,7 @@ typedef void(^changeCallback)();
 -(void) keepFile:(NSURL*) file forDays: (int) days withName: (NSString*) name;
 
 + (NSString*) getDisplayName: (NSString*) name;
++ (NSString*) timeLeftWords:(NSDate*) expiration;
 
 @end
 

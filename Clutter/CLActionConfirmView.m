@@ -15,16 +15,30 @@ float borderHeight = 3;
 
 - (instancetype)initWithFrame:(NSRect)frame
 {
-    CGSize buttonSize = NSMakeSize(100, 34);
-    NSRect buttonRect = NSMakeRect(frame.size.width - buttonSize.width - 20, (frame.size.height - buttonSize.height + borderHeight) / 2, buttonSize.width, buttonSize.height);
     self = [super initWithFrame:frame];
     if (self) {
-        _confirmButton = [[CLSimpleButton alloc] initWithFrame:buttonRect];
+        _confirmButton = [[CLSimpleButton alloc] init];
         [_confirmButton setTitle:@"Confirm"];
         [_confirmButton setAction:@selector(confirmClicked:)];
         [_confirmButton setTarget:self];
 //        [[_confirmButton cell] setBackgroundColor:[NSColor clearColor]];
         [self addSubview:_confirmButton];
+        [_confirmButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+        
+        NSDictionary* views = @{@"confirm": _confirmButton};
+        NSMutableArray* constraints = [[NSMutableArray alloc] init];
+        
+        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[confirm(100)]-20-|" options:0 metrics:nil views:views]];
+        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[confirm(34)]" options:0 metrics:nil views:views]];
+        [constraints addObject:[NSLayoutConstraint constraintWithItem:_confirmButton
+                                                            attribute:NSLayoutAttributeCenterY
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:self
+                                                            attribute:NSLayoutAttributeCenterY
+                                                           multiplier:1
+                                                             constant:0]];
+        
+        [NSLayoutConstraint activateConstraints:constraints];
     }
     return self;
 }

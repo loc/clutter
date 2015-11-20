@@ -25,7 +25,6 @@
 		A15161A81B4A3EC300E103B1 /* CLSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */; };
 		A188E5F81BDD8ADC0014AEB1 /* FinderSync.m in Sources */ = {isa = PBXBuildFile; fileRef = A188E5F71BDD8ADC0014AEB1 /* FinderSync.m */; };
 		A188E5FB1BDD8ADC0014AEB1 /* FinderExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A188E5F11BDD8ADC0014AEB1 /* FinderExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		A194CBF41BE3EC6100B61784 /* CLUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A194CBF31BE3EC6100B61784 /* CLUtilities.m */; };
 		A194CBF91BEA8CB900B61784 /* green_circle_badge.png in Resources */ = {isa = PBXBuildFile; fileRef = A194CBF61BEA8CB900B61784 /* green_circle_badge.png */; };
 		A194CBFA1BEA8CB900B61784 /* red_square_badge.png in Resources */ = {isa = PBXBuildFile; fileRef = A194CBF71BEA8CB900B61784 /* red_square_badge.png */; };
 		A194CBFB1BEA8CB900B61784 /* yellow_triangle_badge.png in Resources */ = {isa = PBXBuildFile; fileRef = A194CBF81BEA8CB900B61784 /* yellow_triangle_badge.png */; };
@@ -47,6 +46,11 @@
 		A1C770B91B424874002077A3 /* CoreWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1C770B81B424874002077A3 /* CoreWrapper.mm */; };
 		A1C770C11B438752002077A3 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1C770BF1B438752002077A3 /* core.cpp */; };
 		A1D048341B99455C001AFDBB /* CLMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1D048321B99455C001AFDBB /* CLMainController.m */; };
+		A1F160E51BEE9F3E00CEBBF2 /* CLDownloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1F160E41BEE9F3E00CEBBF2 /* CLDownloadView.m */; };
+		A1F160E81BF01B5500CEBBF2 /* CLGenericFlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1F160E71BF01B5500CEBBF2 /* CLGenericFlippedView.m */; };
+		A1F160EB1BF2E1BB00CEBBF2 /* CLExpiringView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1F160EA1BF2E1BB00CEBBF2 /* CLExpiringView.m */; };
+		A1F160F21BF6689300CEBBF2 /* CLTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A1F160F01BF6689300CEBBF2 /* CLTableView.xib */; };
+		A1F160F51BF6692700CEBBF2 /* CLTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1F160F41BF6692700CEBBF2 /* CLTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,8 +129,6 @@
 		A188E5F61BDD8ADC0014AEB1 /* FinderSync.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FinderSync.h; sourceTree = "<group>"; };
 		A188E5F71BDD8ADC0014AEB1 /* FinderSync.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FinderSync.m; sourceTree = "<group>"; };
 		A18A37CE1BC3629A00E2BD8F /* event.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = SOURCE_ROOT; };
-		A194CBF31BE3EC6100B61784 /* CLUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLUtilities.m; sourceTree = "<group>"; };
-		A194CBF51BE3ECC500B61784 /* CLUtilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CLUtilities.h; sourceTree = "<group>"; };
 		A194CBF61BEA8CB900B61784 /* green_circle_badge.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green_circle_badge.png; sourceTree = "<group>"; };
 		A194CBF71BEA8CB900B61784 /* red_square_badge.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = red_square_badge.png; sourceTree = "<group>"; };
 		A194CBF81BEA8CB900B61784 /* yellow_triangle_badge.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = yellow_triangle_badge.png; sourceTree = "<group>"; };
@@ -159,6 +161,15 @@
 		A1D048311B99455C001AFDBB /* CLMainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLMainController.h; sourceTree = "<group>"; };
 		A1D048321B99455C001AFDBB /* CLMainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLMainController.m; sourceTree = "<group>"; };
 		A1D048361BA12402001AFDBB /* Clutter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Clutter.entitlements; sourceTree = "<group>"; };
+		A1F160E31BEE9F3E00CEBBF2 /* CLDownloadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLDownloadView.h; sourceTree = "<group>"; };
+		A1F160E41BEE9F3E00CEBBF2 /* CLDownloadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLDownloadView.m; sourceTree = "<group>"; };
+		A1F160E61BF01B5500CEBBF2 /* CLGenericFlippedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLGenericFlippedView.h; sourceTree = "<group>"; };
+		A1F160E71BF01B5500CEBBF2 /* CLGenericFlippedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLGenericFlippedView.m; sourceTree = "<group>"; };
+		A1F160E91BF2E1BB00CEBBF2 /* CLExpiringView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLExpiringView.h; sourceTree = "<group>"; };
+		A1F160EA1BF2E1BB00CEBBF2 /* CLExpiringView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLExpiringView.m; sourceTree = "<group>"; };
+		A1F160F01BF6689300CEBBF2 /* CLTableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CLTableView.xib; sourceTree = "<group>"; };
+		A1F160F31BF6692700CEBBF2 /* CLTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLTableView.h; sourceTree = "<group>"; };
+		A1F160F41BF6692700CEBBF2 /* CLTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTableView.m; sourceTree = "<group>"; };
 		BF7B80FEDAE3319C8E3DF784 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D66F98D2DD456857401A2C18 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		ED007E51A3A55AB689EA84F6 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -301,8 +312,17 @@
 				A15161A61B4A3EC300E103B1 /* CLSegmentedCell.h */,
 				A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */,
 				A11C7C141BA499F4008E6E91 /* Preview.xib */,
+				A1F160F01BF6689300CEBBF2 /* CLTableView.xib */,
+				A1F160F31BF6692700CEBBF2 /* CLTableView.h */,
+				A1F160F41BF6692700CEBBF2 /* CLTableView.m */,
 				A1D048311B99455C001AFDBB /* CLMainController.h */,
 				A1D048321B99455C001AFDBB /* CLMainController.m */,
+				A1F160E31BEE9F3E00CEBBF2 /* CLDownloadView.h */,
+				A1F160E41BEE9F3E00CEBBF2 /* CLDownloadView.m */,
+				A1F160E91BF2E1BB00CEBBF2 /* CLExpiringView.h */,
+				A1F160EA1BF2E1BB00CEBBF2 /* CLExpiringView.m */,
+				A1F160E61BF01B5500CEBBF2 /* CLGenericFlippedView.h */,
+				A1F160E71BF01B5500CEBBF2 /* CLGenericFlippedView.m */,
 				A11C7C1C1BAB8381008E6E91 /* CLFileActionView.h */,
 				A11C7C1D1BAB8381008E6E91 /* CLFileActionView.m */,
 				A12BE5C71BB88E68003115D8 /* CLActionConfirmView.h */,
@@ -316,8 +336,6 @@
 				A1C7708E1B40C42C002077A3 /* Images.xcassets */,
 				A1308DA11B47055E00897F28 /* check.png */,
 				A1C7707D1B40C42C002077A3 /* Supporting Files */,
-				A194CBF51BE3ECC500B61784 /* CLUtilities.h */,
-				A194CBF31BE3EC6100B61784 /* CLUtilities.m */,
 			);
 			path = Clutter;
 			sourceTree = "<group>";
@@ -489,6 +507,7 @@
 			files = (
 				A1A7AA591BDA8173008DE19B /* dsa_pub.pem in Resources */,
 				A1A7AA561BCEEB4B008DE19B /* images in Resources */,
+				A1F160F21BF6689300CEBBF2 /* CLTableView.xib in Resources */,
 				A11C7C161BA499F4008E6E91 /* Preview.xib in Resources */,
 				A1C770811B40C42C002077A3 /* InfoPlist.strings in Resources */,
 				A1308DA21B47055E00897F28 /* check.png in Resources */,
@@ -609,18 +628,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1C770C11B438752002077A3 /* core.cpp in Sources */,
+				A1F160E51BEE9F3E00CEBBF2 /* CLDownloadView.m in Sources */,
 				A12BE5C91BB88E68003115D8 /* CLActionConfirmView.m in Sources */,
 				A11C7C1E1BAB8381008E6E91 /* CLFileActionView.m in Sources */,
 				A11C7C151BA499F4008E6E91 /* CLPreviewController.m in Sources */,
 				A1D048341B99455C001AFDBB /* CLMainController.m in Sources */,
 				A1308DA01B4668B700897F28 /* CLTableRowView.m in Sources */,
+				A1F160EB1BF2E1BB00CEBBF2 /* CLExpiringView.m in Sources */,
 				A1C770B91B424874002077A3 /* CoreWrapper.mm in Sources */,
+				A1F160E81BF01B5500CEBBF2 /* CLGenericFlippedView.m in Sources */,
 				A1308DA51B470BA900897F28 /* CLResizeView.m in Sources */,
 				A12BE5D51BBC3EFC003115D8 /* CLSimpleCheckbox.m in Sources */,
 				A1C7708A1B40C42C002077A3 /* AppDelegate.m in Sources */,
 				A14596861BC1F43D00ABF87F /* CLPanel.m in Sources */,
-				A194CBF41BE3EC6100B61784 /* CLUtilities.m in Sources */,
 				A15161A31B49CE6900E103B1 /* cltime.cpp in Sources */,
+				A1F160F51BF6692700CEBBF2 /* CLTableView.m in Sources */,
 				A12BE5CF1BB8EC02003115D8 /* CLSimpleButton.m in Sources */,
 				A12BE5D21BBA27EC003115D8 /* CLSegmentedControl.m in Sources */,
 				A1C770831B40C42C002077A3 /* main.m in Sources */,

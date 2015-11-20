@@ -20,153 +20,68 @@
     //= [super initWithWindowNibName:@"Window" owner:self];
     
     [[CoreWrapper sharedInstance] setDelegate:self];
+    
+    
+    self.downloadView = [[CLDownloadView alloc] init];
+    
+//    [window.panelView addSubview:self.downloadView.view];
+//    NSArray* constraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[download]|" options:0 metrics:nil views:@{@"download": self.downloadView.view}];
+//    [NSLayoutConstraint activateConstraints:constraints];
+//    constraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[download]|" options:0 metrics:nil views:@{@"download": self.downloadView.view}];
+//    [NSLayoutConstraint activateConstraints:constraints];
 
-    [[CoreWrapper sharedInstance] runBlockOnChange:^{
-        //[listController setList:[wrapper listFiles]];
-//        [self updateTable:[[CoreWrapper sharedInstance] listFiles]];
-    }];
+    self.expiringView = [[CLExpiringView alloc] init];
     
-    NSUInteger previewHeight = 150, actionHeight = 75, confirmHeight = 55;
-    NSRect windowFrame = [self.window frame];
-    NSSize windowSize = {480, previewHeight + actionHeight * 2 + confirmHeight};
-    windowFrame.size = windowSize;
+    [window.panelView addSubview:self.expiringView.view];
+
+    NSDictionary* views = @{@"expiring": self.expiringView.view};
+    NSMutableArray* constraints = [[NSMutableArray alloc] init];
     
-    [self updateTable:[[CoreWrapper sharedInstance] listFiles]];
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[expiring]|" options:0 metrics:nil views:views]];
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[expiring]|" options:0 metrics:nil views:views]];
     
-    [self->tabSwitcher setTarget:self];
-    [self->tabSwitcher setAction:@selector(tabSwitched)];
-    
-    _preview = [[CLPreviewController alloc] init];
-    _moveActionView = [[CLFileActionView alloc] initWithFrame:NSMakeRect(0, previewHeight, windowSize.width, actionHeight) andTitle:@"Move:"];
-    [_moveActionView setDelegate:self];
-    [_moveActionView setBackgroundColor:[NSColor clRGB(223,225,228)]];
-    [_moveActionView setHasFolderPicker:YES];
-    
-    _keepActionView = [[CLFileActionView alloc] initWithFrame:NSMakeRect(0, previewHeight + actionHeight, windowSize.width, actionHeight) andTitle:@"Keep:"];
-    [_keepActionView setDelegate:self];
-    [_keepActionView setBackgroundColor:[NSColor clRGB(242,242,243)]];
-    
-    NSArray* folderUrls = [self getDefaultFolders];
-    NSMutableArray* folderNames = [[NSMutableArray alloc] initWithCapacity:[folderUrls count]];
-    [folderUrls enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [folderNames addObject:[(NSURL*) obj lastPathComponent]];
-    }];
-    
-    [_moveActionView setLabels:folderNames andValues:folderUrls];
-    [_keepActionView setLabels:@[@"1 day", @"2 weeks", @"1 month", @"Forever"] andValues:@[@1, @14, @30, [NSNull null]]];
-    
-    [_preview.view setFrameSize:CGSizeMake(windowSize.width, previewHeight)];
-    [_preview.view setFrameOrigin:CGPointMake(0, 0)];
-    
-    _confirmActionView = [[CLActionConfirmView alloc] initWithFrame:NSMakeRect(0, previewHeight + actionHeight * 2, windowSize.width, confirmHeight)];
-    [_confirmActionView setTarget:self];
-    [_confirmActionView setAction:@selector(confirmed)];
-    
-    [window.panelView addSubview:_preview.view];
-    [window.panelView addSubview:_moveActionView];
-    [window.panelView addSubview:_keepActionView];
-    [window.panelView addSubview:_confirmActionView];
-    
-//    NSArray * vals = [_filesList objectAtIndex:50];
+    [NSLayoutConstraint activateConstraints:constraints];
     
     return self;
 }
 
-- (void) confirmed {
-    if (self.activeFile == nil) {
-        [_moveActionView clearSelection];
-        [_keepActionView clearSelection];
+// ** ClutterClient methods **
+- (void)newFile:(NSURL *)url {
+    [self.downloadView updatePanelWithFile:url];
+}
+
+- (void) renamedFile: (NSURL*) oldPath toNewPath: (NSURL*)newPath {
+    //    BOOL isPanelOpen = [(AppDelegate*)[[NSApplication sharedApplication] delegate] isActive];
+
+    if ([oldPath isEqualTo:[self.downloadView activeFile]]) {
+        [self.downloadView updatePanelWithFile:newPath];
     }
-    else {
-        // TODO: better validation?
-        NSString* newName = [_preview.name.stringValue stringByReplacingOccurrencesOfString:@"/" withString:@""];
-        
-        if ([_moveActionView isSelected]) {
-            NSURL* folder = [_moveActionView getSelectedValue];
-            [[CoreWrapper sharedInstance] moveFile:[self activeFile] toFolder:folder withName:newName];
-        } else if ([_keepActionView isSelected]) {
-            NSNumber* days = [_keepActionView getSelectedValue];
-            [[CoreWrapper sharedInstance] keepFile:[self activeFile] forDays:[days unsignedIntegerValue] withName:newName];
-//            NSLog(@"days: %@", days);
-        }
-        [self setActiveFile:nil];
-    }
-    
-    [(AppDelegate*)[NSApp delegate] togglePanel:NO];
 }
 
-- (NSArray*) getRelevantFoldersForFile:(NSString*) fileName {
-    return [self getDefaultFolders];
-}
-
-- (NSArray*) getDefaultFolders {
-    NSFileManager* manager = [NSFileManager defaultManager];
-    NSInteger directories[] = {NSDocumentDirectory, NSPicturesDirectory, NSDesktopDirectory, NSMusicDirectory};
-    NSArray * managerUrls;
-    NSMutableArray * folders = [[NSMutableArray alloc] init];
-
-    for (int i=0; i < 4; i++) {
-        managerUrls = [manager URLsForDirectory:directories[i] inDomains:NSUserDomainMask];
-        [folders addObject:[managerUrls firstObject]];
-    }
-    
-    return folders;
-}
-
-- (void) moveTargetChanged {
-    NSLog(@"move switched outside");
-}
-
-- (void) keepTargetChanged {
-    NSLog(@"keep switched outside");
-}
-
-// file action methods
-- (void)actionChanged:(NSString *)label from:(id)sender {
-    if (!label) {
-        [_confirmActionView enableButton:NO];
-        return;
-    }
-    if (sender == _moveActionView) {
-        [_keepActionView clearSelection];
-    } else {
-        [_moveActionView clearSelection];
-        // _keepActionView
-    }
-    [_confirmActionView enableButton:YES];
-}
-- (void) folderPicked:(NSURL *)folder from:(id)sender {
-    
+- (void) expirationChangedForFile:(NSURL*)url {
+    [self.expiringView updateExpirationTable];
 }
 
 
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return _filesList.count;
-}
 
--(void)updateTable:(NSArray*)data {
-    _filesList = data;
-    [self->tableView reloadData];
-}
+//- (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
+//    return [[CLTableRowView alloc] init];
+//}
 
-- (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
-    return [[CLTableRowView alloc] init];
-}
-
-- (void)tableViewSelectionDidChange:(NSNotification *)notification{
-    NSIndexSet * selected = [[notification object] selectedRowIndexes];
-    NSMutableArray * files = [[NSMutableArray alloc] init];
-    [selected enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
-        NSArray * vals = [_filesList objectAtIndex:index];
-        NSDictionary * dict = @{
-            @"url": [[[CoreWrapper sharedInstance] url] URLByAppendingPathComponent: [vals objectAtIndex:0]],
-            @"size": [vals objectAtIndex:1]
-        };
-        [files addObject:dict];
-    }];
-    
-    [_preview filesSelected:files];
-}
+//- (void)tableViewSelectionDidChange:(NSNotification *)notification{
+//    NSIndexSet * selected = [[notification object] selectedRowIndexes];
+//    NSMutableArray * files = [[NSMutableArray alloc] init];
+//    [selected enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop){
+//        NSArray * vals = [_filesList objectAtIndex:index];
+//        NSDictionary * dict = @{
+//            @"url": [[[CoreWrapper sharedInstance] url] URLByAppendingPathComponent: [vals objectAtIndex:0]],
+//            @"size": [vals objectAtIndex:1]
+//        };
+//        [files addObject:dict];
+//    }];
+//    
+//    [_preview filesSelected:files];
+//}
 
 - (NSView *)tableView:(NSTableView *)tableView
    viewForTableColumn:(NSTableColumn *)tableColumn
@@ -191,33 +106,6 @@
     return nil;
 }
 
-- (void) tabSwitched {
-    NSLog(@"switch");
-}
-
-
-// ** ClutterClient methods **
-- (void)newFile:(NSURL *)url {
-    [self updatePanelWithFile:url];
-}
-
-- (void) renamedFile: (NSURL*) oldPath toNewPath: (NSURL*)newPath {
-//    BOOL isPanelOpen = [(AppDelegate*)[[NSApplication sharedApplication] delegate] isActive];
-    
-    if ([oldPath isEqualTo:[self activeFile]]) {
-        [self updatePanelWithFile:newPath];
-    }
-}
-
-- (void) updatePanelWithFile: (NSURL*) path {
-    NSDictionary * dict = @{
-                            @"url": path,
-                            @"size": @1
-                            };
-    [_preview filesSelected: [NSArray arrayWithObject:dict]];
-    [self setActiveFile:path];
-    [(AppDelegate*)[[NSApplication sharedApplication] delegate] togglePanel:YES];
-}
 
 @end
 

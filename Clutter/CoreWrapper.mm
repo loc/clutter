@@ -8,6 +8,7 @@
 
 #import "CoreWrapper.h"
 #import "core.h"
+#import "cltime.h"
 
 @interface CoreWrapper ()
 
@@ -41,6 +42,9 @@ string handleEvents(Event e, file *f) {
         }
         if (e & renamed) {
             [[wrapper delegate] renamedFile:[[wrapper url] URLByAppendingPathComponent:[[wrapper class] cStringToNSString:f->previousName]] toNewPath:fileURL];
+        }
+        if (e & expirationChanged) {
+            [[wrapper delegate] expirationChangedForFile:[wrapper url]];
         }
     });
     
@@ -93,12 +97,6 @@ string handleEvents(Event e, file *f) {
     return self;
 }
 
-
-
--(void) runBlockOnChange: (changeCallback) callback {
-    [callbacks addObject:callback];
-}
-
 -(NSInteger) count {
     return _watcher->count();
 }
@@ -112,9 +110,16 @@ string handleEvents(Event e, file *f) {
     NSMutableArray* convertedList = [[NSMutableArray alloc] init];
     
     for (auto it = list->begin(); it != list->end(); it++) {
-        NSString* name = [NSString stringWithUTF8String:(*it)->fileName.c_str()];
-        NSNumber * fileSize = [NSNumber numberWithUnsignedLongLong:(*it)->fileSize];
-        NSArray* fields = [NSArray arrayWithObjects: name, fileSize, nil];
+        file* f = (file*)*it;
+        NSString* name = [NSString stringWithUTF8String:f->fileName.c_str()];
+        NSNumber * fileSize = [NSNumber numberWithUnsignedLongLong:f->fileSize];
+        id expiration = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:f->expiring];
+        if (f->expiring < 0) {
+            expiration = [NSNull null];
+        }
+        
+        NSDictionary* fields = NSDictionaryOfVariableBindings(name, fileSize, expiration);
+        
         [convertedList addObject:fields];
     }
     
@@ -145,6 +150,11 @@ string handleEvents(Event e, file *f) {
 
 + (NSString*) getDisplayName: (NSString*) name {
     return [self cStringToNSString:getDisplayName([name UTF8String])];
+}
+
++ (NSString*) timeLeftWords:(NSDate*) expiration {
+    string words = timeLeftWords([expiration timeIntervalSinceReferenceDate]);
+    return [self cStringToNSString:words];
 }
 
 @end

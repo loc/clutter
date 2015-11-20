@@ -32,7 +32,7 @@
 @property BOOL hasFolderPicker;
 
 - (void) setLabels:(NSArray*) labels andValues:(NSArray*) values;
-- (instancetype) initWithFrame:(NSRect)frameRect andTitle: (NSString *) title;
+- (instancetype) initWithTitle: (NSString *) title;
 - (void) clearSelection;
 - (id) getSelectedValue;
 - (BOOL) isSelected;

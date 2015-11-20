@@ -9,6 +9,6 @@
 #import <Cocoa/Cocoa.h>
 #import "constants.h"
 
-@interface CLTableRowView : NSTableRowView
-
-@end
+//@interface CLTableRowView : NSTableRowView
+//
+//@end

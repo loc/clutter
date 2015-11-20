@@ -71,6 +71,8 @@
     controller = [[CLMainController alloc] initWithWindow:_window];
     
     [self watchForKeyWindowChange:YES];
+    
+    system("pluginkit -e use -i com.bubble.tea.Clutter.FinderExtension");
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
         [[CoreWrapper sharedInstance] loop];

@@ -227,6 +227,7 @@ file* Watcher::fileFromName(string name) {
 
 void Watcher::keep(file *f, int days) {
   f->expiring = CFAbsoluteTimeGetCurrent() + durationFromUnit(days, "d");
+  this->callback(expirationChanged, f);
   this->saveWatcher();
   this->timerFired();
 }
@@ -251,6 +252,7 @@ void Watcher::extend(file *f, int days) {
     this->timerFired();
   }
   this->sendExtensionMessage(f);
+  this->callback(expirationChanged, f);
 }
 
 void Watcher::sendExtensionMessage(file *f) {
@@ -357,10 +359,6 @@ void Watcher::directoryChanged(bool suppress) {
     f->last_access = info.st_atimespec.tv_sec;
     f->last_modification = info.st_mtimespec.tv_sec;
     f->created = info.st_mtimespec.tv_sec;
-
-    if (f->fileName == "hello.txt" && (event & created)) {
-      f->expiring = CFAbsoluteTimeGetCurrent() + durationFromUnit(1, "min");
-    }
 
     if (event & created) {
       // for vim and Emacs like editors that create a new file on every save

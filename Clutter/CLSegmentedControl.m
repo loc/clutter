@@ -17,6 +17,7 @@
 //    self = [super initWithFrame:newFrame];
 //    return self;
 //}
+
 - (instancetype) initWithLabels:(NSArray*) labels {
     self = [super init];
     
@@ -50,6 +51,11 @@
     [self setWidthsForLabels:labels];
 }
 
+- (void)layout {
+    [super layout];
+    [self setWidthsForLabels:_labels];
+}
+
 - (void)setFrameSize:(NSSize)newSize {
     [super setFrameSize:newSize];
 }
@@ -60,6 +66,10 @@
     
     // Drawing code here.
 }
+
+//- (CGSize)intrinsicContentSize{
+////    return CGSizeMake(NSViewNoIntrinsicMetric, 50);
+//}
 
 //- (NSString*) getSelectedValue {
 //    return [self labelForSegment:[self selectedSegment]];
