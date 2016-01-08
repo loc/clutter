@@ -66,7 +66,7 @@
     
 //    [[_statusItem.button cell] attachPopUpWithFrame:[_statusItem.button frame] inView:_statusItem.view];
     
-    _window = [[CLPanel alloc] initWithContentSize:(CGSize){480, 355} relativeToPoint:[self calcWindowOrigin]];
+    _window = [[CLPanel alloc] initWithContentSize:(CGSize){480, 450} relativeToPoint:[self calcWindowOrigin]];
     
     controller = [[CLMainController alloc] initWithWindow:_window];
     

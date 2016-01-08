@@ -14,9 +14,14 @@
 @interface CLMainController : NSWindowController <NSTableViewDataSource, NSTableViewDelegate, ClutterClient> {
     IBOutlet NSSegmentedControl * tabSwitcher;
     IBOutlet NSTableView * tableView;
+    dispatch_source_t expirationDebounceSource;
 }
 
+// cache the files from the coreWrapper
 @property NSArray * filesList;
+
+@property NSArray* filesAdded;
+@property NSArray* filesExpiredQueue;
 
 
 //- (id)initWithWindow:(CLPanel *)window;

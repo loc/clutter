@@ -434,19 +434,51 @@ string getDisplayName(string fileName) {
     return fileName;
 }
 
-void Watcher::loadWatcher() {
-  ifstream mainIfs(this->path + ".clutter.dat");
-  ifstream supportIfs(this->supportPath + ".archive.dat");
+bool Watcher::safeLoadArchiveWithBackup(string name, string path, string backupPath, void* _map) {
+  // provide a filename and a backup path to check if there is an archive_exception
   
-  if (mainIfs.good()) {
-    boost::archive::text_iarchive mainAr(mainIfs);
-    mainAr & this->m;
+  if (this->safeLoadArchive(name, path, _map)) {
+    
+    return true;
   }
-  if (supportIfs.good()) {
-    boost::archive::text_iarchive supportAr(supportIfs);
-    supportAr & this->archived;
+  
+  cout << "failing over to backup" << name << path;
+  
+  return this->safeLoadArchive(name + ".bak", backupPath, _map);
+}
+
+bool Watcher::safeLoadArchive(string name, string path, void* _map) {
+  // catches an archive exception
+  
+  unordered_map<unsigned long, file*>* map = static_cast<unordered_map<unsigned long, file*>*>(_map);
+  
+  try {
+    ifstream inputStream(path + name);
+    if (inputStream.good()) {
+      boost::archive::text_iarchive inputArchive(inputStream);
+      if (_map != nullptr) {
+        inputArchive & *map;
+      }
+    }
+    return true;
+  } catch(boost::archive::archive_exception) {
+    return false;
   }
 }
+
+void Watcher::loadWatcher() {
+  
+  this->safeLoadArchive(".archive.dat", this->supportPath, &this->archived);
+  if (this->safeLoadArchiveWithBackup(".clutter.dat", this->path, this->supportPath, &this->m)) {
+    // save a successful load to the backup location
+    
+    ofstream ofs(this->supportPath + ".clutter.dat.bak");
+    boost::archive::text_oarchive backupAr(ofs);
+    backupAr & this->m;
+  }
+  
+}
+
 void Watcher::saveWatcher() {
   ofstream mainOfs(this->path + ".clutter.dat");
   ofstream supportOfs(this->supportPath + ".archive.dat");
@@ -455,6 +487,7 @@ void Watcher::saveWatcher() {
   mainAr & this->m;
   boost::archive::text_oarchive supportAr(supportOfs);
   supportAr & this->archived;
+
 }
 
 string getDownloadURL(file* f) {

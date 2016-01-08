@@ -81,6 +81,8 @@ class Watcher {
   void sendExtensionMessage(file *f);
   void setupTimer(void);
   void setupFileWatcher(void);
+  bool safeLoadArchiveWithBackup(string name, string path, string backupPath, void* _map);
+  bool safeLoadArchive(string name, string path, void* _map);
 
   public:
   

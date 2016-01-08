@@ -44,36 +44,20 @@ string handleEvents(Event e, file *f) {
             [[wrapper delegate] renamedFile:[[wrapper url] URLByAppendingPathComponent:[[wrapper class] cStringToNSString:f->previousName]] toNewPath:fileURL];
         }
         if (e & expirationChanged) {
-            [[wrapper delegate] expirationChangedForFile:[wrapper url]];
+            // maybe we don't need this if we just refresh on every open?
+//            [[wrapper delegate] expirationChangedForFile:[wrapper url]];
         }
     });
     
     if (e & removeRequestEvent) {
         // put into application support
         
-        NSURL* archiveDirectory = [[wrapper supportURL] URLByAppendingPathComponent:@"Archives" isDirectory:YES];
-        [[NSFileManager defaultManager] createDirectoryAtPath:[archiveDirectory path] withIntermediateDirectories:YES attributes:nil error:nil];
-        
-        if ([[NSFileManager defaultManager] isReadableFileAtPath:[fileURL path]]) {
-            NSString* uniqueFileName = [fileName stringByAppendingFormat:@"%llu", f->inode];
-            NSURL* newURL = [archiveDirectory URLByAppendingPathComponent:uniqueFileName];
-            NSError* error;
-            [[NSFileManager defaultManager] moveItemAtURL:fileURL toURL:newURL error:&error];
-            
-            NSString* informativeText = [NSByteCountFormatter stringFromByteCount:f->fileSize countStyle:NSByteCountFormatterCountStyleFile];
-            if (f->downloadedFrom.length()) {
-                informativeText = [informativeText stringByAppendingFormat:@" - %s", f->downloadedFrom.c_str()];
-            }
-            
-            NSUserNotification* notification = [[NSUserNotification alloc] init];
-            [notification setTitle:@"A file has expired"];
-            [notification setSubtitle:fileName];
-            [notification setInformativeText:informativeText];
-            [notification setActionButtonTitle: @"Restore"];
-            [notification setOtherButtonTitle: @"Okay"];
-            [notification setHasActionButton: YES];
-            [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
-        }
+        [[wrapper delegate] expiredFile:@{
+                                           @"fileURL": fileURL,
+                                           @"inode": [NSNumber numberWithUnsignedLongLong: f->inode],
+                                           @"fileSize": [NSNumber numberWithUnsignedLongLong: f->fileSize],
+                                           @"downloadUrl": [[wrapper class] cStringToNSString: f->downloadedFrom.c_str()]
+                                           }];
     }
     
     return "";
@@ -155,6 +139,22 @@ string handleEvents(Event e, file *f) {
 + (NSString*) timeLeftWords:(NSDate*) expiration {
     string words = timeLeftWords([expiration timeIntervalSinceReferenceDate]);
     return [self cStringToNSString:words];
+}
+
++ (NSString*) truncFileName:(NSString*)fileName withLength:(unsigned int)chars {
+    NSUInteger fileExtensionIndex = ([fileName rangeOfString:@"." options:NSBackwardsSearch]).location;
+    if (chars > [fileName length]) {
+        return fileName;
+    }
+    
+    NSString* name = [fileName substringToIndex:fileExtensionIndex];
+    NSString* ext = [fileName substringFromIndex:fileExtensionIndex+1];
+    
+    if ([name length] > chars - [ext length]) {
+        return [NSString stringWithFormat:@"%@...%@", [name substringToIndex:chars - [ext length]], ext];
+    }
+    
+    return fileName;
 }
 
 @end

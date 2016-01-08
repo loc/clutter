@@ -28,7 +28,7 @@ float borderHeight = 3;
         NSDictionary* views = @{@"confirm": _confirmButton};
         NSMutableArray* constraints = [[NSMutableArray alloc] init];
         
-        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[confirm(100)]-20-|" options:0 metrics:nil views:views]];
+        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[confirm(100)]-29-|" options:0 metrics:nil views:views]];
         [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[confirm(34)]" options:0 metrics:nil views:views]];
         [constraints addObject:[NSLayoutConstraint constraintWithItem:_confirmButton
                                                             attribute:NSLayoutAttributeCenterY

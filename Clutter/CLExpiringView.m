@@ -51,8 +51,8 @@
     NSDictionary* views = @{@"table": self.expirationTable};
     NSMutableArray* constraints = [[NSMutableArray alloc] init];
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[table]-20-|" options:0 metrics:nil views:views]];
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[table(==140)]" options:0 metrics:nil views:views]];
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[table]-10-|" options:0 metrics:nil views:views]];
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-15-[table]-15-|" options:0 metrics:nil views:views]];
     
     [NSLayoutConstraint activateConstraints:constraints];
 //    [self.expirationTable regist]
@@ -66,6 +66,18 @@
     _files = [[[[CoreWrapper sharedInstance] listFiles] filteredArrayUsingPredicate:noNulls] sortedArrayUsingDescriptors:@[dateDescriptor]];
     
     [self.expirationTable.tableView reloadData];
+    NSNotification* note = [NSNotification notificationWithName:@"fakeSelection" object:nil];
+    [self tableViewSelectionDidChange:note];
+}
+- (void)tableViewSelectionDidChange:(NSNotification *)notification {
+    NSInteger row = [self.expirationTable.tableView selectedRow];
+    if (row < 0) return;
+    
+    NSString* fileName = _files[row][@"name"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"activeFileChanged" object:fileName];
+    
+    NSLog(@"%@", fileName);
 }
 
 - (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
@@ -76,13 +88,6 @@
         rowView.identifier = @"RowView";
     }
     return rowView;
-}
-
-- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    if ([[tableView selectedRowIndexes] containsIndex:row])
-    {
-        ()
-    }
 }
 
 - (id)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -96,7 +101,8 @@
 //    }
     
     if ([@"Name" isEqualToString:tableColumn.identifier]) {
-        view.textField.stringValue = _files[row][@"name"];
+        view.textField.stringValue = [CoreWrapper truncFileName:_files[row][@"name"] withLength:25];
+        [view.textField setToolTip:_files[row][@"name"]];
     }
     else if ([@"Size" isEqualToString:tableColumn.identifier]) {
         NSNumber* size = _files[row][@"fileSize"];
@@ -105,8 +111,17 @@
     else if ([@"Time Left" isEqualToString:tableColumn.identifier]) {
         if (_files[row][@"expiration"] != (id)[NSNull null]) {
             view.textField.stringValue = [CoreWrapper timeLeftWords:_files[row][@"expiration"]];
+            NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+            [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+            [view.textField setToolTip:[dateFormat stringFromDate: _files[row][@"expiration"]]];
         }
     }
+    
+//    if ([[tableView selectedRowIndexes] containsIndex:row]) {
+//    [view.textField setBackgroundColor:[NSColor blueColor]];
+//    [view setBackgroundStyle:NSBackgroundStyleLight];
+//    }
+    
     return view;
 }
 

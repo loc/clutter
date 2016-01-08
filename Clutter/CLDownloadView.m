@@ -24,9 +24,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSUInteger previewHeight = 150, actionHeight = 75, confirmHeight = 55;
-    NSSize windowSize = {480, previewHeight + actionHeight * 2 + confirmHeight};
-    
     _preview = [[CLPreviewController alloc] init];
     _moveActionView = [[CLFileActionView alloc] initWithTitle:@"Move:"];
     [_moveActionView setDelegate:self];
@@ -72,9 +69,19 @@
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[keep]|" options:0 metrics:nil views:views]];
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[move]|" options:0 metrics:nil views:views]];
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[preview]|" options:0 metrics:nil views:views]];
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[preview(150)][move(75)][keep(75)][confirm(55)]|" options:0 metrics:nil views:views]];
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[preview][move][keep][confirm(==55)]|" options:0 metrics:nil views:views]];
+
+    [_moveActionView.heightAnchor constraintEqualToAnchor:_keepActionView.heightAnchor].active = YES;
+    [_preview.view.heightAnchor constraintEqualToAnchor:_moveActionView.heightAnchor multiplier:1.6].active = YES;
     
     [NSLayoutConstraint activateConstraints:constraints];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"activeFileChanged" object:nil queue:nil usingBlock:^(NSNotification *note){
+        
+        NSString* fileName = (NSString*)note.object;
+        [self updatePanelWithFile:[[[CoreWrapper sharedInstance] url] URLByAppendingPathComponent:fileName]];
+        
+                                                                                                        }];
     
 //    NSArray* previewWidthConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_preview(>=150)][_moveActionView(75)][_keepActionView(75)][_confirmActionView(55)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_preview)];
 //    [NSLayoutConstraint activateConstraints:previewWidthConstraints];

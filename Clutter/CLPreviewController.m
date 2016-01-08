@@ -16,6 +16,8 @@
 
 @implementation CLPreviewController
 
+NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirstResponder";
+
 - (id) init {
     self = [super initWithNibName:@"Preview" bundle:nil];
     return self;
@@ -27,10 +29,21 @@
     [[self thumbnailView] setWantsLayer:YES];
     [_name setFocusRingType:NSFocusRingTypeNone];
     
-    _checkbox = [[CLSimpleCheckbox alloc] initWithFrame:NSMakeRect(22, 65, 280, 25)];
+    _checkbox = [[CLSimpleCheckbox alloc] initWithFrame:NSMakeRect(28, 50, 280, 25)];
     [_checkbox setButtonType:NSSwitchButton];
     [_checkbox setTitle:@"Remember for the next hour"];
     [self.view addSubview:_checkbox];
+    
+//    [self.name ]
+    [[NSNotificationCenter defaultCenter] addObserverForName:CLTextFieldDidBecomeFirstResponder
+                                                      object:self.name
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification * _Nonnull note) {
+                                                      
+                                                      NSTextField *textField = [note object];
+                                                      [textField setAttributedStringValue:[self styleNameText:self.fileName andTruncate:NO]];
+                                                      
+                                                  }];
     
     // Do view setup here.
 }
@@ -40,7 +53,8 @@
     NSString * fileName = [[[files firstObject] objectForKey:@"url"] lastPathComponent];
     
     self.fileName = [[CoreWrapper class] getDisplayName:fileName];
-    [_name setAttributedStringValue:[self styleNameText:self.fileName]];
+    [_name setAttributedStringValue:[self styleNameText:self.fileName andTruncate:YES]];
+    [_name setToolTip:self.fileName];
     
     [self renderPreviewFor:[[files firstObject] objectForKey:@"url"]];
 }
@@ -48,11 +62,12 @@
 - (void)controlTextDidChange:(NSNotification *)notification {
     NSTextField *textField = [notification object];
     NSLog(@"%@", [textField stringValue]);
-    [textField setAttributedStringValue:[self styleNameText:[textField stringValue]]];
+    [textField setAttributedStringValue:[self styleNameText:[textField stringValue] andTruncate:NO]];
 }
 - (void)controlTextDidEndEditing:(NSNotification *)obj {
     NSTextField *textField = [obj object];
     [textField setBackgroundColor:[NSColor clearColor]];
+    [textField setAttributedStringValue:[self styleNameText:[textField stringValue] andTruncate:YES]];
 }
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
     if (commandSelector == @selector(insertTab:) || commandSelector == @selector(insertNewline:)) {
@@ -63,8 +78,14 @@
     return NO;
 }
 
-- (NSAttributedString*) styleNameText: (NSString*)fileName {
-    NSString* name = fileName;
+- (NSAttributedString*) styleNameText: (NSString*)fileName andTruncate: (bool)shouldTrunc  {
+    NSString* name;
+    if (shouldTrunc) {
+        name = [CoreWrapper truncFileName:fileName withLength:20];
+    } else {
+        name = fileName;
+    }
+    
     NSUInteger fileExtensionIndex = ([name rangeOfString:@"." options:NSBackwardsSearch]).location;
     NSFont * SeravekExtraLight = [NSFont fontWithName:@"Seravek-ExtraLight" size:24.0];
     NSFont * SeravekRegular = [NSFont fontWithName:@"Seravek" size:24.0];
@@ -72,12 +93,22 @@
                                                            forKeys:@[NSKernAttributeName, NSFontAttributeName, NSForegroundColorAttributeName ]];
     NSMutableAttributedString * nameStyledString = [[NSMutableAttributedString alloc] initWithString:name attributes:fontAttrs];
     
+    NSRange highlightRange;
+    
+    
     if (fileExtensionIndex == NSNotFound) {
         fileExtensionIndex = [name length];
     }
     
+    if (![fileName isEqualToString:name]) {
+        // if the string was truncated
+        highlightRange = NSMakeRange(0, fileExtensionIndex - 2);
+    } else {
+        highlightRange = NSMakeRange(0, fileExtensionIndex);
+    }
+    
     [nameStyledString beginEditing];
-    [nameStyledString addAttribute:NSFontAttributeName value:SeravekRegular range:NSMakeRange(0, fileExtensionIndex)];
+    [nameStyledString addAttribute:NSFontAttributeName value:SeravekRegular range:highlightRange];
     [nameStyledString endEditing];
     
     return nameStyledString;
@@ -123,6 +154,9 @@
 
 - (BOOL) becomeFirstResponder {
     [self setBackgroundColor:[NSColor clRGBA(255,255,255,.3)]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:CLTextFieldDidBecomeFirstResponder object:self];
+    
     return YES;
 }
 

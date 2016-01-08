@@ -15,6 +15,7 @@
 @optional
 - (void) modifiedFile: (NSURL*) path;
 - (void) expirationChangedForFile:(NSURL*)url;
+- (void) expiredFile:(NSDictionary*)info;
 @end
 
 typedef void(^changeCallback)();
@@ -37,6 +38,7 @@ typedef void(^changeCallback)();
 
 + (NSString*) getDisplayName: (NSString*) name;
 + (NSString*) timeLeftWords:(NSDate*) expiration;
++ (NSString*) truncFileName:(NSString*)fileName withLength:(unsigned int)chars;
 
 @end
 

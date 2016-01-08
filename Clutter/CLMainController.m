@@ -24,7 +24,7 @@
     
     self.downloadView = [[CLDownloadView alloc] init];
     
-//    [window.panelView addSubview:self.downloadView.view];
+    
 //    NSArray* constraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[download]|" options:0 metrics:nil views:@{@"download": self.downloadView.view}];
 //    [NSLayoutConstraint activateConstraints:constraints];
 //    constraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[download]|" options:0 metrics:nil views:@{@"download": self.downloadView.view}];
@@ -33,16 +33,29 @@
     self.expiringView = [[CLExpiringView alloc] init];
     
     [window.panelView addSubview:self.expiringView.view];
+    [window.panelView addSubview:self.downloadView.view];
 
-    NSDictionary* views = @{@"expiring": self.expiringView.view};
+    NSDictionary* views = @{@"expiring": self.expiringView.view,
+                            @"download": self.downloadView.view};
+    
     NSMutableArray* constraints = [[NSMutableArray alloc] init];
     
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[expiring]|" options:0 metrics:nil views:views]];
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[expiring]|" options:0 metrics:nil views:views]];
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[download]|" options:0 metrics:nil views:views]];
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[expiring][download(300)]|" options:0 metrics:nil views:views]];
     
     [NSLayoutConstraint activateConstraints:constraints];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowBecameKey:) name:NSWindowDidBecomeKeyNotification object:nil];
+    
+    _filesExpiredQueue = [[NSArray alloc] init];
+    
     return self;
+}
+
+- (void) windowBecameKey: (NSNotification*) note {
+    [self.expiringView updateExpirationTable];
+//    [self.downloadView updatePanelWithFile:url];
 }
 
 // ** ClutterClient methods **
@@ -61,6 +74,73 @@
 - (void) expirationChangedForFile:(NSURL*)url {
     [self.expiringView updateExpirationTable];
 }
+
+- (void) expiredFile:(NSDictionary*)info {
+    CoreWrapper* wrapper = [CoreWrapper sharedInstance];
+    CLExpiringView* expirationTableView = self.expiringView;
+    
+    if (expirationDebounceSource != nil) {
+        dispatch_source_cancel(expirationDebounceSource);
+    }
+    
+    _filesExpiredQueue = [_filesExpiredQueue arrayByAddingObject:info];
+    
+    // debounce the notification so we can aggregate and say "5 files expired"
+    expirationDebounceSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+    dispatch_source_set_timer(expirationDebounceSource, DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC, 1 * NSEC_PER_SEC);
+    dispatch_source_set_event_handler(expirationDebounceSource, ^{
+        NSUserNotification* notification = [[NSUserNotification alloc] init];
+        NSURL* fileURL = _filesExpiredQueue[0][@"fileURL"];
+        NSString* informativeText;
+        
+        if ([_filesExpiredQueue count] > 1) {
+            [notification setTitle:[NSString stringWithFormat:@"%lu files expired", (unsigned long)[_filesExpiredQueue count]]];
+            NSString* subtitle = [CoreWrapper truncFileName:[fileURL lastPathComponent] withLength:20];
+            NSString* otherFilesString = [NSString stringWithFormat:@" & %lu other files", [_filesExpiredQueue count]];
+            [subtitle stringByAppendingString:otherFilesString];
+            __block unsigned long long bytes;
+            [_filesExpiredQueue enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSDictionary* fileInfo = (NSDictionary*)obj;
+                bytes += [fileInfo[@"fileSize"] unsignedLongLongValue];
+            }];
+            
+            informativeText = [NSString stringWithFormat:@"%@ total", [NSByteCountFormatter stringFromByteCount:bytes countStyle:NSByteCountFormatterCountStyleFile]];
+            [notification setActionButtonTitle: @"Restore All"];
+        } else {
+            NSDictionary* firstFileInfo = _filesExpiredQueue[0];
+            [notification setTitle:@"A file has expired"];
+            [notification setSubtitle:[fileURL lastPathComponent]];
+            informativeText = [NSByteCountFormatter stringFromByteCount:[firstFileInfo[@"fileSize"] unsignedLongLongValue] countStyle:NSByteCountFormatterCountStyleFile];
+            if ([firstFileInfo[@"downloadUrl"] length]) {
+                informativeText = [informativeText stringByAppendingFormat:@" - %@", firstFileInfo[@"downloadUrl"]];
+            }
+            [notification setActionButtonTitle: @"Restore"];
+        }
+        
+        [notification setInformativeText:informativeText];
+        [notification setOtherButtonTitle: @"Okay"];
+        [notification setHasActionButton: YES];
+        [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+        
+        [expirationTableView updateExpirationTable];
+        
+        dispatch_source_cancel(expirationDebounceSource);
+    });
+    dispatch_resume(expirationDebounceSource);
+    
+    NSURL* url = info[@"fileURL"];
+    NSURL* archiveDirectory = [[wrapper supportURL] URLByAppendingPathComponent:@"Archives" isDirectory:YES];
+    [[NSFileManager defaultManager] createDirectoryAtPath:[archiveDirectory path] withIntermediateDirectories:YES attributes:nil error:nil];
+    NSString* fileName = [url lastPathComponent];
+    
+    if ([[NSFileManager defaultManager] isReadableFileAtPath:[url path]]) {
+        NSString* uniqueFileName = [fileName stringByAppendingFormat:@"%@", info[@"inode"]];
+        NSURL* newURL = [archiveDirectory URLByAppendingPathComponent:uniqueFileName];
+        NSError* error;
+        [[NSFileManager defaultManager] moveItemAtURL:url toURL:newURL error:&error];
+    }
+}
+
 
 
 

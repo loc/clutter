@@ -10,6 +10,8 @@
 #import "CLSimpleCheckbox.h"
 #import "CoreWrapper.h"
 
+extern NSString * const CLTextFieldDidBecomeFirstResponder;
+
 @interface CLPreviewController : NSViewController <NSTextFieldDelegate>
 
 @property IBOutlet NSImageView * thumbnailView;

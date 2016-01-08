@@ -11,6 +11,11 @@
 
 @implementation CLTableView
 
+//- (BOOL)resignFirstResponder {
+
+//    return NO;
+//}
+
 @end
 
 @implementation CLTableContainerView
@@ -26,10 +31,8 @@
 @implementation CLTableRowView
 
 - (void)drawSelectionInRect:(NSRect)dirtyRect {
-    if (self.selectionHighlightStyle != NSTableViewSelectionHighlightStyleNone) {
-        [[NSColor clBlue] setFill];
-        NSRectFill(dirtyRect);
-    }
+    [[NSColor clBlue] setFill];
+    NSRectFill(self.bounds);
 }
 
 @end
@@ -43,15 +46,23 @@
         [self.textField setTextColor:[NSColor clRGB(72, 74, 78)]];
         [self.textField setFont:[NSFont fontWithName:@"Seravek-Light" size:15.0]];
     }
+    
     return self;
 }
+
 
 - (void)setBackgroundStyle:(NSBackgroundStyle)backgroundStyle {
     [super setBackgroundStyle:backgroundStyle];
     
-    if (backgroundStyle == NSBackgroundStyleDark) {
+    id view = [self superview];
+    
+    while (view && [view isKindOfClass:[NSTableRowView class]] == false) {
+        view = [self superview];
+    }
+    
+    if ([(NSTableRowView*)view isSelected]) {
         [self.textField setTextColor:[NSColor clRGB(212, 214, 218)]];
-    } else if (backgroundStyle == NSBackgroundStyleLight) {
+    } else {
         [self.textField setTextColor:[NSColor clRGB(72, 74, 78)]];
     }
 }
