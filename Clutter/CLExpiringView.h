@@ -9,12 +9,17 @@
 #import <Cocoa/Cocoa.h>
 #import "CLTableView.h"
 
+@class CLMainController;
+
 @interface CLExpiringView : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
 
+@property (assign) CLMainController* controller;
 @property (strong) IBOutlet CLTableContainerView* expirationTable;
+@property (strong) NSMutableDictionary* filesForMode;
 @property (strong) NSArray* files;
+@property (strong) NSString* tableMode;
 //@property (strong) IBOutlet CLTableView* tableView;
 
-- (void) updateExpirationTable;
+- (void) updateExpirationTableForMode:(NSString*) mode;
 
 @end

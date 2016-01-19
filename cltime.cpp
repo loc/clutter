@@ -42,6 +42,24 @@ ret:
     return stringifyCount(round(elapsed), word);
 }
 
+string timeSinceDaysWords(time_t expiration) {
+    time_t diff = CFAbsoluteTimeGetCurrent() - expiration;
+    struct tm diff_tm = *localtime(&diff);
+    
+    char buffer[25];
+    
+    if (diff_tm.tm_year > 70) {
+        sprintf(buffer, "%s ago", stringifyCount(diff_tm.tm_year - 70, "year").c_str());
+        return buffer;
+    } else if (diff_tm.tm_mon > 0) {
+        sprintf(buffer, "%s ago", stringifyCount(diff_tm.tm_mon, "month").c_str());
+        return buffer;
+    }
+    
+    sprintf(buffer, "%s ago", stringifyCount(diff_tm.tm_mday, "day").c_str());
+    return buffer;
+}
+
 string stringifyCount(long count, string word) {
 //    string words = "%ld"
     string words = to_string(count) + " " + word;

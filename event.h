@@ -12,9 +12,9 @@ enum Event {
     renamed = 1 << 2,
     deleted = 1 << 3,
     accessed = 1 << 4,
-    removeRequestEvent = 1 << 5,
-    expirationChanged = 1 << 6
-
+    expired = 1 << 5,
+    expirationChanged = 1 << 6,
+    restored = 1 << 7
 };
 
 typedef enum MessageType {

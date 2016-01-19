@@ -17,20 +17,13 @@
 
     int controlHeight = 30;
     
-//    CGSize triangleSize = NSMakeSize(8.0, 5.0);
-//    CGPoint triangleOrigin = NSMakePoint(frameRect.size.width - 30 - triangleSize.width / 2, (frameRect.size.height - triangleSize.height) / 2);
-//    
-//    triangleFrame = NSMakeRect(triangleOrigin.x, triangleOrigin.y, triangleSize.width, triangleSize.height);
-    
     _backgroundColor = [NSColor clearColor];
     
     _choiceControl = [[CLSegmentedControl alloc] init];
     [_choiceControl setTarget:self];
     [_choiceControl setAction:@selector(tabSwitched)];
 
-    NSDictionary* fontDict = @{NSFontAttributeName: [NSFont fontWithName:@"Seravek-Medium" size:18],
-                               NSForegroundColorAttributeName: [NSColor clRGB(80, 81, 82)]
-                               };
+    
     _titleLabel = [[NSTextField alloc] init];
     [_titleLabel setEditable:NO];
     [_titleLabel setDrawsBackground:NO];
@@ -43,9 +36,7 @@
     [self addSubview:_titleLabel];
     [self addSubview:_choiceControl];
     
-    NSAttributedString* styledTitle = [[NSAttributedString alloc] initWithString:title attributes:fontDict];
-    [_titleLabel setAttributedStringValue:styledTitle];
-    [_titleLabel sizeToFit];
+    [self setTitle:title];
     
     self->lastSelected = -1;
     
@@ -53,7 +44,7 @@
                             @"choice": _choiceControl};
     NSMutableArray* constraints = [[NSMutableArray alloc] init];
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-40-[title(50)]-30-[choice]-30-|" options:0 metrics:nil views:views]];
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-35-[title(50)]-35-[choice]-30-|" options:0 metrics:nil views:views]];
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[title]-|" options:0 metrics:nil views:views]];
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[choice(==28)]" options:0 metrics:nil views:views]];
     [constraints addObject:[NSLayoutConstraint constraintWithItem: _choiceControl
@@ -66,6 +57,17 @@
     [NSLayoutConstraint activateConstraints:constraints];
 
     return self;
+}
+
+- (void) setTitle:(NSString*) title {
+    
+    NSDictionary* fontDict = @{NSFontAttributeName: [NSFont fontWithName:@"Seravek-Medium" size:18],
+                               NSForegroundColorAttributeName: [NSColor clRGB(80, 81, 82)]
+                               };
+    
+    NSAttributedString* styledTitle = [[NSAttributedString alloc] initWithString:title attributes:fontDict];
+    [_titleLabel setAttributedStringValue:styledTitle];
+    [_titleLabel sizeToFit];
 }
 //- (instancetype)initWithFrame:(NSRect)frameRect {
 //    self = [super initWithFrame:frameRect];
@@ -148,21 +150,27 @@
     NSRectFill(dirtyRect);
     
     if (_hasFolderPicker) {
+        
+        CGSize triangleSize = NSMakeSize(8.0, 5.0);
+        CGPoint triangleOrigin = NSMakePoint(dirtyRect.size.width - 17 - triangleSize.width / 2, (dirtyRect.size.height - triangleSize.height) / 2);
+        
+        triangleFrame = NSMakeRect(triangleOrigin.x, triangleOrigin.y, triangleSize.width, triangleSize.height);
+        
         // draw carot
-//        float yStart = triangleFrame.origin.y;
-//        float yEnd = yStart + triangleFrame.size.height;
-//        float xStart = triangleFrame.origin.x;
-//        float xMid = xStart + triangleFrame.size.width / 2;
-//        float xEnd = xStart + triangleFrame.size.width;
-//        
-//        NSBezierPath * triangle = [[NSBezierPath alloc] init];
-//        [triangle moveToPoint:NSMakePoint(xStart, yStart)];
-//        [triangle lineToPoint:NSMakePoint(xEnd, yStart)];
-//        [triangle lineToPoint:NSMakePoint(xMid, yEnd)];
-//        [triangle lineToPoint:NSMakePoint(xStart, yStart)];
-//        
-//        [[NSColor clRGBA(0,0,0,.5)] setFill];
-//        [triangle fill];
+        float yStart = triangleFrame.origin.y;
+        float yEnd = yStart + triangleFrame.size.height;
+        float xStart = triangleFrame.origin.x;
+        float xMid = xStart + triangleFrame.size.width / 2;
+        float xEnd = xStart + triangleFrame.size.width;
+        
+        NSBezierPath * triangle = [[NSBezierPath alloc] init];
+        [triangle moveToPoint:NSMakePoint(xStart, yStart)];
+        [triangle lineToPoint:NSMakePoint(xEnd, yStart)];
+        [triangle lineToPoint:NSMakePoint(xMid, yEnd)];
+        [triangle lineToPoint:NSMakePoint(xStart, yStart)];
+        
+        [[NSColor clRGBA(0,0,0,.5)] setFill];
+        [triangle fill];
     }
 }
 

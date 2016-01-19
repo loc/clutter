@@ -8,14 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import "event.h"
+#import "CLFile.h"
 
 @protocol ClutterClient <NSObject>
-- (void) newFile: (NSURL*) path;
-- (void) renamedFile: (NSURL*) oldPath toNewPath: (NSURL*)newPath;
+- (void) newFile: (CLFile*) file;
+- (void) renamedFile: (CLFile*) file;
 @optional
-- (void) modifiedFile: (NSURL*) path;
-- (void) expirationChangedForFile:(NSURL*)url;
-- (void) expiredFile:(NSDictionary*)info;
+- (void) modifiedFile: (CLFile*) file;
+- (void) expirationChangedForFile:(CLFile*)file;
+- (void) expiredFile:(CLFile*)file;
 @end
 
 typedef void(^changeCallback)();
@@ -31,17 +32,17 @@ typedef void(^changeCallback)();
 + (CoreWrapper*)sharedInstance;
 -(void) runBlockOnChange: (changeCallback) callback;
 -(NSArray*) listFiles;
+-(NSArray*) listArchives;
 -(void)loop;
 -(NSInteger) count;
--(void) moveFile:(NSURL*) file toFolder: (NSURL*) folder withName: (NSString*) name;
--(void) keepFile:(NSURL*) file forDays: (int) days withName: (NSString*) name;
+-(void) moveFile:(CLFile*) file toFolder: (NSURL*) folder withName: (NSString*) name;
+-(void) keepFile:(CLFile*) file forDays: (int) days withName: (NSString*) name;
+-(void) extendFile:(CLFile*) file forDays: (int) days withName: (NSString*) name;
+-(void) restoreFile:(CLFile*) file forDays: (int) days;
+-(void) renameFile:(CLFile*) file toName: (NSString*) name;
 
 + (NSString*) getDisplayName: (NSString*) name;
 + (NSString*) timeLeftWords:(NSDate*) expiration;
-+ (NSString*) truncFileName:(NSString*)fileName withLength:(unsigned int)chars;
++ (NSString*) timeSinceDaysWords:(NSDate*) expiration;
 
 @end
-
-
-
-

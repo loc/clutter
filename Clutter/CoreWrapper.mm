@@ -10,6 +10,32 @@
 #import "core.h"
 #import "cltime.h"
 
+@interface CLFile (CLFileAdditions)
+
+- (instancetype) initWithCoreFile: (file*) f;
+
+@end
+
+@implementation CLFile (CLFileAdditions)
+
+- (instancetype) initWithCoreFile: (file*) f {
+    self = [super init];
+    self.inode = f->inode;
+    self.expiration = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:f->expiring];
+    self.size = f->fileSize;
+    self.url = [NSURL fileURLWithPath:[NSString stringWithUTF8String:(f->path + f->fileName).c_str()]];
+    self.lastModified = [[NSDate alloc] initWithTimeIntervalSince1970:f->last_modification];
+    if (f->expiring < 0) {
+        self.expiration = NULL;
+    }
+    
+    return self;
+}
+
+@end
+
+
+
 @interface CoreWrapper ()
 
 @property (nonatomic, assign) Watcher * watcher;
@@ -34,30 +60,29 @@ string handleEvents(Event e, file *f) {
     CoreWrapper* wrapper = [CoreWrapper sharedInstance];
     NSString* fileName = [[wrapper class] cStringToNSString:f->fileName];
     NSURL* fileURL = [[wrapper url] URLByAppendingPathComponent:fileName];
+    CLFile* file = [[CLFile alloc] initWithCoreFile:f];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if (e & created) {
             
-            [[wrapper delegate] newFile:fileURL];
+            [[wrapper delegate] newFile:file];
         }
         if (e & renamed) {
-            [[wrapper delegate] renamedFile:[[wrapper url] URLByAppendingPathComponent:[[wrapper class] cStringToNSString:f->previousName]] toNewPath:fileURL];
+            [[wrapper delegate] renamedFile:file];
         }
         if (e & expirationChanged) {
             // maybe we don't need this if we just refresh on every open?
 //            [[wrapper delegate] expirationChangedForFile:[wrapper url]];
         }
+        if (e & restored) {
+            
+        }
     });
     
-    if (e & removeRequestEvent) {
+    if (e & expired) {
         // put into application support
-        
-        [[wrapper delegate] expiredFile:@{
-                                           @"fileURL": fileURL,
-                                           @"inode": [NSNumber numberWithUnsignedLongLong: f->inode],
-                                           @"fileSize": [NSNumber numberWithUnsignedLongLong: f->fileSize],
-                                           @"downloadUrl": [[wrapper class] cStringToNSString: f->downloadedFrom.c_str()]
-                                           }];
+
+        [[wrapper delegate] expiredFile:file];
     }
     
     return "";
@@ -91,28 +116,37 @@ string handleEvents(Event e, file *f) {
 
 -(NSArray*) listFiles {
     std::vector<file*>* list = _watcher->listFiles();
+    return [self convertFilesVectorToArray:list];
+}
+
+-(NSArray*) listArchives {
+    std::vector<file*>* list = _watcher->listArchives();
+    NSArray* archiveList = [self convertFilesVectorToArray:list];
+    
+    [archiveList enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [(CLFile*)obj setArchived:YES];
+    }];
+    
+    return archiveList;
+}
+
+-(NSArray*) convertFilesVectorToArray: (std::vector<file*>*) list {
     NSMutableArray* convertedList = [[NSMutableArray alloc] init];
     
     for (auto it = list->begin(); it != list->end(); it++) {
         file* f = (file*)*it;
-        NSString* name = [NSString stringWithUTF8String:f->fileName.c_str()];
-        NSNumber * fileSize = [NSNumber numberWithUnsignedLongLong:f->fileSize];
-        id expiration = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:f->expiring];
-        if (f->expiring < 0) {
-            expiration = [NSNull null];
-        }
-        
-        NSDictionary* fields = NSDictionaryOfVariableBindings(name, fileSize, expiration);
-        
-        [convertedList addObject:fields];
+        CLFile* file = [[CLFile alloc] initWithCoreFile:f];
+        [convertedList addObject:file];
     }
     
-    //delete list;
+    delete list;
     return convertedList;
 }
 
--(void) moveFile:(NSURL*) fileURL toFolder: (NSURL*) folder withName: (NSString*) name {
-    struct file* f = _watcher->fileFromName([[fileURL lastPathComponent] UTF8String]);
+
+
+-(void) moveFile:(CLFile*) file toFolder: (NSURL*) folder withName: (NSString*) name {
+    struct file* f = _watcher->fileFromName([file.name UTF8String]);
     if (getDisplayName(f->fileName) != [name UTF8String]) {
         _watcher->rename(f, [name UTF8String]);
     }
@@ -120,12 +154,37 @@ string handleEvents(Event e, file *f) {
     _watcher->move(f, [[NSString stringWithFormat:@"%@/", [folder path]] UTF8String]);
 }
 
--(void) keepFile:(NSURL*) fileURL forDays: (int) days withName: (NSString*) name {
-    struct file* f = _watcher->fileFromName([[fileURL lastPathComponent] UTF8String]);
+-(void) keepFile:(CLFile*) file forDays: (int) days withName: (NSString*) name {
+    struct file* f = _watcher->fileFromName([file.name UTF8String]);
     if (getDisplayName(f->fileName) != [name UTF8String]) {
         _watcher->rename(f, [name UTF8String]);
     }
     _watcher->keep(f, days);
+}
+
+-(void) extendFile:(CLFile*) file forDays: (int) days withName: (NSString*) name {
+    struct file* f = _watcher->fileFromName([file.name UTF8String]);
+    if (getDisplayName(f->fileName) != [name UTF8String]) {
+        _watcher->rename(f, [name UTF8String]);
+    }
+    _watcher->extend(f, days);
+}
+
+-(void) expireFile:(CLFile*) file {
+    struct file* f = _watcher->fileFromName([file.name UTF8String]);
+    _watcher->expire(f);
+}
+
+-(void) restoreFile:(CLFile*) file forDays: (int) days {
+    struct file* f = _watcher->archiveFromInode(file.inode);
+    _watcher->restore(f, days);
+}
+
+-(void) renameFile:(CLFile*) file toName: (NSString*) name {
+    struct file* f = _watcher->fileFromName([file.name UTF8String]);
+    if (getDisplayName(f->fileName) != [name UTF8String]) {
+        _watcher->rename(f, [name UTF8String]);
+    }
 }
 
 + (NSString*) cStringToNSString: (string) str {
@@ -141,20 +200,9 @@ string handleEvents(Event e, file *f) {
     return [self cStringToNSString:words];
 }
 
-+ (NSString*) truncFileName:(NSString*)fileName withLength:(unsigned int)chars {
-    NSUInteger fileExtensionIndex = ([fileName rangeOfString:@"." options:NSBackwardsSearch]).location;
-    if (chars > [fileName length]) {
-        return fileName;
-    }
-    
-    NSString* name = [fileName substringToIndex:fileExtensionIndex];
-    NSString* ext = [fileName substringFromIndex:fileExtensionIndex+1];
-    
-    if ([name length] > chars - [ext length]) {
-        return [NSString stringWithFormat:@"%@...%@", [name substringToIndex:chars - [ext length]], ext];
-    }
-    
-    return fileName;
++ (NSString*) timeSinceDaysWords:(NSDate*) expiration {
+    string words = timeSinceDaysWords([expiration timeIntervalSinceReferenceDate]);
+    return [self cStringToNSString:words];
 }
 
 @end

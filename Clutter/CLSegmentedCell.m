@@ -15,9 +15,12 @@
 - (instancetype) init {
     self = [super init];
     
-    if (!self.deselectedColor) {
-        self.deselectedColor = [NSColor clBackgroundAccentMedium];
-    }
+    self.deselectedColor = [NSColor clearColor];
+    self.deselectedTextColor = [NSColor clMainText];
+    self.highlightTextColor = [NSColor clHighlightedText];
+    self.highlightColor = [NSColor clBlue];
+    self.highlightStrokeColor = [NSColor clColorAccent];
+    self.shouldBoldHighlight = YES;
     
     return self;
 }
@@ -29,7 +32,7 @@
 - (void) drawSegment:(NSInteger)segment inFrame:(NSRect)frame withView:(NSView *)controlView {
     
     NSRect newFrame = frame;
-    NSColor * fontColor = [NSColor clMainText];
+    NSColor * fontColor = self.deselectedTextColor;
     NSFont *font = [CLSegmentedCell cellFont];
     
     newFrame.origin.x += 0;
@@ -73,28 +76,32 @@
     }
     
     if (segment < self.segmentCount - 1) {
-        [[NSColor clRGBA(0,0,0,.2)] setStroke];
+        [[NSColor clRGBA(0,0,0,.3)] setStroke];
 //       [path setClip];
         [path setLineWidth:1];
         [rightEdge stroke];
     }
     
     if (self.selectedSegment == segment) {
-        [[NSColor clBlue] set];
-        fontColor = [NSColor clHighlightedText];
-        font = [NSFont fontWithName:@"Seravek-Medium" size:14];
+        [self.highlightColor set];
+        fontColor = self.highlightTextColor;
+        if (self.shouldBoldHighlight) {
+            font = [NSFont fontWithName:@"Seravek-Medium" size:14];
+        } else {
+            font = [CLSegmentedCell cellFont];
+        }
         
         [path fill];
         
         // Set the shown path as the clip
         [path setClip];
-        [path setLineWidth:1];
-        [[NSColor clColorAccent] setStroke];
+        [path setLineWidth:2];
+        [self.highlightStrokeColor setStroke];
         [path stroke];
     }
     else {
-//        [[NSColor yellowColor] setFill];
-//        [path fill];
+        [self.deselectedColor setFill];
+        [path fill];
     }
     
     

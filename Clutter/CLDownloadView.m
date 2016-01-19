@@ -8,6 +8,7 @@
 
 #import "CLDownloadView.h"
 #import "CLGenericFlippedView.h"
+#import "CLMainController.h"
 
 @interface CLDownloadView ()
 
@@ -25,6 +26,7 @@
     [super viewDidLoad];
     
     _preview = [[CLPreviewController alloc] init];
+    [_preview setConfirmDelegate:self];
     _moveActionView = [[CLFileActionView alloc] initWithTitle:@"Move:"];
     [_moveActionView setDelegate:self];
     [_moveActionView setBackgroundColor:[NSColor clRGB(223,225,228)]];
@@ -41,7 +43,7 @@
     }];
     
     [_moveActionView setLabels:folderNames andValues:folderUrls];
-    [_keepActionView setLabels:@[@"1 day", @"2 weeks", @"1 month", @"Forever"] andValues:@[@1, @14, @30, [NSNull null]]];
+    [_keepActionView setLabels:@[@"1 day", @"2 weeks", @"1 month", @"Forever"] andValues:@[@1, @14, @30, @-1]];
     
     
     _confirmActionView = [[CLActionConfirmView alloc] init];
@@ -78,10 +80,24 @@
     
     [[NSNotificationCenter defaultCenter] addObserverForName:@"activeFileChanged" object:nil queue:nil usingBlock:^(NSNotification *note){
         
-        NSString* fileName = (NSString*)note.object;
-        [self updatePanelWithFile:[[[CoreWrapper sharedInstance] url] URLByAppendingPathComponent:fileName]];
+        CLFile* file = (CLFile*)note.object;
+        [self updatePanelWithFile:file];
+        [self.confirmActionView enableButton:NO];
         
-                                                                                                        }];
+    }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:CLNotificationViewModeChanged object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        NSString* tableMode = [note object];
+        
+        if (tableMode == CLViewModeFresh) {
+            [_keepActionView setTitle:@"Extend:"];
+        } else if (tableMode == CLViewModeExpired) {
+            [_keepActionView.titleLabel setStringValue:@"Restore:"];
+            [_keepActionView setTitle:@"Restore:"];
+        } else {
+            [_keepActionView setTitle:@"Keep:"];
+        }
+    }];
     
 //    NSArray* previewWidthConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_preview(>=150)][_moveActionView(75)][_keepActionView(75)][_confirmActionView(55)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_preview)];
 //    [NSLayoutConstraint activateConstraints:previewWidthConstraints];
@@ -108,47 +124,59 @@
     }
     else {
         // TODO: better validation?
-        NSString* newName = [_preview.name.stringValue stringByReplacingOccurrencesOfString:@"/" withString:@""];
+        NSString* newName = [_preview.currentText stringByReplacingOccurrencesOfString:@"/" withString:@""];
         
         if ([_moveActionView isSelected]) {
             NSURL* folder = [_moveActionView getSelectedValue];
-            [[CoreWrapper sharedInstance] moveFile:[self activeFile] toFolder:folder withName:newName];
+            [[CoreWrapper sharedInstance] moveFile:self.activeFile toFolder:folder withName:newName];
         } else if ([_keepActionView isSelected]) {
             NSNumber* days = [_keepActionView getSelectedValue];
-            [[CoreWrapper sharedInstance] keepFile:[self activeFile] forDays:[days unsignedIntegerValue] withName:newName];
+            
+            // hopefully there's a better way!
+            AppDelegate* delegate = (AppDelegate*)[NSApp delegate];
+            CLMainController* mainController = (CLMainController*)delegate.controller;
+            if (mainController.viewMode == CLViewModeUnsorted) {
+                [[CoreWrapper sharedInstance] keepFile:self.activeFile forDays:[days unsignedIntegerValue] withName:newName];
+            } else if (mainController.viewMode == CLViewModeFresh) {
+                [[CoreWrapper sharedInstance] extendFile:self.activeFile forDays:[days unsignedIntegerValue] withName:newName];
+            } else if (mainController.viewMode == CLViewModeExpired) {
+                [[CoreWrapper sharedInstance] restoreFile:self.activeFile forDays:[days unsignedIntegerValue]];
+            }
+            
+            
             //            NSLog(@"days: %@", days);
+        } else {
+            [[CoreWrapper sharedInstance] renameFile:self.activeFile toName:newName];
         }
+        
         [self setActiveFile:nil];
     }
     
     [(AppDelegate*)[NSApp delegate] togglePanel:NO];
 }
 
+- (void) shouldUpdateConfirm {
+    [self.confirmActionView enableButton:[self.keepActionView isSelected] || [self.moveActionView isSelected] || [self.preview hasUserChangedFileName]];
+}
+
 // file action methods
 - (void)actionChanged:(NSString *)label from:(id)sender {
-    if (!label) {
-        [_confirmActionView enableButton:NO];
-        return;
-    }
     if (sender == _moveActionView) {
         [_keepActionView clearSelection];
     } else {
         [_moveActionView clearSelection];
-        // _keepActionView
     }
-    [_confirmActionView enableButton:YES];
+    [self shouldUpdateConfirm];
 }
 - (void) folderPicked:(NSURL *)folder from:(id)sender {
     
 }
 
-- (void) updatePanelWithFile: (NSURL*) path {
-    NSDictionary * dict = @{
-                            @"url": path,
-                            @"size": @1
-                            };
-    [_preview filesSelected: [NSArray arrayWithObject:dict]];
-    [self setActiveFile:path];
+- (void) updatePanelWithFile: (CLFile*) file {
+    [_preview filesSelected: [NSArray arrayWithObject:file]];
+    [_moveActionView clearSelection];
+    [_keepActionView clearSelection];
+    [self setActiveFile:file];
     [(AppDelegate*)[[NSApplication sharedApplication] delegate] togglePanel:YES];
 }
 

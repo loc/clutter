@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9412351B9D18ACD14580ABC3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ED007E51A3A55AB689EA84F6 /* libPods.a */; };
+		A117BBF21C42D50D00B51953 /* CLFile.m in Sources */ = {isa = PBXBuildFile; fileRef = A117BBF11C42D50D00B51953 /* CLFile.m */; };
 		A11C7C151BA499F4008E6E91 /* CLPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11C7C131BA499F4008E6E91 /* CLPreviewController.m */; };
 		A11C7C161BA499F4008E6E91 /* Preview.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11C7C141BA499F4008E6E91 /* Preview.xib */; };
 		A11C7C1E1BAB8381008E6E91 /* CLFileActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = A11C7C1D1BAB8381008E6E91 /* CLFileActionView.m */; };
@@ -95,6 +96,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A117BBF01C42D50D00B51953 /* CLFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLFile.h; sourceTree = "<group>"; };
+		A117BBF11C42D50D00B51953 /* CLFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLFile.m; sourceTree = "<group>"; };
 		A11C7C121BA499F4008E6E91 /* CLPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLPreviewController.h; sourceTree = "<group>"; };
 		A11C7C131BA499F4008E6E91 /* CLPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLPreviewController.m; sourceTree = "<group>"; };
 		A11C7C141BA499F4008E6E91 /* Preview.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preview.xib; sourceTree = "<group>"; };
@@ -296,6 +299,8 @@
 				A1C770BF1B438752002077A3 /* core.cpp */,
 				A1C770B71B424874002077A3 /* CoreWrapper.h */,
 				A1C770B81B424874002077A3 /* CoreWrapper.mm */,
+				A117BBF01C42D50D00B51953 /* CLFile.h */,
+				A117BBF11C42D50D00B51953 /* CLFile.m */,
 				A1C770881B40C42C002077A3 /* AppDelegate.h */,
 				A1C770891B40C42C002077A3 /* AppDelegate.m */,
 				A1A7AA551BCEEB4B008DE19B /* images */,
@@ -645,6 +650,7 @@
 				A1F160F51BF6692700CEBBF2 /* CLTableView.m in Sources */,
 				A12BE5CF1BB8EC02003115D8 /* CLSimpleButton.m in Sources */,
 				A12BE5D21BBA27EC003115D8 /* CLSegmentedControl.m in Sources */,
+				A117BBF21C42D50D00B51953 /* CLFile.m in Sources */,
 				A1C770831B40C42C002077A3 /* main.m in Sources */,
 				A15161A81B4A3EC300E103B1 /* CLSegmentedCell.m in Sources */,
 				A12BE5D81BBCA4ED003115D8 /* CLStatusBarView.m in Sources */,

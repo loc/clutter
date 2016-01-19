@@ -109,7 +109,7 @@
     [path lineToPoint:(NSPoint){xMax, 0}];
     [path lineToPoint:(NSPoint){xMin, 0}];
     
-    [[NSColor clBackground] setFill];
+    [[NSColor clRGB(196, 199, 204)] setFill];
     [path fill];
 }
 

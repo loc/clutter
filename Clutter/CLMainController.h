@@ -10,8 +10,17 @@
 #import "CoreWrapper.h"
 #import "CLDownloadView.h"
 #import "CLExpiringView.h"
+#import "CLSegmentedControl.h"
+#import "CLFile.h"
 
-@interface CLMainController : NSWindowController <NSTableViewDataSource, NSTableViewDelegate, ClutterClient> {
+extern NSString* const CLViewModeUnsorted;
+extern NSString* const CLViewModeFresh;
+extern NSString* const CLViewModeExpired;
+extern NSString* const CLViewModeAll;
+extern NSString* const CLNotificationViewModeChanged;
+
+
+@interface CLMainController : NSWindowController <NSTableViewDataSource,NSTableViewDelegate,ClutterClient,CLConfirmController> {
     IBOutlet NSSegmentedControl * tabSwitcher;
     IBOutlet NSTableView * tableView;
     dispatch_source_t expirationDebounceSource;
@@ -23,10 +32,13 @@
 @property NSArray* filesAdded;
 @property NSArray* filesExpiredQueue;
 
+@property (nonatomic) NSString* viewMode;
+
 
 //- (id)initWithWindow:(CLPanel *)window;
 
 @property (strong) CLDownloadView* downloadView;
+@property (strong) CLSegmentedControl* viewModeControl;
 @property (strong) CLExpiringView* expiringView;
 
 @end

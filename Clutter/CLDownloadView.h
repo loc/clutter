@@ -21,9 +21,11 @@
 @property (nonatomic, retain) CLFileActionView* moveActionView;
 @property (nonatomic, retain) CLFileActionView* keepActionView;
 @property (nonatomic, retain) CLActionConfirmView* confirmActionView;
-@property (nonatomic, retain) NSURL* activeFile;
+@property (nonatomic, retain) CLFile* activeFile;
 
-- (void) updatePanelWithFile: (NSURL*) path;
+@property BOOL isFileActionSelected;
+
+- (void) updatePanelWithFile: (CLFile*) path;
 
 @end
 

@@ -96,7 +96,7 @@
 - (void) drawWithFrame: (CGRect) cellFrame
            highlighted: (BOOL) isHighlighted
                 inView: (NSView*) view {
-    [[NSColor clRGB(190,192,194)] setFill];
+    [[NSColor clRGB(215,217,219)] setFill];
     NSRectFill(cellFrame);
     [self drawInteriorWithFrame:cellFrame inView:view];
     
@@ -104,7 +104,7 @@
     [sep moveToPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - .5, 4)];
     [sep lineToPoint:(NSPoint){cellFrame.origin.x + cellFrame.size.width - .5, cellFrame.size.height - 4}];
     
-    [[NSColor clRGB(170,170,170)] setStroke];
+    [[NSColor clRGB(140,140,140)] setStroke];
     [sep stroke];
     
     NSBezierPath* bottom = [[NSBezierPath alloc] init];

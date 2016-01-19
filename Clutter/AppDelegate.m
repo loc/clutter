@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import "CLMainController.h"
 
+NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShouldChange";
+
 @implementation AppDelegate
 
 - (void) statusItemClicked {
@@ -22,8 +24,8 @@
     } else {
         [self togglePanel:![self isActive]];
     }
-    
 }
+
 - (void) togglePanel: (BOOL) shouldOpen {
 //    if ([self isActive] == shouldOpen) return;
     
@@ -66,9 +68,9 @@
     
 //    [[_statusItem.button cell] attachPopUpWithFrame:[_statusItem.button frame] inView:_statusItem.view];
     
-    _window = [[CLPanel alloc] initWithContentSize:(CGSize){480, 450} relativeToPoint:[self calcWindowOrigin]];
+    _window = [[CLPanel alloc] initWithContentSize:(CGSize){480, 480} relativeToPoint:[self calcWindowOrigin]];
     
-    controller = [[CLMainController alloc] initWithWindow:_window];
+    _controller = [[CLMainController alloc] initWithWindow:_window];
     
     [self watchForKeyWindowChange:YES];
     

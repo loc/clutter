@@ -13,10 +13,11 @@
 #import "CLPanel.h"
 #import <Sparkle/Sparkle.h>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate> {
-    NSWindowController * controller;
-}
+extern NSString* const CLNotificationConfirmShouldChange;
 
+@interface AppDelegate : NSObject <NSApplicationDelegate>
+
+@property (strong) NSWindowController * controller;
 @property (nonatomic, strong) CLPanel * window;
 @property (nonatomic, retain) NSStatusItem* statusItem;
 @property (nonatomic, strong) CLStatusBarView* statusView;

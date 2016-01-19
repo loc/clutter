@@ -9,6 +9,7 @@
 #import "CLPreviewController.h"
 #import "constants.h"
 @import QuickLook;
+@import Quartz;
 
 @interface CLPreviewController ()
 
@@ -32,16 +33,16 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
     _checkbox = [[CLSimpleCheckbox alloc] initWithFrame:NSMakeRect(28, 50, 280, 25)];
     [_checkbox setButtonType:NSSwitchButton];
     [_checkbox setTitle:@"Remember for the next hour"];
-    [self.view addSubview:_checkbox];
+//    [self.view addSubview:_checkbox];
     
 //    [self.name ]
     [[NSNotificationCenter defaultCenter] addObserverForName:CLTextFieldDidBecomeFirstResponder
-                                                      object:self.name
+                                                      object:self.file
                                                        queue:nil
                                                   usingBlock:^(NSNotification * _Nonnull note) {
                                                       
                                                       NSTextField *textField = [note object];
-                                                      [textField setAttributedStringValue:[self styleNameText:self.fileName andTruncate:NO]];
+                                                      [textField setAttributedStringValue:[self styleNameText:self.currentText andTruncate:NO]];
                                                       
                                                   }];
     
@@ -50,24 +51,36 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
 
 -(void) filesSelected:(NSArray*) files {
     NSLog(@"%@", files);
-    NSString * fileName = [[[files firstObject] objectForKey:@"url"] lastPathComponent];
+    self.file = (CLFile*)[files firstObject];
     
-    self.fileName = [[CoreWrapper class] getDisplayName:fileName];
-    [_name setAttributedStringValue:[self styleNameText:self.fileName andTruncate:YES]];
-    [_name setToolTip:self.fileName];
+    self.originalText = self.currentText = self.file.displayName;
+    [_name setAttributedStringValue:[self styleNameText:self.file.displayName andTruncate:YES]];
+    [_name setToolTip:self.file.name];
     
-    [self renderPreviewFor:[[files firstObject] objectForKey:@"url"]];
+    [self renderPreviewFor:self.file];
 }
 
 - (void)controlTextDidChange:(NSNotification *)notification {
     NSTextField *textField = [notification object];
+    if (!textField.editable) return;
     NSLog(@"%@", [textField stringValue]);
     [textField setAttributedStringValue:[self styleNameText:[textField stringValue] andTruncate:NO]];
 }
 - (void)controlTextDidEndEditing:(NSNotification *)obj {
     NSTextField *textField = [obj object];
+    if (!textField.editable) return;
+    
     [textField setBackgroundColor:[NSColor clearColor]];
-    [textField setAttributedStringValue:[self styleNameText:[textField stringValue] andTruncate:YES]];
+    
+    if ([[textField stringValue] length] > 0) {
+        if (![[textField stringValue] isEqualToString:self.currentText]) {
+            self.currentText = [textField stringValue];
+        }
+        
+        [self.confirmDelegate shouldUpdateConfirm];
+    }
+    
+    [textField setAttributedStringValue:[self styleNameText:self.currentText andTruncate:YES]];
 }
 - (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
     if (commandSelector == @selector(insertTab:) || commandSelector == @selector(insertNewline:)) {
@@ -78,10 +91,14 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
     return NO;
 }
 
+- (BOOL) hasUserChangedFileName {
+    return ![self.currentText isEqualToString:self.file.displayName];
+}
+
 - (NSAttributedString*) styleNameText: (NSString*)fileName andTruncate: (bool)shouldTrunc  {
     NSString* name;
     if (shouldTrunc) {
-        name = [CoreWrapper truncFileName:fileName withLength:20];
+        name = [self.file truncName:fileName forChars:23];
     } else {
         name = fileName;
     }
@@ -114,25 +131,32 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
     return nameStyledString;
 }
 
--(void) renderPreviewFor:(NSURL*) fileUrl {
+-(void) renderPreviewFor:(CLFile*) file {
     
-    NSSize imgSize = CGSizeMake(136, 136);
-    NSImage * thumbnailImage;
-    CGImageRef thumbRef = QLThumbnailImageCreate(kCFAllocatorDefault, (__bridge CFURLRef)(fileUrl), imgSize, nil);
-    if (thumbRef) {
-        thumbnailImage = [[NSImage alloc] initWithCGImage:thumbRef size:NSZeroSize];
-    } else {
-        thumbnailImage = [[NSWorkspace sharedWorkspace] iconForFile: [fileUrl path]];
-        [thumbnailImage setSize:CGSizeMake(136, 136)];
-    }
+    [[self thumbnailView] setImage:nil];
     
-    NSShadow * shadow = [[NSShadow alloc] init];
-    [shadow setShadowBlurRadius:3.0f];
-    [shadow setShadowColor:[NSColor clRGBA(0,0,0,.4)]];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSSize imgSize = CGSizeMake(136, 136);
+        NSImage * thumbnailImage;
+        CGImageRef thumbRef = QLThumbnailImageCreate(kCFAllocatorDefault, (__bridge CFURLRef)([file resolvedURL]), imgSize, nil);
+        if (thumbRef) {
+            thumbnailImage = [[NSImage alloc] initWithCGImage:thumbRef size:NSZeroSize];
+        } else {
+            thumbnailImage = [[NSWorkspace sharedWorkspace] iconForFile: [[file resolvedURL] path]];
+            [thumbnailImage setSize:CGSizeMake(136, 136)];
+        }
+        
+        NSShadow * shadow = [[NSShadow alloc] init];
+        [shadow setShadowBlurRadius:3.0f];
+        [shadow setShadowColor:[NSColor clRGBA(0,0,0,.4)]];
+        
+        dispatch_sync(dispatch_get_main_queue(), ^(void) {
+            [_thumbnailView setShadow:shadow];
+            [[self thumbnailView] setImage:thumbnailImage];
+        });
+        CGImageRelease(thumbRef);
+    });
     
-    [_thumbnailView setShadow:shadow];
-    
-    [[self thumbnailView] setImage:thumbnailImage];
 }
 
 @end
@@ -143,9 +167,11 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
     [self addTrackingArea:area];
 }
 - (void)mouseEntered:(NSEvent *)theEvent {
+    if (!self.editable) return;
     [self setBackgroundColor:[NSColor clRGBA(255,255,255,.15)]];
 }
 - (void)mouseExited:(NSEvent *)theEvent {
+    if (!self.editable) return;
     NSResponder * firstResponder = [[NSApp keyWindow] firstResponder];
     BOOL isFieldSelected = [(id)firstResponder delegate] == self;
     double opacity = isFieldSelected ? 0.3 : 0.0;
@@ -153,6 +179,7 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
 }
 
 - (BOOL) becomeFirstResponder {
+    if (!self.editable) return NO;
     [self setBackgroundColor:[NSColor clRGBA(255,255,255,.3)]];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:CLTextFieldDidBecomeFirstResponder object:self];

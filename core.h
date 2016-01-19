@@ -94,15 +94,19 @@ class Watcher {
   string supportPath;
   void loop(void);
   vector<file*>* listFiles(void);
+  vector<file*>* listArchives(void);
   vector<file*>* expireFiles(void);
   unsigned long count(void);
   void directoryChanged(bool supressEvents);
   void timerFired(void);
   void updateTimer(double expiry);
   file * fileFromName(string name);
+  file* archiveFromInode(unsigned long long inode);
   void keep(file* f, int days);
   void move(file* f, string path);
   void extend(file *f, int days);
+  void expire(file *f);
+  void restore(file *f, int days);
   void rename(file* f, string name);
   void save();
   void setupMessagePorts();
@@ -127,7 +131,7 @@ void osxTimerHandler(CFRunLoopTimerRef timer, void *info);
 string getDisplayName(string fileName);
 string getDownloadURL(file* f);
 
-BOOST_CLASS_VERSION(Watcher, 4)
+BOOST_CLASS_VERSION(file, 4)
 
 #endif
 

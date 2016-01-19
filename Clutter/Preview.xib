@@ -3,7 +3,6 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CLPreviewController">
@@ -23,30 +22,8 @@
                     <rect key="frame" x="339" y="40" width="91" height="90"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="HEQ-by-PrG"/>
                 </imageView>
-                <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" ambiguous="YES" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bv9-Lb-X4k">
-                    <rect key="frame" x="23" y="105" width="288" height="29"/>
-                    <subviews>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RSY-TZ-KBH" customClass="CLTextField">
-                            <rect key="frame" x="0.0" y="0.0" width="288" height="29"/>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" title="Label" drawsBackground="YES" allowsEditingTextAttributes="YES" id="r98-J0-5wy">
-                                <font key="font" metaFont="system" size="24"/>
-                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
-                            </textFieldCell>
-                            <connections>
-                                <outlet property="delegate" destination="-2" id="sPu-fa-9gx"/>
-                            </connections>
-                        </textField>
-                    </subviews>
-                    <visibilityPriorities>
-                        <integer value="1000"/>
-                    </visibilityPriorities>
-                    <customSpacing>
-                        <real value="3.4028234663852886e+38"/>
-                    </customSpacing>
-                </stackView>
                 <box verticalHuggingPriority="750" fixedFrame="YES" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="meW-Mg-gVw">
-                    <rect key="frame" x="0.0" y="147" width="480" height="9"/>
+                    <rect key="frame" x="0.0" y="143" width="480" height="9"/>
                     <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                     <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <font key="titleFont" metaFont="system"/>
@@ -58,11 +35,23 @@
                     </constraints>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="fTj-tD-yrH"/>
                 </imageView>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RSY-TZ-KBH" customClass="CLTextField">
+                    <rect key="frame" x="20" y="105" width="274" height="29"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" title="Label" drawsBackground="YES" allowsEditingTextAttributes="YES" id="r98-J0-5wy">
+                        <font key="font" metaFont="system" size="24"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
+                    </textFieldCell>
+                    <connections>
+                        <outlet property="delegate" destination="-2" id="sPu-fa-9gx"/>
+                    </connections>
+                </textField>
             </subviews>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="K1T-ZM-PT1" secondAttribute="trailing" constant="29" id="1fD-7x-f40"/>
+                <constraint firstItem="RSY-TZ-KBH" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="20" id="C4e-Nh-J6b"/>
                 <constraint firstAttribute="bottom" secondItem="K1T-ZM-PT1" secondAttribute="bottom" constant="10" id="XLL-oW-wKI"/>
-                <constraint firstItem="K1T-ZM-PT1" firstAttribute="leading" secondItem="Bv9-Lb-X4k" secondAttribute="trailing" constant="8" id="aVu-Mv-7ao"/>
+                <constraint firstItem="K1T-ZM-PT1" firstAttribute="leading" secondItem="RSY-TZ-KBH" secondAttribute="trailing" constant="25" id="iTO-9G-iM5"/>
                 <constraint firstItem="K1T-ZM-PT1" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" constant="16" id="r0b-io-KJ6"/>
             </constraints>
             <point key="canvasLocation" x="245" y="174"/>

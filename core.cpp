@@ -167,13 +167,13 @@ void Watcher::timerFired() {
   cout << expired->size() << " files expired" << endl;
   
   for (auto it = expired->begin(); it != expired->end(); it++) {
-    file* f = new file();
-    *f = **it;
-    archived[(*it)->inode] = f;
-    this->callback(removeRequestEvent, f);
+    this->expire(*it);
+//
 //    remove(((*it)->path + (*it)->fileName).c_str());
     // 
   }
+  
+  delete expired;
   
 }
 
@@ -217,6 +217,15 @@ vector<file*>* Watcher::listFiles() {
   return files;
 }
 
+vector<file*>* Watcher::listArchives() {
+  vector<file*> * files = new vector<file*>;
+  for (auto it = archived.begin(); it != archived.end(); it++) {
+    files->push_back(it->second);
+  }
+  //  kTrashFolderType
+  return files;
+}
+
 unsigned long Watcher::count() {
     return m.size();
 }
@@ -225,11 +234,13 @@ file* Watcher::fileFromName(string name) {
     return names[name];
 }
 
+file* Watcher::archiveFromInode(unsigned long long inode) {
+  return archived[inode];
+}
+
 void Watcher::keep(file *f, int days) {
-  f->expiring = CFAbsoluteTimeGetCurrent() + durationFromUnit(days, "d");
-  this->callback(expirationChanged, f);
-  this->saveWatcher();
-  this->timerFired();
+  f->expiring = CFAbsoluteTimeGetCurrent();
+  this->extend(f, days);
 }
 
 void Watcher::move(file *f, string path) {
@@ -237,22 +248,38 @@ void Watcher::move(file *f, string path) {
 }
 
 void Watcher::extend(file *f, int days) {
+  if (f->expiring < 0) {
+    this->keep(f, days);
+    return;
+  }
   if (days < 0) {
     // keep forever
     f->expiring = -1;
-    this->saveWatcher();
-    this->timerFired();
-  }
-  else if (f->expiring < 0) {
-    this->keep(f, days);
   }
   else {
     f->expiring += durationFromUnit(days, "d");
-    this->saveWatcher();
-    this->timerFired();
   }
+  this->saveWatcher();
+  this->timerFired();
   this->sendExtensionMessage(f);
   this->callback(expirationChanged, f);
+}
+
+void Watcher::expire(file *f) {
+  file* newRecord = new file();
+  *newRecord = *f;
+  archived[f->inode] = newRecord;
+  ::rename((f->path + f->fileName).c_str(), (this->supportPath + "Archives/" + to_string(f->inode) + "-" + f->fileName).c_str());
+  this->callback(expired, newRecord);
+}
+
+void Watcher::restore(file *f, int days) {
+  f->_expired = false;
+  m[f->inode] = f;
+  archived.erase(f->inode);
+  ::rename((this->supportPath + "Archives/" + to_string(f->inode) + "-" + f->fileName).c_str(), (f->path + f->fileName).c_str());
+  this->keep(f, days);
+  this->callback(restored, f);
 }
 
 void Watcher::sendExtensionMessage(file *f) {
@@ -505,6 +532,11 @@ string getDownloadURL(file* f) {
       value = CFStringGetCStringPtr((CFStringRef)valueRef, kCFStringEncodingUTF8);
     }
   }
+  
+  CFRelease(pathRef);
+  CFRelease(attrRef);
+  CFRelease(itemRef);
+  
   return value;
 }
 
