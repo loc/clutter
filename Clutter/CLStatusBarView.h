@@ -15,5 +15,7 @@
 @property (nonatomic, assign, getter=isMouseDown) BOOL mouseDown;
 @property (nonatomic, assign) id target;
 @property (nonatomic, assign) SEL action;
+@property (strong) NSImage* image;
+@property (strong) NSImage* altImage;
 
 @end

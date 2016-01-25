@@ -14,10 +14,17 @@
     [super drawRect:dirtyRect];
     if (self.isActive) {
         [[NSColor clBlue] setFill];
-    } else {
-        [[NSColor clRGBA(0,0,0,.1)] setFill];
+        NSRectFill(dirtyRect);
     }
-    NSRectFill(dirtyRect);
+    
+    NSRect imageRect;
+    imageRect.size = self.image.size;
+    imageRect.origin.x = self.bounds.size.width - self.image.size.width;
+    imageRect.origin.y = self.bounds.size.height - self.image.size.height;
+    
+    imageRect.origin.x -= 2;
+    
+    [(self.isActive ? self.altImage : self.image) drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
     
     // Drawing code here.
 }
@@ -26,11 +33,11 @@
     [self setMouseDown:YES];
     [self setActive:![self isActive]];
     [self setNeedsDisplay:YES];
-    [[self target] performSelector:_action withObject:[NSNumber numberWithBool:self.isActive]];
+    [[self target] performSelector:_action withObject:[NSNumber numberWithBool:NO]];
 }
 
 - (void) rightMouseDown:(NSEvent *)theEvent {
-    
+    [[self target] performSelector:_action withObject:[NSNumber numberWithBool:YES]];
 }
 - (void) mouseUp:(NSEvent *)theEvent {
     [self setMouseDown:NO];

@@ -13,16 +13,16 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
 
 @implementation AppDelegate
 
-- (void) statusItemClicked {
-    NSEvent* theEvent = [NSApp currentEvent];
-    if ([theEvent modifierFlags] & NSControlKeyMask){
+- (void) statusItemClicked: (NSNumber*) wasRightClicked {
+    
+    if (![wasRightClicked boolValue]) {
+        [self togglePanel:![self isActive]];
+    } else {
         NSMenu* menu = [[NSMenu alloc] initWithTitle:@"context"];
         [menu addItemWithTitle:@"Check for updates..." action:@selector(checkForUpdatesOkay) keyEquivalent:@""];
         [menu addItemWithTitle:@"Quit" action:@selector(quitIt) keyEquivalent:@""];
         
         [_statusItem popUpStatusItemMenu:menu];
-    } else {
-        [self togglePanel:![self isActive]];
     }
 }
 
@@ -62,12 +62,21 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
     NSImage* blackIcon = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"images/icon" ofType:@"png"]];
     NSImage* altIcon = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"images/icon_alt" ofType:@"png"]];
     _statusItem = [statusBar statusItemWithLength:blackIcon.size.width + 5];
-    [_statusItem.button setTarget:self];
-    [_statusItem.button setAction:@selector(statusItemClicked)];
+    _statusView = [[CLStatusBarView alloc] init];
+
+    _statusView.image = blackIcon;
+    _statusView.altImage = altIcon;
+    [_statusView setTarget:self];
+    [_statusView setAction:@selector(statusItemClicked:)];
+    [_statusItem setView:_statusView];
     
-    [_statusItem.button setImage:blackIcon];
-    [_statusItem.button setAlternateImage:altIcon];
-    [[_statusItem.button cell] setImageScaling:NSImageScaleProportionallyDown];
+//    [_statusItem.button setTarget:self];
+//    [_statusItem.button setAction:@selector(statusItemClicked)];
+    
+
+//    [_statusItem.button setImage:blackIcon];
+//    [_statusItem.button setAlternateImage:altIcon];
+//    [[_statusItem.button cell] setImageScaling:NSImageScaleProportionallyDown];
     
 //    [[_statusItem.button cell] attachPopUpWithFrame:[_statusItem.button frame] inView:_statusItem.view];
     
@@ -91,7 +100,8 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
     if ([[QLPreviewPanel sharedPreviewPanel] isVisible]) {
         [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
     }
-    [_window setIsVisible:NO];
+//    [_window setIsVisible:NO];
+    [self togglePanel:NO];
     [self setActive:NO];
 }
          

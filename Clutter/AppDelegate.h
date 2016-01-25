@@ -27,6 +27,7 @@ extern NSString* const CLNotificationConfirmShouldChange;
 
 
 - (void) statusItemClicked;
+- (void) statusItemRightClicked;
 - (void) togglePanel: (BOOL) shouldOpen;
 - (void)windowDidResignKey: (NSNotification*)event;
 - (void) watchForKeyWindowChange: (BOOL) shouldWatch;

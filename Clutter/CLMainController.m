@@ -36,6 +36,7 @@ NSString* const CLNotificationViewModeChanged = @"CLNotificationViewModeChanged"
     [_viewModeControl setAction:@selector(viewModeControlClicked:)];
     [_viewModeControl setLabels:@[CLViewModeUnsorted, CLViewModeFresh, CLViewModeExpired]];
     
+    
     // [NSColor clRGBA(165,165,165, .8)]
     // [NSColor clRGB(65,65,65)]
     [(CLSegmentedCell*)_viewModeControl.cell setHighlightColor:[NSColor clRGBA(235,235,235, .45)]];
@@ -57,22 +58,35 @@ NSString* const CLNotificationViewModeChanged = @"CLNotificationViewModeChanged"
 
     self.expiringView = [[CLExpiringView alloc] init];
     
+    NSButton* settingsButton = [[NSButton alloc] init];
+    settingsButton.image = [NSImage imageNamed:NSImageNameActionTemplate];
+    settingsButton.bordered = NO;
+    [settingsButton setButtonType:NSMomentaryChangeButton];
+    [[settingsButton cell] setImageScaling:NSImageScaleProportionallyUpOrDown];
+
+    
     [window.panelView addSubview:bgView];
     [window.panelView addSubview:self.expiringView.view];
     [window.panelView addSubview:self.downloadView.view];
     [window.panelView addSubview:self.viewModeControl];
+//    [window.panelView addSubview:settingsButton];
     
     [self.viewModeControl setTranslatesAutoresizingMaskIntoConstraints:NO];
     [bgView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [settingsButton setTranslatesAutoresizingMaskIntoConstraints:NO];
 
     NSDictionary* views = @{@"expiring": self.expiringView.view,
                             @"download": self.downloadView.view,
                             @"viewMode": self.viewModeControl,
+//                            @"settings": settingsButton,
                             @"background": bgView};
     
     NSMutableArray* constraints = [[NSMutableArray alloc] init];
     
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[viewMode(280)]" options:0 metrics:nil views:views]];
+//    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[settings(16)]-15-|" options:0 metrics:nil views:views]];
+//    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[settings(16)]" options:0 metrics:nil views:views]];
+    
     [constraints addObject:[NSLayoutConstraint constraintWithItem:self.viewModeControl attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:window.panelView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[background]|" options:0 metrics:nil views:views]];
@@ -81,6 +95,7 @@ NSString* const CLNotificationViewModeChanged = @"CLNotificationViewModeChanged"
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[expiring]|" options:0 metrics:nil views:views]];
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[download]|" options:0 metrics:nil views:views]];
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-15-[viewMode(25)]-15-[expiring][download(300)]|" options:0 metrics:nil views:views]];
+    
     
     [constraints addObject:[NSLayoutConstraint constraintWithItem:bgView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.expiringView.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     
