@@ -10,6 +10,7 @@
 #import "CLSimpleCheckbox.h"
 #import "CoreWrapper.h"
 #import "CLFile.h"
+@import Quartz;
 
 extern NSString * const CLTextFieldDidBecomeFirstResponder;
 
@@ -17,7 +18,8 @@ extern NSString * const CLTextFieldDidBecomeFirstResponder;
 - (void) shouldUpdateConfirm;
 @end
 
-@interface CLPreviewController : NSViewController <NSTextFieldDelegate>
+
+@interface CLPreviewController : NSViewController  <NSTextFieldDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate>
 
 @property IBOutlet NSImageView * thumbnailView;
 @property IBOutlet NSTextField * name;
@@ -27,10 +29,12 @@ extern NSString * const CLTextFieldDidBecomeFirstResponder;
 @property CLSimpleCheckbox* checkbox;
 @property id<CLConfirmController> confirmDelegate;
 @property () BOOL allowFileNameEditing;
+@property (strong) QLPreviewPanel *previewPanel;
 
 -(void) filesSelected:(NSArray*) files;
 -(void) renderPreviewFor:(CLFile*) fileUrl;
 -(BOOL) hasUserChangedFileName;
+
 @end
 
 @interface CLTextField : NSTextField

@@ -10,6 +10,8 @@
 #import "event.h"
 #import "CLFile.h"
 
+extern NSString* const CLNotificationPreviewToggle;
+
 @protocol ClutterClient <NSObject>
 - (void) newFile: (CLFile*) file;
 - (void) renamedFile: (CLFile*) file;

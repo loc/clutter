@@ -10,6 +10,8 @@
 #import "core.h"
 #import "cltime.h"
 
+NSString* const CLNotificationPreviewToggle = @"CLNotificationPreviewToggle";
+
 @interface CLFile (CLFileAdditions)
 
 - (instancetype) initWithCoreFile: (file*) f;

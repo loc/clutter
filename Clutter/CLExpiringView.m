@@ -120,6 +120,19 @@
     return rowView;
 }
 
+- (void)keyDown:(NSEvent *)theEvent {
+    [super keyDown:theEvent];
+    if ([theEvent keyCode] == 49 && ![theEvent isARepeat]) {
+//        [[NSNotificationCenter defaultCenter] postNotificationName:CLNotificationPreviewToggle object:nil];
+        if ([[QLPreviewPanel sharedPreviewPanel] isVisible]) {
+            [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
+        } else {
+            [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
+        }
+    }
+    
+}
+
 - (id)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     NSTableCellView* view = [tableView makeViewWithIdentifier:@"CLID" owner:self];
     
@@ -166,6 +179,48 @@
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
     return [_files count];
+}
+
+- (BOOL)acceptsPreviewPanelControl:(QLPreviewPanel *)panel {
+    return YES;
+}
+
+- (void)beginPreviewPanelControl:(QLPreviewPanel *)panel {
+//    [panel setDelegate:self.controller.downloadView.preview];
+//    [panel setDataSource:self.controller.downloadView.preview];
+    CLPreviewController <QLPreviewPanelDataSource>* previewController = ((CLMainController*)((AppDelegate*)[NSApp delegate]).controller).downloadView.preview;
+    
+    previewController.previewPanel = panel;
+    panel.delegate = self;
+    panel.dataSource = previewController;
+}
+
+- (void)endPreviewPanelControl:(QLPreviewPanel *)panel {
+    CLPreviewController * previewController = ((CLMainController*)((AppDelegate*)[NSApp delegate]).controller).downloadView.preview;
+    
+    previewController.previewPanel = nil;
+}
+
+- (BOOL)previewPanel:(QLPreviewPanel *)panel handleEvent:(NSEvent *)event {
+    
+    if (event.type == NSKeyDown) {
+        NSLog(@"%@", event);
+        [self.expirationTable.tableView keyDown:event];
+        return YES;
+    }
+    return NO;
+}
+
+- (NSRect)previewPanel:(QLPreviewPanel *)panel sourceFrameOnScreenForPreviewItem:(id<QLPreviewItem>)item {
+    CLPreviewController * previewController = ((CLMainController*)((AppDelegate*)[NSApp delegate]).controller).downloadView.preview;
+    
+    return [previewController previewPanel:panel sourceFrameOnScreenForPreviewItem:item];
+}
+
+- (id)previewPanel:(QLPreviewPanel *)panel transitionImageForPreviewItem:(id<QLPreviewItem>)item contentRect:(NSRect *)contentRect {
+    CLPreviewController * previewController = ((CLMainController*)((AppDelegate*)[NSApp delegate]).controller).downloadView.preview;
+    
+    return [previewController previewPanel:panel transitionImageForPreviewItem:item contentRect:contentRect];
 }
 
 @end

@@ -8,10 +8,15 @@
 
 #import "CLPreviewController.h"
 #import "constants.h"
+#import "AppDelegate.h"
 @import QuickLook;
 @import Quartz;
 
 @interface CLPreviewController ()
+
+@end
+
+@interface CLFile (QLPreviewItem) <QLPreviewItem>
 
 @end
 
@@ -46,12 +51,27 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
                                                       
                                                   }];
     
+    [[NSNotificationCenter defaultCenter] addObserverForName:CLNotificationPreviewToggle object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        if ([[QLPreviewPanel sharedPreviewPanel] isVisible]) {
+            [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
+        } else {
+            [[QLPreviewPanel sharedPreviewPanel] updateController];
+            [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
+        }
+    }];
+    
     // Do view setup here.
 }
+
+
 
 -(void) filesSelected:(NSArray*) files {
     NSLog(@"%@", files);
     self.file = (CLFile*)[files firstObject];
+    
+    if (self.previewPanel) {
+        [self.previewPanel reloadData];
+    }
     
     self.originalText = self.currentText = self.file.displayName;
     [_name setAttributedStringValue:[self styleNameText:self.file.displayName andTruncate:YES]];
@@ -158,6 +178,39 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
     });
     
 }
+
+- (NSInteger)numberOfPreviewItemsInPreviewPanel:(QLPreviewPanel *)panel {
+    return 1;
+}
+
+
+- (id <QLPreviewItem>)previewPanel:(QLPreviewPanel *)panel previewItemAtIndex:(NSInteger)index {
+    return self.file.url;
+}
+
+- (NSRect)previewPanel:(QLPreviewPanel *)panel sourceFrameOnScreenForPreviewItem:(id<QLPreviewItem>)item {
+    NSRect windowRelative = [self.view convertRect:self.thumbnailView.frame fromView:nil];
+    AppDelegate* delegate = (AppDelegate*)[NSApp delegate];
+//    return r windowRelative;
+    return [delegate.window convertRectToScreen:windowRelative];
+}
+
+- (id)previewPanel:(QLPreviewPanel *)panel transitionImageForPreviewItem:(id<QLPreviewItem>)item contentRect:(NSRect *)contentRect {
+    return self.thumbnailView.image;
+}
+
+//- (BOOL)acceptsPreviewPanelControl:(QLPreviewPanel *)panel {
+//    return YES;
+//}
+//
+//- (void)beginPreviewPanelControl:(QLPreviewPanel *)panel {
+//    [[QLPreviewPanel sharedPreviewPanel] setDelegate:self];
+//    [[QLPreviewPanel sharedPreviewPanel] setDataSource:self];
+//}
+//
+//- (void)endPreviewPanelControl:(QLPreviewPanel *)panel {
+//    
+//}
 
 @end
 

@@ -25,6 +25,13 @@
 
 @implementation CLFile
 
+- (NSURL *)previewItemURL {
+    return [self resolvedURL];
+}
+- (NSString *)previewItemTitle {
+    return self.name;
+}
+
 - (void) setURL:(NSURL *)url {
     self->_url = url;
     [self setName:[url lastPathComponent]];
@@ -56,7 +63,7 @@
 
 - (NSString*) truncName:(NSString*)name forChars:(unsigned int)chars {
     NSUInteger fileExtensionIndex = ([name rangeOfString:@"." options:NSBackwardsSearch]).location;
-    if (chars < [self.name length]) {
+    if (chars < [name length]) {
     
         // if no extension just chunk that sucker
         if (fileExtensionIndex == NSNotFound) {

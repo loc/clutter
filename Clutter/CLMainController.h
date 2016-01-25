@@ -17,7 +17,9 @@ extern NSString* const CLViewModeUnsorted;
 extern NSString* const CLViewModeFresh;
 extern NSString* const CLViewModeExpired;
 extern NSString* const CLViewModeAll;
+
 extern NSString* const CLNotificationViewModeChanged;
+extern NSString* const CLNotificationPreviewToggle;
 
 
 @interface CLMainController : NSWindowController <NSTableViewDataSource,NSTableViewDelegate,ClutterClient,CLConfirmController> {

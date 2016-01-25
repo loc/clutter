@@ -8,10 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import "CLTableView.h"
+@import Quartz;
 
 @class CLMainController;
 
-@interface CLExpiringView : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
+@interface CLExpiringView : NSViewController <NSTableViewDelegate, NSTableViewDataSource, QLPreviewPanelDelegate>
 
 @property (assign) CLMainController* controller;
 @property (strong) IBOutlet CLTableContainerView* expirationTable;

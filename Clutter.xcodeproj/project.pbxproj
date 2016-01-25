@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		9412351B9D18ACD14580ABC3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ED007E51A3A55AB689EA84F6 /* libPods.a */; };
 		A117BBF21C42D50D00B51953 /* CLFile.m in Sources */ = {isa = PBXBuildFile; fileRef = A117BBF11C42D50D00B51953 /* CLFile.m */; };
+		A117BBF41C4EFD9D00B51953 /* libboost_serialization.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A117BBF31C4EFD9D00B51953 /* libboost_serialization.dylib */; };
+		A117BBF51C4EFDFC00B51953 /* libboost_serialization.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = A117BBF31C4EFD9D00B51953 /* libboost_serialization.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A11C7C151BA499F4008E6E91 /* CLPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A11C7C131BA499F4008E6E91 /* CLPreviewController.m */; };
 		A11C7C161BA499F4008E6E91 /* Preview.xib in Resources */ = {isa = PBXBuildFile; fileRef = A11C7C141BA499F4008E6E91 /* Preview.xib */; };
 		A11C7C1E1BAB8381008E6E91 /* CLFileActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = A11C7C1D1BAB8381008E6E91 /* CLFileActionView.m */; };
@@ -22,14 +24,12 @@
 		A1308DA51B470BA900897F28 /* CLResizeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1308DA41B470BA900897F28 /* CLResizeView.m */; };
 		A14596861BC1F43D00ABF87F /* CLPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A14596851BC1F43D00ABF87F /* CLPanel.m */; };
 		A15161A31B49CE6900E103B1 /* cltime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A15161A11B49CE6900E103B1 /* cltime.cpp */; };
-		A15161A51B49CF7300E103B1 /* libboost_serialization.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A15161A41B49CF7300E103B1 /* libboost_serialization.dylib */; };
 		A15161A81B4A3EC300E103B1 /* CLSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */; };
 		A188E5F81BDD8ADC0014AEB1 /* FinderSync.m in Sources */ = {isa = PBXBuildFile; fileRef = A188E5F71BDD8ADC0014AEB1 /* FinderSync.m */; };
 		A188E5FB1BDD8ADC0014AEB1 /* FinderExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A188E5F11BDD8ADC0014AEB1 /* FinderExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A194CBF91BEA8CB900B61784 /* green_circle_badge.png in Resources */ = {isa = PBXBuildFile; fileRef = A194CBF61BEA8CB900B61784 /* green_circle_badge.png */; };
 		A194CBFA1BEA8CB900B61784 /* red_square_badge.png in Resources */ = {isa = PBXBuildFile; fileRef = A194CBF71BEA8CB900B61784 /* red_square_badge.png */; };
 		A194CBFB1BEA8CB900B61784 /* yellow_triangle_badge.png in Resources */ = {isa = PBXBuildFile; fileRef = A194CBF81BEA8CB900B61784 /* yellow_triangle_badge.png */; };
-		A1A7AA531BCC5178008DE19B /* libboost_serialization.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = A15161A41B49CF7300E103B1 /* libboost_serialization.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A1A7AA561BCEEB4B008DE19B /* images in Resources */ = {isa = PBXBuildFile; fileRef = A1A7AA551BCEEB4B008DE19B /* images */; };
 		A1A7AA591BDA8173008DE19B /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = A1A7AA581BDA8173008DE19B /* dsa_pub.pem */; };
 		A1C770771B40C42C002077A3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C770761B40C42C002077A3 /* Cocoa.framework */; };
@@ -89,7 +89,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				A1A7AA531BCC5178008DE19B /* libboost_serialization.dylib in CopyFiles */,
+				A117BBF51C4EFDFC00B51953 /* libboost_serialization.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +98,7 @@
 /* Begin PBXFileReference section */
 		A117BBF01C42D50D00B51953 /* CLFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLFile.h; sourceTree = "<group>"; };
 		A117BBF11C42D50D00B51953 /* CLFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLFile.m; sourceTree = "<group>"; };
+		A117BBF31C4EFD9D00B51953 /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = ../../../../usr/local/Cellar/boost/1.59.0/lib/libboost_serialization.dylib; sourceTree = "<group>"; };
 		A11C7C121BA499F4008E6E91 /* CLPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLPreviewController.h; sourceTree = "<group>"; };
 		A11C7C131BA499F4008E6E91 /* CLPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLPreviewController.m; sourceTree = "<group>"; };
 		A11C7C141BA499F4008E6E91 /* Preview.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preview.xib; sourceTree = "<group>"; };
@@ -190,7 +191,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A15161A51B49CF7300E103B1 /* libboost_serialization.dylib in Frameworks */,
+				A117BBF41C4EFD9D00B51953 /* libboost_serialization.dylib in Frameworks */,
 				A1C770AD1B40C469002077A3 /* CoreFoundation.framework in Frameworks */,
 				A1C770AB1B40C448002077A3 /* CoreServices.framework in Frameworks */,
 				A1C770771B40C42C002077A3 /* Cocoa.framework in Frameworks */,
@@ -266,6 +267,7 @@
 		A1C770751B40C42C002077A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A117BBF31C4EFD9D00B51953 /* libboost_serialization.dylib */,
 				A15161A41B49CF7300E103B1 /* libboost_serialization.dylib */,
 				A1C770AC1B40C469002077A3 /* CoreFoundation.framework */,
 				A1C770AA1B40C448002077A3 /* CoreServices.framework */,
@@ -841,6 +843,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/boost/1.57.0/lib,
+					/usr/local/Cellar/boost/1.59.0/lib,
 				);
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -877,6 +880,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/boost/1.57.0/lib,
+					/usr/local/Cellar/boost/1.59.0/lib,
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";

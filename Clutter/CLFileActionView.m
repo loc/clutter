@@ -96,7 +96,7 @@
     [panel setCanChooseFiles:NO];
     [panel setCanChooseDirectories:YES];
     [panel setPrompt:@"Pick a folder"];
-    [(AppDelegate*)[NSApp delegate] watchForKeyWindowChange:NO];
+    [(AppDelegate*)[NSApp delegate] setIgnoreLoseFocus:NO];
     if ([panel runModal] == NSModalResponseOK) {
         NSMutableArray* labels = [NSMutableArray arrayWithArray:[_choiceControl labels]];
         NSMutableArray* values = [NSMutableArray arrayWithArray:[self values]];
@@ -108,7 +108,7 @@
         // trigger the callback manual  ly
         [self tabSwitched];
     }
-    [(AppDelegate*)[NSApp delegate] watchForKeyWindowChange:YES];
+    [(AppDelegate*)[NSApp delegate] setIgnoreLoseFocus:YES];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {

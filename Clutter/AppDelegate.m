@@ -44,6 +44,9 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
         [_statusView setNeedsDisplay:YES];
         [_window setIsVisible:NO];
         [self setActive:NO];
+        if ([[QLPreviewPanel sharedPreviewPanel] isVisible]) {
+            [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
+        }
     }
 }
 
@@ -72,7 +75,7 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
     
     _controller = [[CLMainController alloc] initWithWindow:_window];
     
-    [self watchForKeyWindowChange:YES];
+    self.ignoreLoseFocus = YES;
     
     system("pluginkit -e use -i com.bubble.tea.Clutter.FinderExtension");
 
@@ -80,20 +83,16 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
         [[CoreWrapper sharedInstance] loop];
     });
 }
-- (void) windowDidResignKey: (NSNotification*) event {
-    
-    if (self.isActive) {
-        [_window setIsVisible:NO];
-        [self setActive:NO];
-    }
-}
 
-- (void) watchForKeyWindowChange: (BOOL) shouldWatch {
-    if (shouldWatch) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:_window];
-    } else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidResignKeyNotification object:_window];
+- (void)applicationDidBecomeActive:(NSNotification *)notification {
+//    [self setActive:YES];
+}
+- (void)applicationDidResignActive:(NSNotification *)notification {
+    if ([[QLPreviewPanel sharedPreviewPanel] isVisible]) {
+        [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
     }
+    [_window setIsVisible:NO];
+    [self setActive:NO];
 }
          
 - (void) quitIt {
