@@ -1,4 +1,16 @@
 <item>
+	<title>v0.7.2 right click menu</title>
+	<sparkle:releaseNotesLink>
+		https://loc.github.io/clutter/release/v0.7.2/NOTES.html
+	</sparkle:releaseNotesLink>
+	<pubDate>Mon, 25 Jan 2016 19:13:07 -0500</pubDate>
+	<enclosure url="https://loc.github.io/clutter/release/v0.7.2/Clutter.app.zip"
+		sparkle:version="0.7.2"
+		sparkle:dsaSignature="MCwCFQCtuSEKOmHBGKpiGjYRQ83vkdOIDwITMgajiybXl5WO2n3iDJFW82SnOA=="
+		length=" 3929755"
+		type="application/octet-stream" />
+</item>
+<item>
 	<title>v0.7.1 quick look</title>
 	<sparkle:releaseNotesLink>
 		https://loc.github.io/clutter/release/v0.7.1-2-g3c77e51/NOTES.html
