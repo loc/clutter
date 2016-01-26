@@ -51,9 +51,17 @@ string timeSinceDaysWords(time_t expiration) {
     if (diff_tm.tm_year > 70) {
         sprintf(buffer, "%s ago", stringifyCount(diff_tm.tm_year - 70, "year").c_str());
         return buffer;
-    } else if (diff_tm.tm_mon > 0) {
+    } else if (diff_tm.tm_year < 70) {
+        // weird case
+        return "Today";
+    }
+    else if (diff_tm.tm_mon > 0) {
         sprintf(buffer, "%s ago", stringifyCount(diff_tm.tm_mon, "month").c_str());
         return buffer;
+    }
+    
+    if (diff_tm.tm_mday == 1) {
+        return "Yesterday";
     }
     
     sprintf(buffer, "%s ago", stringifyCount(diff_tm.tm_mday, "day").c_str());
