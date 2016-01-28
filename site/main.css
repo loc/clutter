@@ -26,7 +26,7 @@ h1.logo {
     width: 225px;
     display: block;
     background-repeat: no-repeat;
-    background-image: url(../resources/logo.svg);
+    background-image: url(resources/logo.svg);
     text-indent: -9999;
     float: left;
     position: relative;
