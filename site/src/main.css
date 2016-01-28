@@ -1,0 +1,324 @@
+.wrap {
+
+	position: relative;
+	min-height: 100%;
+	width: 100%;
+	background-color: #8560a8;
+	background-image: linear-gradient(65deg, rgba(0,0,0,.4), rgba(0,0,0,0) 30%);
+	box-sizing: border-box;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;
+}
+
+	.wrap:before {
+		content: "";
+		width: 100%;
+		height: 100%;
+		display: block;
+		z-index: -1;
+		position: absolute;
+		top: 0;
+		left: 0;
+
+	}
+
+h1.logo {
+	margin: 0;
+    width: 225px;
+    display: block;
+    background-repeat: no-repeat;
+    background-image: url(../resources/logo.svg);
+    text-indent: -9999;
+    float: left;
+    position: relative;
+    background-blend-mode: overlay;
+}
+h1.logo span {
+    text-indent: 0;
+    display: block;
+    position: absolute;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;
+    font-weight: 100;
+    right: 0;
+    font-size: 19px;
+    bottom: -20px;
+    color: #c19ee2;
+}
+
+
+h2, h3 {
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;
+}
+
+h2 {
+	text-transform: uppercase;
+	color: white;
+	font-size: 5vw;
+	text-shadow: .6vw .6vw 0 rgba(193,158,226,.3);
+
+	letter-spacing: 3px;
+	line-height: 1em;
+	text-rendering: optimizeLegibility;
+	font-feature-settings: "kern" 1;
+
+    margin-top: calc(12vh - 25px);
+	margin-bottom: 0;
+	padding: 0;
+}
+
+h3 {
+	color: #c19ee2;
+	font-weight: 100;
+	font-size: 5vh;
+	width: 85%;
+	margin-top: (3vh + 5px);
+	line-height: 1.1em;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;
+}
+
+.intro-media {
+	position: relative;
+	width: 38%;
+	float: right;
+	margin-right: 8%;
+    margin-top: 10vh;
+    clear: right;
+}
+.video {
+	position: absolute;
+	background: blue;
+	width: 93.5%;
+	height: 65.0%;
+	top: 3.5%;
+	left: 3.2%;
+}
+.mac {
+	position: relative;
+
+}
+.mac .persp-control {
+	position: absolute;
+	height: 100px;
+	width: 100%;
+    bottom: calc(5% + -10px);
+	perspective: 520px;
+}
+.mac .grad {
+    content: "";
+    width: 100%;
+    left: 0;
+    height: 640%;
+    display: block;
+    background-image: radial-gradient(ellipse closest-side at center center , rgba(255, 255, 255, .7) 0%, rgba(255, 255, 255, 0)95%);
+    position: absolute;
+    z-index: 1;
+    top: -273%;
+    transform: rotateX(81deg);
+}
+.mac img {
+	position: relative;
+	z-index: 2;
+}
+
+.wrap > h2, .wrap > .info {
+	width: 40%;
+	float: left;
+	margin-left: 7%;
+}
+
+.info {
+	padding-bottom: 60px;
+}
+
+h4 {
+    position: absolute;
+    float: right;
+    clear: both;
+    top: calc(100% - 35px);
+    right: 16px;
+    margin: 0;
+    color: #FFF;
+    font-weight: 100;
+    color: #c19ee2;
+    font-size: 1.1em;
+
+}
+
+a.download {
+	position: relative;
+	color: white;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;
+	font-weight: bold;
+	font-size: 1.8em;
+	text-decoration: none;
+}
+
+	a.download:hover:before {
+		color: white;
+	} 
+	a.download:hover:after {
+		background: white;
+	}
+	a.download span {
+		font-weight: 100;
+		font-size: .7em;
+	}
+	a.download:before {
+		content: ">";
+	    position: absolute;
+	    left: -30px;
+	    top: 4px;
+	    transform: scaleY(1.6) scaleX(.9);
+	    color: #c19ee2;
+	    font-weight: 700;
+	    font-size: 1em;
+	}
+	a.download:after {
+		content: "";
+		width: 100%;
+		height: 1px;
+		background: #c19ee2;
+		position: absolute;
+		bottom: -5px;
+		left: 0;
+	}
+header {
+    padding-top: calc(3vh + 10px);
+    margin-left: 7%;
+    margin-right: 8%;
+    padding-bottom: 10px;
+}
+nav {
+	float: right;
+	padding-top: 5px;
+}
+nav a.download:before {
+	content: none;
+}
+nav a.download {
+	font-size: 1.2em;
+	color: #c19ee2;
+	font-weight: 700;
+}
+nav a.download:hover {
+	color: white;
+}
+
+@media (max-width: 700px), (max-aspect-ratio: 5/4)  {
+	.wrap {
+		height: inherit;	
+	}
+	h1.logo {
+		float: right;
+		width: 100%;
+		background-position-x: right;
+		height: calc(3vw + 14px);
+	}
+	h1.logo span {
+		font-size: calc(2vw + 4px);
+		bottom: calc(-2vw - 4px);
+	}
+	header {
+		margin-bottom: calc(3vw);
+	}
+	h2 br {
+		display: none;
+	}	
+	.wrap > h2 {
+		float: none;
+	    width: 65%;
+	    margin: 0 auto;
+	    letter-spacing: 6px;
+	    line-height: 1.3em;	
+	    font-size: 7vw;
+	}
+	h3 {
+		width: 100%;
+		font-size: 1.7em;
+		letter-spacing: 0;
+		text-align: left;
+	}
+	h4 {
+		text-align: center;
+	    float: none;
+	    padding: 0 0 25px 0;
+	    position: static;
+	}
+	.wrap > .info {
+		width: 70%;
+		margin: 0 auto;
+		float: none;
+		text-align: center;
+	}
+	.intro-media {
+		float: none;
+		width: 70%;
+		margin: 50px auto;
+	}
+	nav { display: none;}
+	.info .download {
+		display: inline-block;
+	    text-align: center;
+	    border: 1px solid #FFF;
+	    padding: 10px 0;
+	    border-radius: 5px;
+	    background: rgba(0,0,0,.1);
+	    margin-top: 20px;	
+        width: 320px;
+	    max-width: 100%;
+	}
+	.info .download:hover {
+		background: rgba(0,0,0,.2);
+	}
+	.info .download:active {
+		background: rgba(0,0,0,.3);
+	}
+	.download:before, .download:after {
+		display: none;
+	}
+}
+
+@media (max-aspect-ratio: 4/3) and (min-width: 800px) {
+	h3 {
+		font-size: 3.5vw;
+		width: 100%;
+	}
+}
+
+@media (max-height: 400px) {
+	h2 {
+		margin-top: 15px;
+	}
+	.intro-media {
+		margin-top: 25px;
+	}
+	h3 {
+		font-size: 1.4em;
+
+	}
+
+}
+
+h4 a {
+	color: #c19ee2;
+}
+h4 a:hover {
+	color: white;
+}
+
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf {
+    *zoom: 1;
+}
