@@ -12,13 +12,24 @@
 					ga('send', 'pageview');
 
 		</script>
+		<script>
+			window.onload = function() {
+				[].forEach.call(document.querySelectorAll('.download'), function(el) {
+					el.addEventListener('click', function(e) {
+						var res = window.confirm("You're not on a Mac. Are you sure you want to download this Mac-only application?");
+						if (!res) e.preventDefault();
+					}, false);
+				});
+
+			};
+		</script>
 	</head>
 	<body>
 		<div class="wrap cf">
 			<header class="cf">
 				<h1 class="logo">Clutter <span>an app for Mac<sup>&reg;</sup></span></h1>
 				<nav>
-					<a class="download" href="" onclick="ga('send', 'event', 'Download Link', 'click', 'nav-bar');">Download <span>(it's free)</span></a>
+					<a class="download" href="/release/latest/Clutter.app.zip" onclick="ga('send', 'event', 'Download Link', 'click', 'nav-bar');">Download <span>(it's free)</span></a>
 				</nav>
 			</header>
 
@@ -37,7 +48,7 @@
 
 			<div class="info">
 				<h3>Clutter gives each file you download a time-to-live. Once expired, it&#39;s out of your hair.</h3>
-				<a class="download" href="" onclick="ga('send', 'event', 'Download Link', 'click', 'call-to-action');">Download <span>(it's free)</span></a>
+				<a class="download" href="/release/latest/Clutter.app.zip" onclick="ga('send', 'event', 'Download Link', 'click', 'call-to-action');">Download <span>(it's free)</span></a>
 			</div>
 
 			<h4>made with &hearts; by 
