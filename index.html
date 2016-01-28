@@ -8,7 +8,7 @@
 			<header class="cf">
 				<h1 class="logo">Clutter <span>an app for Mac<sup>&reg;</sup></span></h1>
 				<nav>
-					<a class="download" href="">Download <span>(it's free)</span></a>
+					<a class="download" href="" onclick="ga('send', 'event', 'Download Link', 'click', 'nav-bar');">Download <span>(it's free)</span></a>
 				</nav>
 			</header>
 
@@ -27,7 +27,7 @@
 
 			<div class="info">
 				<h3>Clutter gives each file you download a time-to-live. Once expired, it&#39;s out of your hair.</h3>
-				<a class="download" href="">Download <span>(it's free)</span></a>
+				<a class="download" href="" onclick="ga('send', 'event', 'Download Link', 'click', 'call-to-action');">Download <span>(it's free)</span></a>
 			</div>
 
 			<h4>made with &hearts; by 
@@ -57,5 +57,15 @@
 		</div>
 
 
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+					(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+					m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+					})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+					ga('create', 'UA-73001610-1', 'auto');
+					ga('send', 'pageview');
+
+				</script>
 	</body>
 </html>
