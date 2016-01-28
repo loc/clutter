@@ -16,8 +16,10 @@
 			window.onload = function() {
 				[].forEach.call(document.querySelectorAll('.download'), function(el) {
 					el.addEventListener('click', function(e) {
-						var res = window.confirm("You're not on a Mac. Are you sure you want to download this Mac-only application?");
-						if (!res) e.preventDefault();
+						if (navigator.userAgent.indexOf('Mac OS X') == -1) {}
+							var res = window.confirm("You're not on a Mac. Are you sure you want to download this Mac-only application?");
+							if (!res) e.preventDefault();
+						}
 					}, false);
 				});
 
