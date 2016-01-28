@@ -1,4 +1,16 @@
 <item>
+	<title>v0.7.3 crash fix</title>
+	<sparkle:releaseNotesLink>
+		https://loc.github.io/clutter/release/v0.7.3/NOTES.html
+	</sparkle:releaseNotesLink>
+	<pubDate>Thu, 28 Jan 2016 17:01:54 -0500</pubDate>
+	<enclosure url="https://loc.github.io/clutter/release/v0.7.3/Clutter.app.zip"
+		sparkle:version="0.7.3"
+		sparkle:dsaSignature="MC4CFQCcb4PGsX6+eY+0+1ENmAkv6v9sVAIVAKoImYb7dADMfV6E7IcT6sDZMQ/O"
+		length=" 3929743"
+		type="application/octet-stream" />
+</item>
+<item>
 	<title>v0.7.2 right click menu</title>
 	<sparkle:releaseNotesLink>
 		https://loc.github.io/clutter/release/v0.7.2/NOTES.html
