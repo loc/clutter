@@ -1,4 +1,16 @@
 <item>
+	<title>v0.7.4 minor stability</title>
+	<sparkle:releaseNotesLink>
+		https://loc.github.io/clutter/release/v0.7.4/NOTES.html
+	</sparkle:releaseNotesLink>
+	<pubDate>Tue, 02 Feb 2016 15:07:15 -0500</pubDate>
+	<enclosure url="https://loc.github.io/clutter/release/v0.7.4/Clutter.app.zip"
+		sparkle:version="0.7.4"
+		sparkle:dsaSignature="MCwCFHL2HC14E8nS21d95KFnXe4zzAXvAhQVVRuckT8Z0XtEKC/sqA4Kt7/K4w=="
+		length=" 3930155"
+		type="application/octet-stream" />
+</item>
+<item>
 	<title>v0.7.3 crash fix</title>
 	<sparkle:releaseNotesLink>
 		https://loc.github.io/clutter/release/v0.7.3/NOTES.html
