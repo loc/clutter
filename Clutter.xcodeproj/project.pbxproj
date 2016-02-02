@@ -543,7 +543,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "install_name_tool -change /usr/local/opt/boost/lib/libboost_serialization.dylib @executable_path/libboost_serialization.dylib $BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH";
+			shellScript = "install_name_tool -id @executable_path/libboost_serialization.dylib $BUILT_PRODUCTS_DIR/$EXECUTABLE_FOLDER_PATH/libboost_serialization.dylib\ninstall_name_tool -change /usr/local/opt/boost/lib/libboost_serialization.dylib @executable_path/libboost_serialization.dylib $BUILT_PRODUCTS_DIR/$EXECUTABLE_PATH";
+			showEnvVarsInLog = 0;
 		};
 		A1A7AA571BD8762B008DE19B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -556,7 +557,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "LOCATION=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n\ncodesign --verbose --force --sign \"Andy Locascio\" \"$LOCATION/Sparkle.framework/Versions/A\"";
+			shellScript = "LOCATION=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n\ncodesign --verbose --force --sign \"Andy Locascio\" \"$LOCATION/Sparkle.framework/Versions/A\"\ncodesign --verbose --force --sign \"Andy Locascio\" \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/libboost_serialization.dylib\"";
 		};
 		A1E4B6891BDD7DAA00F03DD0 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
