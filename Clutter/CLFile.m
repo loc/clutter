@@ -35,7 +35,7 @@
 - (void) setURL:(NSURL *)url {
     self->_url = url;
     [self setName:[url lastPathComponent]];
-    [self setArchiveURL:[NSURL fileURLWithPath:[NSString stringWithFormat:@"%lu%@", self.inode, self.name] relativeToURL:[[[CoreWrapper sharedInstance] supportURL] URLByAppendingPathComponent:@"Archives" isDirectory:YES]]];
+    [self setArchiveURL:[NSURL fileURLWithPath:[NSString stringWithFormat:@"%lu-%@", self.inode, self.name] relativeToURL:[[[CoreWrapper sharedInstance] supportURL] URLByAppendingPathComponent:@"Archives" isDirectory:YES]]];
 }
 
 - (void) setName:(NSString *)name {

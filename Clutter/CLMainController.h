@@ -22,7 +22,7 @@ extern NSString* const CLNotificationViewModeChanged;
 extern NSString* const CLNotificationPreviewToggle;
 
 
-@interface CLMainController : NSWindowController <NSTableViewDataSource,NSTableViewDelegate,ClutterClient,CLConfirmController> {
+@interface CLMainController : NSWindowController <NSTableViewDataSource,NSTableViewDelegate,ClutterClient,CLConfirmController,  NSUserNotificationCenterDelegate> {
     IBOutlet NSSegmentedControl * tabSwitcher;
     IBOutlet NSTableView * tableView;
     dispatch_source_t expirationDebounceSource;

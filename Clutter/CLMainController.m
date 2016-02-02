@@ -28,6 +28,7 @@ NSString* const CLNotificationViewModeChanged = @"CLNotificationViewModeChanged"
     
     [[CoreWrapper sharedInstance] setDelegate:self];
     
+    [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
     
     self.downloadView = [[CLDownloadView alloc] init];
     
@@ -193,6 +194,7 @@ NSString* const CLNotificationViewModeChanged = @"CLNotificationViewModeChanged"
                 bytes += aFile.size;
             }];
             
+            
             informativeText = [NSString stringWithFormat:@"%@ total", [NSByteCountFormatter stringFromByteCount:bytes countStyle:NSByteCountFormatterCountStyleFile]];
             [notification setActionButtonTitle: @"Restore All"];
         } else {
@@ -205,9 +207,12 @@ NSString* const CLNotificationViewModeChanged = @"CLNotificationViewModeChanged"
             [notification setActionButtonTitle: @"Restore"];
         }
         
+        [notification.userInfo setValue:_filesExpiredQueue forKey:@"files"];
+        
         [notification setInformativeText:informativeText];
         [notification setOtherButtonTitle: @"Okay"];
         [notification setHasActionButton: YES];
+        
         [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
         
         [expirationTableView updateExpirationTableForMode:CLViewModeAll];
@@ -225,8 +230,6 @@ NSString* const CLNotificationViewModeChanged = @"CLNotificationViewModeChanged"
 //        [[NSFileManager defaultManager] moveItemAtURL:file.url toURL:newURL error:&error];
 //    }
 }
-
-
 
 
 //- (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
@@ -247,6 +250,26 @@ NSString* const CLNotificationViewModeChanged = @"CLNotificationViewModeChanged"
 //    
 //    [_preview filesSelected:files];
 //}
+
+// user clicked Restore or Restore All on the notification
+- (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification {
+    AppDelegate* delegate = [NSApp delegate];
+    
+    if (notification.activationType == NSUserNotificationActivationTypeActionButtonClicked) {
+        NSArray* files = notification.userInfo[@"files"];
+        [files enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            CLFile* file = (CLFile*)obj;
+            
+            [[CoreWrapper sharedInstance] extendFile:file forDays:-1 withName:file.name];
+            [delegate togglePanel:YES];
+            [self setViewMode:CLViewModeUnsorted];
+        }];
+    } else if (notification.activationType == NSUserNotificationActivationTypeContentsClicked) {
+        [delegate togglePanel:YES];
+        [self setViewMode:CLViewModeExpired];
+    }
+    
+}
 
 - (NSView *)tableView:(NSTableView *)tableView
    viewForTableColumn:(NSTableColumn *)tableColumn

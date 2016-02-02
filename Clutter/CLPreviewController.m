@@ -185,7 +185,7 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
 
 
 - (id <QLPreviewItem>)previewPanel:(QLPreviewPanel *)panel previewItemAtIndex:(NSInteger)index {
-    return self.file.url;
+    return [self.file resolvedURL];
 }
 
 - (NSRect)previewPanel:(QLPreviewPanel *)panel sourceFrameOnScreenForPreviewItem:(id<QLPreviewItem>)item {
