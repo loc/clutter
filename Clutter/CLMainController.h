@@ -19,6 +19,7 @@ extern NSString* const CLViewModeExpired;
 extern NSString* const CLViewModeAll;
 
 extern NSString* const CLNotificationViewModeChanged;
+extern NSString* const CLNotificationConfirmClicked;
 extern NSString* const CLNotificationPreviewToggle;
 
 

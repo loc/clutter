@@ -148,11 +148,8 @@
         } else {
             [[CoreWrapper sharedInstance] renameFile:self.activeFile toName:newName];
         }
-        
-        [self setActiveFile:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:CLNotificationConfirmClicked object:self.activeFile];
     }
-    
-    [(AppDelegate*)[NSApp delegate] togglePanel:NO];
 }
 
 - (void) shouldUpdateConfirm {

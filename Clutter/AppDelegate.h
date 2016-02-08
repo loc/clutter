@@ -23,6 +23,7 @@ extern NSString* const CLNotificationConfirmShouldChange;
 @property (nonatomic, strong) CLStatusBarView* statusView;
 @property (nonatomic, strong) NSPopover* popover;
 @property (assign, getter=isActive, setter=setActive:) BOOL active;
+@property (assign) BOOL shouldSustainOnConfirm;
 @property () BOOL ignoreLoseFocus;
 
 

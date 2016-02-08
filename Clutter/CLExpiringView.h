@@ -17,6 +17,7 @@
 @property (assign) CLMainController* controller;
 @property (strong) IBOutlet CLTableContainerView* expirationTable;
 @property (strong) NSMutableDictionary* filesForMode;
+@property (strong) NSMutableDictionary* selectedIndexForMode;
 @property (strong) NSArray* files;
 @property (strong) NSString* tableMode;
 //@property (strong) IBOutlet CLTableView* tableView;

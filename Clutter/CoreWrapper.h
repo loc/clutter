@@ -46,5 +46,8 @@ typedef void(^changeCallback)();
 + (NSString*) getDisplayName: (NSString*) name;
 + (NSString*) timeLeftWords:(NSDate*) expiration;
 + (NSString*) timeSinceDaysWords:(NSDate*) expiration;
-
+- (bool) analyticsEventWithCategory: (NSString*)category andAction:(NSString*) action;
+- (bool) analyticsEventWithCategory: (NSString*)category andAction:(NSString*) action andLabel:(NSString*) label;
+- (bool) analyticsEndTimer:(NSString*)category forEvent:(NSString*)name andLabel: (NSString*) label;
+- (bool) analyticsStartTimer:(NSString*)category forEvent:(NSString*)name;
 @end

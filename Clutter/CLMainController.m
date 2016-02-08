@@ -14,7 +14,7 @@ NSString* const CLViewModeFresh = @"Fresh";
 NSString* const CLViewModeExpired = @"Expired";
 NSString* const CLViewModeAll = @"[All Modes]";
 NSString* const CLNotificationViewModeChanged = @"CLNotificationViewModeChanged";
-
+NSString* const CLNotificationConfirmClicked = @"CLNotificationConfirmClicked";
 
 @interface CLMainController ()
 
@@ -103,6 +103,14 @@ NSString* const CLNotificationViewModeChanged = @"CLNotificationViewModeChanged"
     [NSLayoutConstraint activateConstraints:constraints];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowBecameKey:) name:NSWindowDidBecomeMainNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:CLNotificationConfirmClicked object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        if ([(AppDelegate*)[NSApp delegate] shouldSustainOnConfirm]) {
+            [self.expiringView updateExpirationTableForMode:CLViewModeAll];
+        } else {
+            [(AppDelegate*)[NSApp delegate] togglePanel:NO];
+        }
+    }];
     
     _filesExpiredQueue = [[NSArray alloc] init];
     

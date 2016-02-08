@@ -23,6 +23,8 @@
 		A14596861BC1F43D00ABF87F /* CLPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A14596851BC1F43D00ABF87F /* CLPanel.m */; };
 		A15161A31B49CE6900E103B1 /* cltime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A15161A11B49CE6900E103B1 /* cltime.cpp */; };
 		A15161A81B4A3EC300E103B1 /* CLSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */; };
+		A15486A41C667C5800171B2F /* clrequest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A15486A21C667C5800171B2F /* clrequest.cpp */; };
+		A15486A61C67F43F00171B2F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A15486A51C67F43F00171B2F /* SystemConfiguration.framework */; };
 		A188E5F81BDD8ADC0014AEB1 /* FinderSync.m in Sources */ = {isa = PBXBuildFile; fileRef = A188E5F71BDD8ADC0014AEB1 /* FinderSync.m */; };
 		A188E5FB1BDD8ADC0014AEB1 /* FinderExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A188E5F11BDD8ADC0014AEB1 /* FinderExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A194CBF91BEA8CB900B61784 /* green_circle_badge.png in Resources */ = {isa = PBXBuildFile; fileRef = A194CBF61BEA8CB900B61784 /* green_circle_badge.png */; };
@@ -125,6 +127,10 @@
 		A15161A21B49CE6900E103B1 /* cltime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cltime.h; sourceTree = SOURCE_ROOT; };
 		A15161A61B4A3EC300E103B1 /* CLSegmentedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLSegmentedCell.h; sourceTree = "<group>"; };
 		A15161A71B4A3EC300E103B1 /* CLSegmentedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLSegmentedCell.m; sourceTree = "<group>"; };
+		A15486651C65742A00171B2F /* curl */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = curl; path = ../../../../usr/bin/curl; sourceTree = "<group>"; };
+		A15486A21C667C5800171B2F /* clrequest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = clrequest.cpp; path = ../clrequest.cpp; sourceTree = "<group>"; };
+		A15486A31C667C5800171B2F /* clrequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clrequest.h; path = ../clrequest.h; sourceTree = "<group>"; };
+		A15486A51C67F43F00171B2F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		A188E5F11BDD8ADC0014AEB1 /* FinderExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FinderExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A188E5F41BDD8ADC0014AEB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A188E5F51BDD8ADC0014AEB1 /* FinderExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = FinderExtension.entitlements; sourceTree = "<group>"; };
@@ -193,6 +199,7 @@
 				A1C770AD1B40C469002077A3 /* CoreFoundation.framework in Frameworks */,
 				A1C770AB1B40C448002077A3 /* CoreServices.framework in Frameworks */,
 				A1C770771B40C42C002077A3 /* Cocoa.framework in Frameworks */,
+				A15486A61C67F43F00171B2F /* SystemConfiguration.framework in Frameworks */,
 				9412351B9D18ACD14580ABC3 /* libPods.a in Frameworks */,
 				A1AA68841C5AC0DB00AF80BE /* libboost_serialization.dylib in Frameworks */,
 			);
@@ -266,6 +273,8 @@
 		A1C770751B40C42C002077A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A15486A51C67F43F00171B2F /* SystemConfiguration.framework */,
+				A15486651C65742A00171B2F /* curl */,
 				A1AA68831C5AC08F00AF80BE /* libboost_serialization.dylib */,
 				A1C770AC1B40C469002077A3 /* CoreFoundation.framework */,
 				A1C770AA1B40C448002077A3 /* CoreServices.framework */,
@@ -291,6 +300,8 @@
 			isa = PBXGroup;
 			children = (
 				A1D048361BA12402001AFDBB /* Clutter.entitlements */,
+				A15486A31C667C5800171B2F /* clrequest.h */,
+				A15486A21C667C5800171B2F /* clrequest.cpp */,
 				A15161A11B49CE6900E103B1 /* cltime.cpp */,
 				A15161A21B49CE6900E103B1 /* cltime.h */,
 				A1308DA61B47189F00897F28 /* constants.h */,
@@ -557,7 +568,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "LOCATION=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n\ncodesign --verbose --force --sign \"Andy Locascio\" \"$LOCATION/Sparkle.framework/Versions/A\"\ncodesign --verbose --force --sign \"Andy Locascio\" \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/libboost_serialization.dylib\"";
+			shellScript = "LOCATION=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n\ncodesign --verbose --force --sign \"Andy Locascio\" \"$LOCATION/Sparkle.framework/Versions/A\"\n#codesign --verbose --force --sign \"Andy Locascio\" \"$LOCATION/Paddle.framework/Versions/A\"\ncodesign --verbose --force --sign \"Andy Locascio\" \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/libboost_serialization.dylib\"";
 		};
 		A1E4B6891BDD7DAA00F03DD0 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -654,6 +665,7 @@
 				A1C770831B40C42C002077A3 /* main.m in Sources */,
 				A15161A81B4A3EC300E103B1 /* CLSegmentedCell.m in Sources */,
 				A12BE5D81BBCA4ED003115D8 /* CLStatusBarView.m in Sources */,
+				A15486A41C667C5800171B2F /* clrequest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -829,6 +841,10 @@
 				CODE_SIGN_IDENTITY = "Andy Locascio";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutter/Clutter-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -847,6 +863,12 @@
 					"$(OTHER_CFLAGS)",
 					"-lboost_serialization",
 				);
+				OTHER_LDFLAGS = (
+					"-framework",
+					"\"Sparkle\"",
+					"-lcurl",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = macosx;
@@ -864,6 +886,10 @@
 				CODE_SIGN_IDENTITY = "Andy Locascio";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Clutter/Clutter-Prefix.pch";
@@ -883,6 +909,12 @@
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-lboost_serialization",
+				);
+				OTHER_LDFLAGS = (
+					"-framework",
+					"\"Sparkle\"",
+					"-lcurl",
+					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;

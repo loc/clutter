@@ -66,7 +66,7 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
 
 
 -(void) filesSelected:(NSArray*) files {
-    NSLog(@"%@", files);
+//    NSLog(@"%@", files);
     self.file = (CLFile*)[files firstObject];
     
     if (self.previewPanel) {
@@ -171,8 +171,11 @@ NSString * const CLTextFieldDidBecomeFirstResponder = @"CLTextFieldDidBecomeFirs
         [shadow setShadowColor:[NSColor clRGBA(0,0,0,.4)]];
         
         dispatch_sync(dispatch_get_main_queue(), ^(void) {
-            [_thumbnailView setShadow:shadow];
-            [[self thumbnailView] setImage:thumbnailImage];
+            // probably a better way to do this, but i needed to check if the file is still the same after async processing
+            if (self.file == file) {
+                [_thumbnailView setShadow:shadow];
+                [[self thumbnailView] setImage:thumbnailImage];
+            }
         });
         CGImageRelease(thumbRef);
     });

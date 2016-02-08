@@ -31,6 +31,8 @@
     NSMutableArray* topLevelObjs = [[NSMutableArray alloc] init];
     BOOL success = [[NSBundle mainBundle] loadNibNamed:@"CLTableView" owner:self topLevelObjects:&topLevelObjs];
     
+    _selectedIndexForMode = [[NSMutableDictionary alloc] initWithDictionary:@{CLViewModeExpired: @0, CLViewModeFresh: @0, CLViewModeUnsorted: @0}];
+    
     NSInteger tableIndex = [topLevelObjs indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         return [obj isKindOfClass:[CLTableContainerView class]];
     }];
@@ -98,14 +100,19 @@
     
     _files = [[_filesForMode objectForKey:self.tableMode] sortedArrayUsingDescriptors:@[sortDescriptor]];
     
+    NSInteger row = [_selectedIndexForMode[_tableMode] intValue];
     [self.expirationTable.tableView reloadData];
-    NSNotification* note = [NSNotification notificationWithName:@"fakeSelection" object:nil];
-    [self tableViewSelectionDidChange:note];
+//    NSNotification* note = [NSNotification notificationWithName:@"fakeSelection" object:nil];
+//    [self tableViewSelectionDidChange:note];
+    [self.expirationTable.tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    [self.expirationTable.tableView scrollRowToVisible:row];
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
     NSInteger row = [self.expirationTable.tableView selectedRow];
     if (row < 0) return;
+    
+    [_selectedIndexForMode setValue:[NSNumber numberWithInteger:row] forKey:_tableMode];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"activeFileChanged" object:_files[row]];
 }

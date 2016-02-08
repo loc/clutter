@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "CLMainController.h"
+@import WebKit;
 
 NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShouldChange";
 
@@ -17,6 +18,8 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
     
     if (![wasRightClicked boolValue]) {
         [self togglePanel:![self isActive]];
+        if ([self isActive])
+            [self setShouldSustainOnConfirm:YES];
     } else {
         NSMenu* menu = [[NSMenu alloc] initWithTitle:@"context"];
         [menu addItemWithTitle:@"Check for updates..." action:@selector(checkForUpdatesOkay) keyEquivalent:@""];
@@ -33,6 +36,8 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
         [self setActive:YES];
         [_window setPoint:[self calcWindowOrigin]];
         
+        [[CoreWrapper sharedInstance] analyticsStartTimer:@"interaction" forEvent:@"appOpen"];
+        
         [_window reposition];
         [_statusView setActive:YES];
         [_statusView setNeedsDisplay:YES];
@@ -44,6 +49,11 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
         [_statusView setNeedsDisplay:YES];
         [_window setIsVisible:NO];
         [self setActive:NO];
+        [[CoreWrapper sharedInstance] analyticsEndTimer:@"interaction" forEvent:@"appOpen" andLabel:[self shouldSustainOnConfirm] ? @"user" : @"app"];
+        [self setShouldSustainOnConfirm:NO];
+        
+        
+        
         if ([[QLPreviewPanel sharedPreviewPanel] isVisible]) {
             [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
         }
@@ -69,6 +79,43 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
     [_statusView setTarget:self];
     [_statusView setAction:@selector(statusItemClicked:)];
     [_statusItem setView:_statusView];
+    
+    NSUserDefaults* state = [NSUserDefaults standardUserDefaults];
+    NSString * uuid = [[NSUserDefaults standardUserDefaults] objectForKey:@"uuid"];
+    NSString * version = [[NSUserDefaults standardUserDefaults] objectForKey:@"version"];
+    NSString* bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+    NSOperatingSystemVersion osVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
+    
+    WebView* webView = [[WebView alloc] initWithFrame:CGRectZero];
+    NSString* userAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+    
+    [state setObject:userAgent forKey:@"userAgent"];
+    
+    [state setObject:[[NSUUID UUID] UUIDString] forKey:@"session"];
+    NSString* osVersionString = [NSString stringWithFormat:@"%ld.%ld", (long)osVersion.majorVersion, (long)osVersion.minorVersion];
+    
+    [state setObject: osVersionString forKey:@"osVersion"];
+    
+    if (uuid == nil) {
+        [state setObject:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [state setObject:bundleVersion forKey:@"version"];
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        // first install
+        
+        [[CoreWrapper sharedInstance] analyticsEventWithCategory:@"app" andAction:@"install"];
+    } else if (![version isEqualToString:bundleVersion]) {
+        // updated
+        
+        [[NSUserDefaults standardUserDefaults] setObject:bundleVersion forKey:@"version"];
+        [[CoreWrapper sharedInstance] analyticsEventWithCategory:@"app" andAction:@"update" andLabel:bundleVersion];
+        
+    } else {
+        // regular launch
+        
+        [[CoreWrapper sharedInstance] analyticsEventWithCategory:@"app" andAction:@"launch"];
+    }
+    
     
 //    [_statusItem.button setTarget:self];
 //    [_statusItem.button setAction:@selector(statusItemClicked)];
@@ -103,6 +150,10 @@ NSString* const CLNotificationConfirmShouldChange = @"CLNotificationConfirmShoul
 //    [_window setIsVisible:NO];
     [self togglePanel:NO];
     [self setActive:NO];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification {
+    
 }
          
 - (void) quitIt {

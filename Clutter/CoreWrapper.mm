@@ -5,7 +5,7 @@
 //  Created by Andy Locascio on 6/29/15.
 //  Copyright (c) 2015 Bubble Tea Apps. All rights reserved.
 //
-
+#import "clrequest.h"
 #import "CoreWrapper.h"
 #import "core.h"
 #import "cltime.h"
@@ -31,6 +31,7 @@ NSString* const CLNotificationPreviewToggle = @"CLNotificationPreviewToggle";
         self.expiration = NULL;
     }
     
+    
     return self;
 }
 
@@ -41,6 +42,7 @@ NSString* const CLNotificationPreviewToggle = @"CLNotificationPreviewToggle";
 @interface CoreWrapper ()
 
 @property (nonatomic, assign) Watcher * watcher;
+@property (nonatomic, assign) AnalyticsManager * analytics;
 
 @end
 
@@ -68,6 +70,10 @@ string handleEvents(Event e, file *f) {
         if (e & created) {
             
             [[wrapper delegate] newFile:file];
+            [wrapper analyticsEvent:@{@"t": @"event",
+                                      @"ec": @"features",
+                                      @"ea": @"download",
+                                      @"ev": [NSString stringWithFormat:@"%llu", file.size]}];
         }
         if (e & renamed) {
             [[wrapper delegate] renamedFile:file];
@@ -104,6 +110,7 @@ string handleEvents(Event e, file *f) {
     [[NSFileManager defaultManager] createDirectoryAtPath:[_supportURL path] withIntermediateDirectories:YES attributes:nil error:nil];
     
     _watcher = new Watcher([[[self url] path] cStringUsingEncoding:NSUTF8StringEncoding], [[_supportURL path] cStringUsingEncoding:NSUTF8StringEncoding], handleEvents);
+    _analytics = new AnalyticsManager();
     
     return self;
 }
@@ -145,8 +152,6 @@ string handleEvents(Event e, file *f) {
     return convertedList;
 }
 
-
-
 -(void) moveFile:(CLFile*) file toFolder: (NSURL*) folder withName: (NSString*) name {
     struct file* f = _watcher->fileFromName([file.name UTF8String]);
     if (getDisplayName(f->fileName) != [name UTF8String]) {
@@ -154,6 +159,7 @@ string handleEvents(Event e, file *f) {
     }
     
     _watcher->move(f, [[NSString stringWithFormat:@"%@/", [folder path]] UTF8String]);
+    [self analyticsEventWithCategory:@"features" andAction:@"move"];
 }
 
 -(void) keepFile:(CLFile*) file forDays: (int) days withName: (NSString*) name {
@@ -161,6 +167,11 @@ string handleEvents(Event e, file *f) {
     if (getDisplayName(f->fileName) != [name UTF8String]) {
         _watcher->rename(f, [name UTF8String]);
     }
+    [self analyticsEvent:@{@"t": @"event",
+                           @"ec": @"features",
+                           @"ea": @"keep",
+                           @"el": [NSString stringWithFormat:@"%d", days],
+                           @"ev": [NSString stringWithFormat:@"%llu", file.size]}];
     _watcher->keep(f, days);
 }
 
@@ -169,16 +180,30 @@ string handleEvents(Event e, file *f) {
     if (getDisplayName(f->fileName) != [name UTF8String]) {
         _watcher->rename(f, [name UTF8String]);
     }
+    [self analyticsEvent:@{@"t": @"event",
+                           @"ec": @"features",
+                           @"ea": @"extend",
+                           @"el": [NSString stringWithFormat:@"%d", days],
+                           @"ev": [NSString stringWithFormat:@"%llu", file.size]}];
     _watcher->extend(f, days);
 }
 
 -(void) expireFile:(CLFile*) file {
     struct file* f = _watcher->fileFromName([file.name UTF8String]);
+    [self analyticsEvent:@{@"t": @"event",
+                           @"ec": @"features",
+                           @"ea": @"expire",
+                           @"ev": [NSString stringWithFormat:@"%llu", file.size]}];
     _watcher->expire(f);
+    
 }
 
 -(void) restoreFile:(CLFile*) file forDays: (int) days {
     struct file* f = _watcher->archiveFromInode(file.inode);
+    [self analyticsEvent:@{@"t": @"event",
+                           @"ec": @"features",
+                           @"ea": @"restore",
+                           @"ev": [NSString stringWithFormat:@"%llu", file.size]}];
     _watcher->restore(f, days);
 }
 
@@ -206,6 +231,46 @@ string handleEvents(Event e, file *f) {
     string words = timeSinceDaysWords([expiration timeIntervalSinceReferenceDate]);
     return [self cStringToNSString:words];
 }
+
+- (bool) analyticsEventWithCategory: (NSString*)category andAction:(NSString*) action {
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        _analytics->event([category UTF8String], [action UTF8String]);
+    });
+    return true;
+}
+- (bool) analyticsEventWithCategory: (NSString*)category andAction:(NSString*) action andLabel:(NSString*) label {
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        _analytics->event([category UTF8String], [action UTF8String], [label UTF8String]);
+    });
+    
+    return true;
+}
+- (bool) analyticsEvent:(NSDictionary*) params {
+    KeyValVec* vec = new KeyValVec();
+    [params enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        (*vec).push_back(StringTuple([(NSString*)key UTF8String], [(NSString*)obj UTF8String]));
+    }];
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        _analytics->customHit(vec);
+    });
+    
+    return true;
+}
+
+- (bool) analyticsStartTimer:(NSString*)category forEvent:(NSString*)name {
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        _analytics->startTimer([category UTF8String], [name UTF8String]);
+    });
+    return true;
+}
+
+- (bool) analyticsEndTimer:(NSString*)category forEvent:(NSString*)name andLabel: (NSString*) label {
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        _analytics->endTimer([category UTF8String], [name UTF8String], [label UTF8String]);
+    });
+    return true;
+}
+
 
 @end
 
