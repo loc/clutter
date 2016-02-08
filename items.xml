@@ -1,4 +1,16 @@
 <item>
+	<title>v0.7.5 analytics and UX tweaks</title>
+	<sparkle:releaseNotesLink>
+		https://loc.github.io/clutter/release/v0.7.5/NOTES.html
+	</sparkle:releaseNotesLink>
+	<pubDate>Mon, 08 Feb 2016 17:52:53 -0500</pubDate>
+	<enclosure url="https://loc.github.io/clutter/release/v0.7.5/Clutter.app.zip"
+		sparkle:version="0.7.5"
+		sparkle:dsaSignature="MC0CFER3nWw1pqB3sHLXw2aOA49L1E7QAhUAvcD9PmDQH4pQXkcw6PAot34zLYM="
+		length=" 3980646"
+		type="application/octet-stream" />
+</item>
+<item>
 	<title>v0.7.4 minor stability</title>
 	<sparkle:releaseNotesLink>
 		https://loc.github.io/clutter/release/v0.7.4/NOTES.html
